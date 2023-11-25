@@ -146,16 +146,18 @@ class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with A
 
   void scan() async{
     if(mounted){
-      widget.setLoadingState(false, LoadType.scan);
-      runDelay(() async{
-        await LocalDatabase().replaceAudioFavouritesData(fetchReduxDatabase().favouritesList).then((value) async{
-          await LocalDatabase().replaceAudioPlaylistsData(fetchReduxDatabase().playlistList).then((value) async{
-            await LocalDatabase().replaceAudioListenCountData(fetchReduxDatabase().audioListenCount).then((value) async{
-              fetchLocalSongs(LoadType.scan);
+      await fetchReduxDatabase().audioHandlerClass!.stop().then((value){
+        widget.setLoadingState(false, LoadType.scan);
+        runDelay(() async{
+          await LocalDatabase().replaceAudioFavouritesData(fetchReduxDatabase().favouritesList).then((value) async{
+            await LocalDatabase().replaceAudioPlaylistsData(fetchReduxDatabase().playlistList).then((value) async{
+              await LocalDatabase().replaceAudioListenCountData(fetchReduxDatabase().audioListenCount).then((value) async{
+                fetchLocalSongs(LoadType.scan);
+              });
             });
           });
-        });
-      }, actionDelayDuration);
+        }, actionDelayDuration);
+      });
     }
   }
 
