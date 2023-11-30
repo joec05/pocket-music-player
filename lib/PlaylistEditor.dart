@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:music_player_app/class/ImageDataClass.dart';
 import 'package:music_player_app/class/PlaylistSongsClass.dart';
 import 'package:music_player_app/custom/CustomButton.dart';
+import 'package:music_player_app/state/main.dart';
 import 'package:music_player_app/styles/AppStyles.dart';
 import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:device_info_plus/device_info_plus.dart';
@@ -98,7 +99,7 @@ class _PlaylistEditorWidgetState extends State<_PlaylistEditorWidgetStateful> {
         isLoading.value = true;
         runDelay((){
           String playlistName = playlistNameController.text.trim();
-          List<PlaylistSongsClass> playlistList = fetchReduxDatabase().playlistList;
+          List<PlaylistSongsClass> playlistList = appStateClass.playlistList;
           for(int i = 0; i < playlistList.length; i++){
             if(playlistList[i].playlistID == playlistSongsData.playlistID){
               ImageDataClass imageData = imageUrl.value.isNotEmpty ? ImageDataClass(imageUrl.value, File(imageUrl.value).readAsBytesSync()) : ImageDataClass('', Uint8List.fromList([]));

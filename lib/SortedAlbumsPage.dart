@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:music_player_app/appdata/GlobalLibrary.dart';
 import 'package:music_player_app/class/AlbumSongsClass.dart';
@@ -45,9 +46,13 @@ class _SortedAlbumsPageWidgetState extends State<_SortedAlbumsPageWidgetStateful
     deleteAudioDataStreamClassSubscription = DeleteAudioDataStreamClass().deleteAudioDataStream.listen((DeleteAudioDataStreamControllerClass data) {
       if(mounted){
         AudioCompleteDataClass audioData = data.audioData;
-        for(int i = 0; i < albumsSongsList.length; i++){
+        for(int i = albumsSongsList.length - 1; i >= 0; i--){
           albumsSongsList[i].songsList.remove(audioData.audioUrl);
+          if(albumsSongsList[i].songsList.isEmpty){
+            albumsSongsList.removeAt(i);
+          }
         }
+        setState((){});
       }
     });
   }
@@ -62,21 +67,23 @@ class _SortedAlbumsPageWidgetState extends State<_SortedAlbumsPageWidgetStateful
     Map<String, AudioCompleteDataNotifier> allSongs = fetchReduxDatabase().allAudiosList;
     List<AlbumSongsClass> albumsSongsListFetched = [];
     for(var songData in allSongs.values){
-      AudioMetadataInfoClass metadataInfo = songData.notifier.value.audioMetadataInfo;
-      int albumIndex = albumsSongsListFetched.indexWhere((element){
-        return element.albumName == metadataInfo.albumName && element.artistName == metadataInfo.albumArtistName;
-      });
-      if(albumIndex > -1){
-        albumsSongsListFetched[albumIndex].songsList.add(
-          songData.audioID
-        );
-      }else{
-        albumsSongsListFetched.add(
-          AlbumSongsClass(
-            metadataInfo.albumName, metadataInfo.albumArtistName,
-            metadataInfo.albumArt, [songData.audioID]
-          )
-        );
+      if(await File(songData.audioID).exists()){
+        AudioMetadataInfoClass metadataInfo = songData.notifier.value.audioMetadataInfo;
+        int albumIndex = albumsSongsListFetched.indexWhere((element){
+          return element.albumName == metadataInfo.albumName && element.artistName == metadataInfo.albumArtistName;
+        });
+        if(albumIndex > -1){
+          albumsSongsListFetched[albumIndex].songsList.add(
+            songData.audioID
+          );
+        }else{
+          albumsSongsListFetched.add(
+            AlbumSongsClass(
+              metadataInfo.albumName, metadataInfo.albumArtistName,
+              metadataInfo.albumArt, [songData.audioID]
+            )
+          );
+        }
       }
     }
     albumsSongsList = albumsSongsListFetched;

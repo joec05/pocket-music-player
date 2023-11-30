@@ -65,12 +65,15 @@ class _DisplayArtistSongsWidgetState extends State<_DisplayArtistSongsWidgetStat
                 return ValueListenableBuilder(
                   valueListenable: audiosListNotifiers[artistSongsData.songsList[index]]!.notifier, 
                   builder: (context, audioCompleteData, child){
-                    return CustomAudioPlayerWidget(
-                      audioCompleteData: audioCompleteData,
-                      key: UniqueKey(),
-                      directorySongsList: artistSongsData.songsList,
-                      playlistSongsData: null
-                    );
+                    if(audioCompleteData.audioMetadataInfo.artistName == artistSongsData.artistName){
+                      return CustomAudioPlayerWidget(
+                        audioCompleteData: audioCompleteData,
+                        key: UniqueKey(),
+                        directorySongsList: artistSongsData.songsList,
+                        playlistSongsData: null
+                      );
+                    }
+                    return Container();
                   }
                 );
               },

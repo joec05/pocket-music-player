@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:music_player_app/appdata/GlobalLibrary.dart';
 import 'package:music_player_app/class/ArtistSongsClass.dart';
@@ -67,9 +68,13 @@ class _SortedArtistsPageWidgetState extends State<_SortedArtistsPageWidgetStatef
     deleteAudioDataStreamClassSubscription = DeleteAudioDataStreamClass().deleteAudioDataStream.listen((DeleteAudioDataStreamControllerClass data) {
       if(mounted){
         AudioCompleteDataClass audioData = data.audioData;
-        for(int i = 0; i < artistsSongsList.length; i++){
+        for(int i = artistsSongsList.length - 1; i >= 0; i--){
           artistsSongsList[i].songsList.remove(audioData.audioUrl);
+          if(artistsSongsList[i].songsList.isEmpty){
+            artistsSongsList.removeAt(i);
+          }
         }
+        setState((){});
       }
     });
   }
@@ -85,18 +90,20 @@ class _SortedArtistsPageWidgetState extends State<_SortedArtistsPageWidgetStatef
     List<ArtistSongsClass> artistsSongsListFetched = [];
     List<String?> artistsList = [];
     for(var songData in allSongs.values){
-      AudioMetadataInfoClass metadataInfo = songData.notifier.value.audioMetadataInfo;
-      if(artistsList.contains(metadataInfo.artistName)){
-        artistsSongsListFetched[artistsList.indexOf(metadataInfo.artistName)].songsList.add(
-          songData.audioID
-        );
-      }else{
-        artistsList.add(metadataInfo.artistName);
-        artistsSongsListFetched.add(
-          ArtistSongsClass(
-            metadataInfo.artistName, [songData.audioID]
-          )
-        );
+      if(await File(songData.audioID).exists()){
+        AudioMetadataInfoClass metadataInfo = songData.notifier.value.audioMetadataInfo;
+        if(artistsList.contains(metadataInfo.artistName)){
+          artistsSongsListFetched[artistsList.indexOf(metadataInfo.artistName)].songsList.add(
+            songData.audioID
+          );
+        }else{
+          artistsList.add(metadataInfo.artistName);
+          artistsSongsListFetched.add(
+            ArtistSongsClass(
+              metadataInfo.artistName, [songData.audioID]
+            )
+          );
+        }
       }
     }
     artistsSongsList = artistsSongsListFetched;

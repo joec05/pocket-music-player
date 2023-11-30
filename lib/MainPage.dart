@@ -5,11 +5,11 @@ import 'package:music_player_app/PlaylistsPage.dart';
 import 'package:music_player_app/SortedAlbumsPage.dart';
 import 'package:music_player_app/SortedArtistsPage.dart';
 import 'package:music_player_app/appdata/GlobalLibrary.dart';
+import 'package:music_player_app/state/main.dart';
 import 'styles/AppStyles.dart';
 import 'package:flutter/services.dart';
 import 'package:music_player_app/class/ImageDataClass.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:music_player_app/redux/reduxLibrary.dart';
 import 'dart:io';
 
 class MainPageWidget extends StatelessWidget {
@@ -74,10 +74,11 @@ class __MainPageWidgetStatefulState extends State<_MainPageWidgetStateful>{
       file.path, byteData.buffer.asUint8List()
     );
     if(mounted){
-      StoreProvider.of<AppState>(context).dispatch(AudioImageDataClass(audioImageDataClass));
+      appStateClass.setAudioImageData(audioImageDataClass);
       widgetOptions = [
         AllMusicPageWidget(setLoadingState: setLoadingState), const SortedArtistsPageWidget(), const SortedAlbumsPageWidget(), const PlaylistPageWidget()
       ];
+      setState((){});
     }
   }
 
@@ -116,101 +117,97 @@ class __MainPageWidgetStatefulState extends State<_MainPageWidgetStateful>{
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, ImageDataClass?>(
-      converter: (store) => store.state.audioImageDataClass,
-      builder: (context, ImageDataClass? imageDataClass){
-        return Stack(
-          children: [
-            ValueListenableBuilder<int>(
-              valueListenable: selectedIndexValue,
-              builder: (BuildContext context, int selectedIndexValue, Widget? child) {
-                return Scaffold(
-                  key: scaffoldKey,
-                  drawerEdgeDragWidth: 0.85 * getScreenWidth(),
-                  onDrawerChanged: (isOpened) {
-                    if(isOpened){
-                    }
-                  },
-                  body: PageView(
-                    controller: _pageController,
-                    onPageChanged: onPageChanged,
-                    children: widgetOptions,
-                  ),
-                  bottomNavigationBar: Container(
-                    decoration: const BoxDecoration(
-                      boxShadow: [                                                               
-                        BoxShadow(color: Colors.black38, spreadRadius: 0, blurRadius: 10),
-                      ],
+    return Stack(
+      children: [
+        ValueListenableBuilder<int>(
+          valueListenable: selectedIndexValue,
+          builder: (BuildContext context, int selectedIndexValue, Widget? child) {
+            return Scaffold(
+              key: scaffoldKey,
+              drawerEdgeDragWidth: 0.85 * getScreenWidth(),
+              onDrawerChanged: (isOpened) {
+                if(isOpened){
+                }
+              },
+              body: PageView(
+                controller: _pageController,
+                onPageChanged: onPageChanged,
+                children: widgetOptions,
+              ),
+              bottomNavigationBar: Container(
+                decoration: const BoxDecoration(
+                  boxShadow: [                                                               
+                    BoxShadow(color: Colors.black38, spreadRadius: 0, blurRadius: 10),
+                  ],
+                ),
+                child: SizedBox(
+                width: 0.7 * getScreenWidth(),
+                child: BottomNavigationBar(
+                  selectedFontSize: 13,
+                  unselectedFontSize: 13,
+                  selectedItemColor: Colors.red,
+                  unselectedItemColor: const Color.fromARGB(255, 110, 102, 102),
+                  key: UniqueKey(),
+                  items: const [
+                    BottomNavigationBarItem(
+                      icon: Icon(FontAwesomeIcons.music, size: 25),
+                      label: 'All Music',
                     ),
-                    child: SizedBox(
-                    width: 0.7 * getScreenWidth(),
-                    child: BottomNavigationBar(
-                      selectedFontSize: 13,
-                      unselectedFontSize: 13,
-                      selectedItemColor: Colors.red,
-                      unselectedItemColor: const Color.fromARGB(255, 110, 102, 102),
-                      key: UniqueKey(),
-                      items: const [
-                        BottomNavigationBarItem(
-                          icon: Icon(FontAwesomeIcons.music, size: 25),
-                          label: 'All Music',
-                        ),
-                        BottomNavigationBarItem(
-                          icon: Icon(FontAwesomeIcons.user, size: 25),
-                          label: 'Artists',
-                        ),
-                        BottomNavigationBarItem(
-                          icon: Icon(FontAwesomeIcons.recordVinyl, size: 25),
-                          label: 'Albums',
-                        ),
-                        BottomNavigationBarItem(
-                          icon: Icon(FontAwesomeIcons.list, size: 25),
-                          label: 'Playlists',
-                        ),
-                      ],
-                      currentIndex: selectedIndexValue,
-                      onTap: ((index) {
-                        if(mounted){
-                          if(isLoaded.value){
-                            _pageController.jumpToPage(index);
-                          }
-                        }
-                      })
+                    BottomNavigationBarItem(
+                      icon: Icon(FontAwesomeIcons.user, size: 25),
+                      label: 'Artists',
                     ),
-                    )
-                  ),
-                );
-              }
-            ),
-            ValueListenableBuilder(
-              valueListenable: isLoaded,
-              builder: (context, isLoaded, child){
-                if(!isLoaded){
-                  return ValueListenableBuilder(
-                    valueListenable: loadType,
-                    builder: (context, loadType, child){
-                      if(loadType == LoadType.initial){
-                        return Container(
-                          decoration: defaultInitialScreenDecoration,
-                          width: double.infinity,
-                          height: double.infinity,
-                          child: Center(
-                            child: imageDataClass != null ? Image.memory(imageDataClass.bytes, width: getScreenWidth() * 0.325, height: getScreenWidth() * 0.325) : Container()
-                          )
-                        );
+                    BottomNavigationBarItem(
+                      icon: Icon(FontAwesomeIcons.recordVinyl, size: 25),
+                      label: 'Albums',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(FontAwesomeIcons.list, size: 25),
+                      label: 'Playlists',
+                    ),
+                  ],
+                  currentIndex: selectedIndexValue,
+                  onTap: ((index) {
+                    if(mounted){
+                      if(isLoaded.value){
+                        _pageController.jumpToPage(index);
                       }
-                      return const Center(
-                        child: CircularProgressIndicator()
-                      );
                     }
+                  })
+                ),
+                )
+              ),
+            );
+          }
+        ),
+        ValueListenableBuilder(
+          valueListenable: isLoaded,
+          builder: (context, isLoaded, child){
+            if(!isLoaded){
+              return ValueListenableBuilder(
+                valueListenable: loadType,
+                builder: (context, loadType, child){
+                  ImageDataClass? imageDataClass = appStateClass.audioImageData;
+                  if(loadType == LoadType.initial){
+                    return Container(
+                      decoration: defaultInitialScreenDecoration,
+                      width: double.infinity,
+                      height: double.infinity,
+                      child: Center(
+                        child: imageDataClass != null ? Image.memory(imageDataClass.bytes, width: getScreenWidth() * 0.325, height: getScreenWidth() * 0.325) : Container()
+                      )
+                    );
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator()
                   );
                 }
-                return Container();
-              }
-            )
-          ]
-        );
-      }
+              );
+            }
+            return Container();
+          }
+        )
+      ]
     );
   }
 }

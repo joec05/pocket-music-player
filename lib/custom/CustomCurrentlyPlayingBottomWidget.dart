@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:music_player_app/appdata/GlobalLibrary.dart';
 import 'package:music_player_app/class/AudioCompleteDataClass.dart';
 import 'package:music_player_app/custom/CustomCurrentlyPlayingExpandedWidget.dart';
+import 'package:music_player_app/state/main.dart';
 import 'package:music_player_app/streams/EditAudioMetadataStreamClass.dart';
 import 'package:music_player_app/streams/CurrentAudioStreamClass.dart';
 import 'package:music_player_app/styles/AppStyles.dart';
@@ -24,8 +25,8 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
   @override initState(){
     super.initState();
     initializeCurrentAudio();
-    if(fetchReduxDatabase().audioHandlerClass != null){
-      fetchReduxDatabase().audioHandlerClass!.audioPlayer.positionStream.listen((newPosition) {
+    if(appStateClass.audioHandler != null){
+      appStateClass.audioHandler!.audioPlayer.positionStream.listen((newPosition) {
         if(mounted){
           if(audioCompleteData.value != null){
             currentSlidingWidth.value = min((newPosition.inMilliseconds / audioCompleteData.value!.audioMetadataInfo.duration), 1) * getScreenWidth();
@@ -41,15 +42,17 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
     editAudioMetadataStreamClassSubscription = EditAudioMetadataStreamClass().editAudioMetadataStream.listen((EditAudioMetadataStreamControllerClass data) {
       if(mounted){
         if(audioCompleteData.value != null){
-          audioCompleteData.value = data.newAudioData;
+          if(appStateClass.audioHandler!.currentAudioUrl == data.newAudioData.audioUrl){
+            audioCompleteData.value = data.newAudioData;
+          }
         }
       }
     });
   }
 
   void initializeCurrentAudio(){
-    if(fetchReduxDatabase().audioHandlerClass != null && mounted){
-      String currentAudioUrl = fetchReduxDatabase().audioHandlerClass!.currentAudioUrl;
+    if(appStateClass.audioHandler != null && mounted){
+      String currentAudioUrl = appStateClass.audioHandler!.currentAudioUrl;
       audioCompleteData.value = fetchReduxDatabase().allAudiosList[currentAudioUrl] == null ? null : fetchReduxDatabase().allAudiosList[currentAudioUrl]!.notifier.value;
     }
   }
@@ -63,11 +66,11 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
   }
 
   void pauseAudio() async{
-    await fetchReduxDatabase().audioHandlerClass!.pause();
+    await appStateClass.audioHandler!.pause();
   }  
 
   void resumeAudio() async{
-    await fetchReduxDatabase().audioHandlerClass!.play();
+    await appStateClass.audioHandler!.play();
   }
 
   void expandBottomSheet(){
@@ -128,7 +131,7 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
                                     image: DecorationImage(
                                       image: MemoryImage(
                                         audioCompleteData.value!.audioMetadataInfo.albumArt.bytes.isEmpty ?
-                                          fetchReduxDatabase().audioImageDataClass!.bytes
+                                          appStateClass.audioImageData!.bytes
                                         : 
                                           audioCompleteData.value!.audioMetadataInfo.albumArt.bytes
                                       ), fit: BoxFit.fill

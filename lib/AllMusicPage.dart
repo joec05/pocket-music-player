@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:io';
-import 'dart:math';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:music_player_app/DisplayFavouriteSongs.dart';
@@ -12,13 +11,13 @@ import 'package:music_player_app/class/AudioCompleteDataClass.dart';
 import 'package:music_player_app/class/AudioCompleteDataNotifier.dart';
 import 'package:music_player_app/class/AudioListenCountClass.dart';
 import 'package:music_player_app/class/AudioListenCountNotifier.dart';
-import 'package:music_player_app/class/AudioRecentlyAddedClass.dart';
 import 'package:music_player_app/custom/CustomAudioPlayer.dart';
 import 'package:music_player_app/custom/CustomButton.dart';
 import 'package:music_player_app/custom/CustomCurrentlyPlayingBottomWidget.dart';
 import 'package:music_player_app/redux/reduxLibrary.dart';
 import 'package:music_player_app/service/AudioHandler.dart';
 import 'package:music_player_app/sqflite/localDatabaseConfiguration.dart';
+import 'package:music_player_app/state/main.dart';
 import 'package:music_player_app/styles/AppStyles.dart';
 import 'package:music_player_app/transition/RightToLeftTransition.dart';
 import 'package:permission_handler/permission_handler.dart' as ph;
@@ -44,7 +43,6 @@ class _AllMusicPageWidgetStateful extends StatefulWidget {
 
 class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with AutomaticKeepAliveClientMixin{
   List<String> audioUrls = [];
-  List<AudioRecentlyAddedClass> recentlyAddedAudio = [];
 
   @override
   void initState(){
@@ -80,45 +78,38 @@ class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with A
         final Map<String, AudioListenCountNotifier> localListenCountData = await LocalDatabase().fetchAudioListenCountData();
         Map<String, AudioListenCountNotifier> getListenCountData = {};
         List<String> songUrlsList = [];
-
-        var statResults = await Future.wait([
-          for(var path in songsList) FileStat.stat(path)
-        ]);
         
         for(int i = 0; i < songsList.length; i++){
           String path = songsList[i];
-          var metadata = await fetchAudioMetadata(path);
-          if(metadata != null){
-            songUrlsList.add(path);
-            recentlyAddedAudio.add(
-              AudioRecentlyAddedClass(path, statResults[i].changed.toIso8601String())
-            );
-            filesCompleteDataList[path] = AudioCompleteDataNotifier(
-              path, 
-              ValueNotifier(
-                AudioCompleteDataClass(
-                  path, metadata, AudioPlayerState.stopped, false
-                )
-              ),
-            );
-            if(localListenCountData[path] != null){
-              getListenCountData[path] = localListenCountData[path]!;
-            }else{
-              getListenCountData[path] = AudioListenCountNotifier(
-                path, ValueNotifier(AudioListenCountClass(path, 0))
+          if(await File(path).exists()){
+            var metadata = await fetchAudioMetadata(path);
+            if(metadata != null){
+              songUrlsList.add(path);
+              filesCompleteDataList[path] = AudioCompleteDataNotifier(
+                path, 
+                ValueNotifier(
+                  AudioCompleteDataClass(
+                    path, metadata, AudioPlayerState.stopped, false
+                  )
+                ),
               );
+              if(localListenCountData[path] != null){
+                getListenCountData[path] = localListenCountData[path]!;
+              }else{
+                getListenCountData[path] = AudioListenCountNotifier(
+                  path, ValueNotifier(AudioListenCountClass(path, 0))
+                );
+              }
             }
           }
         }
         
-        recentlyAddedAudio.sort((a, b) => b.modifiedDate.compareTo(a.modifiedDate));
-        recentlyAddedAudio = recentlyAddedAudio.sublist(0, min(recentlyAddedAudio.length, 15)); 
         if(mounted){
           audioUrls = songUrlsList;
           StoreProvider.of<AppState>(context).dispatch(AllAudiosList(filesCompleteDataList));
-          StoreProvider.of<AppState>(context).dispatch(AudioListenCount(getListenCountData));
-          StoreProvider.of<AppState>(context).dispatch(FavouritesList(await LocalDatabase().fetchAudioFavouritesData()));
-          StoreProvider.of<AppState>(context).dispatch(PlaylistList(await LocalDatabase().fetchAudioPlaylistsData()));
+          appStateClass.setAudioListenCount(getListenCountData);
+          appStateClass.setFavouritesList(await LocalDatabase().fetchAudioFavouritesData());
+          appStateClass.setPlaylistList('', await LocalDatabase().fetchAudioPlaylistsData());
         }
         setState((){});
       });   
@@ -129,7 +120,7 @@ class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with A
   }
 
   Future<void> initializeAudioService() async{
-    if(fetchReduxDatabase().audioHandlerClass == null){
+    if(appStateClass.audioHandler == null){
       MyAudioHandler audioHandler = await AudioService.init(
         builder: () => MyAudioHandler(),
         config: const AudioServiceConfig(
@@ -139,19 +130,20 @@ class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with A
       );
       audioHandler.init();
       if(mounted){
-        StoreProvider.of<AppState>(context).dispatch(AudioHandlerClass(audioHandler));
+        appStateClass.setAudioHandler(audioHandler);
       }
     }
   }
 
   void scan() async{
     if(mounted){
-      await fetchReduxDatabase().audioHandlerClass!.stop().then((value){
+      print(fetchReduxDatabase().allAudiosList.keys.length);
+      await appStateClass.audioHandler!.stop().then((value){
         widget.setLoadingState(false, LoadType.scan);
         runDelay(() async{
-          await LocalDatabase().replaceAudioFavouritesData(fetchReduxDatabase().favouritesList).then((value) async{
-            await LocalDatabase().replaceAudioPlaylistsData(fetchReduxDatabase().playlistList).then((value) async{
-              await LocalDatabase().replaceAudioListenCountData(fetchReduxDatabase().audioListenCount).then((value) async{
+          await LocalDatabase().replaceAudioFavouritesData(appStateClass.favouritesList).then((value) async{
+            await LocalDatabase().replaceAudioPlaylistsData(appStateClass.playlistList).then((value) async{
+              await LocalDatabase().replaceAudioListenCountData(appStateClass.audioListenCount).then((value) async{
                 fetchLocalSongs(LoadType.scan);
               });
             });
@@ -178,73 +170,102 @@ class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with A
               children: <Widget>[
                 Column(
                   children: [
-                    SizedBox(height: getScreenHeight() * 0.015),
-                    CustomButton(
-                      width: getScreenWidth(), height: getScreenHeight() * 0.075, 
-                      buttonColor: defaultCustomButtonColor, 
-                      buttonText: 'Scan folder', 
-                      onTapped: () => runDelay((){
-                        if(mounted){
-                          scan();
-                        }
-                      }, navigationDelayDuration), 
-                      setBorderRadius: false
-                    ),
-                    SizedBox(height: getScreenHeight() * 0.015),
-                    CustomButton(
-                      width: getScreenWidth(), height: getScreenHeight() * 0.075, 
-                      buttonColor: defaultCustomButtonColor, 
-                      buttonText: 'Favourites', 
-                      onTapped: () => runDelay((){
-                        if(mounted){
-                          Navigator.push(
-                            context,
-                            SliderRightToLeftRoute(
-                              page: const DisplayFavouritesClassWidget()
-                            )
-                          );
-                        }
-                      }, navigationDelayDuration), 
-                      setBorderRadius: false
-                    ),
-                    SizedBox(height: getScreenHeight() * 0.015),
-                    CustomButton(
-                      width: getScreenWidth(), height: getScreenHeight() * 0.075, 
-                      buttonColor: defaultCustomButtonColor, 
-                      buttonText: 'Most played', 
-                      onTapped: () => runDelay((){
-                        if(mounted){
-                          Navigator.push(
-                            context,
-                            SliderRightToLeftRoute(
-                              page: const DisplayMostPlayedClassWidget()
-                            )
-                          );
-                        }
-                      }, navigationDelayDuration),
-                      setBorderRadius: false
-                    ),
-                    SizedBox(height: getScreenHeight() * 0.015),
-                    CustomButton(
-                      width: getScreenWidth(), height: getScreenHeight() * 0.075, 
-                      buttonColor: defaultCustomButtonColor, 
-                      buttonText: 'Recently added', 
-                      onTapped: () => runDelay((){
-                        if(mounted){
-                          Navigator.push(
-                            context,
-                            SliderRightToLeftRoute(
-                              page: DisplayRecentlyAddedClassWidget(recentlyAddedSongsData: recentlyAddedAudio,)
-                            )
-                          );
-                        }
-                      }, navigationDelayDuration),
-                      setBorderRadius: false
-                    ),
-                    SizedBox(height: getScreenHeight() * 0.015),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding /2 , vertical: defaultVerticalPadding / 2),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              CustomButton(
+                                width: (getScreenWidth() - defaultHorizontalPadding) / 2 - defaultHorizontalPadding / 2, 
+                                height: getScreenHeight() * 0.075, 
+                                buttonColor: defaultCustomButtonColor, 
+                                buttonText: 'Scan folder', 
+                                onTapped: () => runDelay((){
+                                  if(mounted){
+                                    scan();
+                                  }
+                                }, navigationDelayDuration), 
+                                setBorderRadius: true
+                              ),
+                              SizedBox(
+                                width: defaultHorizontalPadding / 2
+                              ),
+                              CustomButton(
+                                width: (getScreenWidth() - defaultHorizontalPadding) / 2 - defaultHorizontalPadding / 2, 
+                                height: getScreenHeight() * 0.075, 
+                                buttonColor: defaultCustomButtonColor, 
+                                buttonText: 'Favourites', 
+                                onTapped: () => runDelay((){
+                                  if(mounted){
+                                    Navigator.push(
+                                      context,
+                                      SliderRightToLeftRoute(
+                                        page: const DisplayFavouritesClassWidget()
+                                      )
+                                    );
+                                  }
+                                }, navigationDelayDuration), 
+                                setBorderRadius: true
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: getScreenHeight() * 0.015),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              CustomButton(
+                                width: (getScreenWidth() - defaultHorizontalPadding) / 2 - defaultHorizontalPadding / 2, 
+                                height: getScreenHeight() * 0.075, 
+                                buttonColor: defaultCustomButtonColor, 
+                                buttonText: 'Most played', 
+                                onTapped: () => runDelay((){
+                                  if(mounted){
+                                    Navigator.push(
+                                      context,
+                                      SliderRightToLeftRoute(
+                                        page: const DisplayMostPlayedClassWidget()
+                                      )
+                                    );
+                                  }
+                                }, navigationDelayDuration),
+                                setBorderRadius: true
+                              ),
+                              SizedBox(
+                                width: defaultHorizontalPadding / 2
+                              ),
+                              CustomButton(
+                                width: (getScreenWidth() - defaultHorizontalPadding) / 2 - defaultHorizontalPadding / 2, 
+                                height: getScreenHeight() * 0.075, 
+                                buttonColor: defaultCustomButtonColor, 
+                                buttonText: 'Recently added', 
+                                onTapped: () => runDelay((){
+                                  if(mounted){
+                                    Navigator.push(
+                                      context,
+                                      SliderRightToLeftRoute(
+                                        page: DisplayRecentlyAddedClassWidget()
+                                      )
+                                    );
+                                  }
+                                }, navigationDelayDuration),
+                                setBorderRadius: true
+                              ),
+                            ],
+                          )
+                        ]
+                      )
+                    )
                   ],
                 ),
-                SizedBox(height: getScreenHeight() * 0.015),
+                SizedBox(height: getScreenHeight() * 0.0075),
+                const Divider(color: Colors.grey, height: 3.5),
+                SizedBox(height: getScreenHeight() * 0.0075),
                 ListView.builder(
                   shrinkWrap: true,
                   key: UniqueKey(),

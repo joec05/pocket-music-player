@@ -5,6 +5,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:music_player_app/appdata/GlobalLibrary.dart';
 import 'package:music_player_app/class/AudioCompleteDataClass.dart';
 import 'package:music_player_app/class/AudioMetadataInfoClass.dart';
+import 'package:music_player_app/state/main.dart';
 import 'package:music_player_app/streams/CurrentAudioStreamClass.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -45,7 +46,7 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
         album: metadata.albumName,
         artist: metadata.artistName,
         title: metadata.title ?? 'Unknown',
-        artUri: Uri.file(fetchReduxDatabase().audioImageDataClass!.path)
+        artUri: Uri.file(appStateClass.audioImageData!.path)
       );      
     }).toList();
     queue.add(mediaItemList);
@@ -96,7 +97,7 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
         album: metadata.albumName,
         artist: metadata.artistName,
         title: metadata.title ?? 'Unknown',
-        artUri: Uri.file(fetchReduxDatabase().audioImageDataClass!.path),
+        artUri: Uri.file(appStateClass.audioImageData!.path),
         extras: <String, dynamic>{
         },
       )

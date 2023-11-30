@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:music_player_app/appdata/GlobalLibrary.dart';
 import 'package:music_player_app/class/AudioCompleteDataNotifier.dart';
 import 'package:music_player_app/class/AudioListenCountClass.dart';
 import 'package:music_player_app/class/AudioListenCountNotifier.dart';
 import 'package:music_player_app/custom/CustomAudioPlayer.dart';
 import 'package:music_player_app/custom/CustomCurrentlyPlayingBottomWidget.dart';
 import 'package:music_player_app/redux/reduxLibrary.dart';
+import 'package:music_player_app/state/main.dart';
 import 'package:music_player_app/styles/AppStyles.dart';
 
 class DisplayMostPlayedClassWidget extends StatelessWidget {
@@ -35,7 +35,7 @@ class _DisplayMostPlayedClassWidgetState extends State<_DisplayMostPlayedClassWi
 
   void fetchLocalSongs() async{
     if(mounted){
-      Map<String, AudioListenCountNotifier> listenCountHistory = fetchReduxDatabase().audioListenCount;
+      Map<String, AudioListenCountNotifier> listenCountHistory = appStateClass.audioListenCount;
       List<AudioListenCountNotifier> values = listenCountHistory.values.toList();
       values.sort((a, b) => b.notifier.value.listenCount.compareTo(a.notifier.value.listenCount));
       mostPlayedSongsData = values.map((e) => e.notifier.value).toList();

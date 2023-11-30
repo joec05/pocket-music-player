@@ -6,7 +6,7 @@ import 'package:music_player_app/PlaylistEditor.dart';
 import 'package:music_player_app/appdata/GlobalLibrary.dart';
 import 'package:music_player_app/class/PlaylistSongsClass.dart';
 import 'package:music_player_app/custom/CustomButton.dart';
-import 'package:music_player_app/redux/reduxLibrary.dart';
+import 'package:music_player_app/state/main.dart';
 import 'package:music_player_app/styles/AppStyles.dart';
 import 'package:music_player_app/transition/RightToLeftTransition.dart';
 
@@ -33,9 +33,9 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
   void deletePlaylist(){
     if(mounted){
       String playlistID = playlistSongsData.playlistID;
-      List<PlaylistSongsClass> playlistList = fetchReduxDatabase().playlistList;
+      List<PlaylistSongsClass> playlistList = appStateClass.playlistList;
       playlistList.removeWhere((e) => e.playlistID == playlistID);
-      StoreProvider.of<AppState>(context).dispatch(PlaylistList(playlistList));
+      appStateClass.setPlaylistList(playlistID, playlistList);
     }
   }
 
@@ -68,7 +68,7 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
                                 SliderRightToLeftRoute(page: PlaylistEditorWidget(playlistSongsData: playlistSongsData))
                               );
                               if(updatedPlaylist != null){
-                                StoreProvider.of<AppState>(context).dispatch(PlaylistList(updatedPlaylist));
+                                appStateClass.setPlaylistList(playlistSongsData.playlistID, updatedPlaylist);
                               }
                             }
                           }, navigationDelayDuration);
@@ -151,7 +151,7 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
                           image: DecorationImage(
                             image: MemoryImage(
                               playlistSongsData.playlistProfilePic.bytes.isEmpty ?
-                                fetchReduxDatabase().audioImageDataClass!.bytes
+                                appStateClass.audioImageData!.bytes
                               : 
                                 playlistSongsData.playlistProfilePic.bytes
                             ), fit: BoxFit.fill

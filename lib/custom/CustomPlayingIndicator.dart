@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_player_app/appdata/GlobalLibrary.dart';
 import 'package:music_player_app/service/AudioHandler.dart';
+import 'package:music_player_app/state/main.dart';
 
 class CustomAudioPlayingIndicator extends StatefulWidget{
   const CustomAudioPlayingIndicator({
@@ -20,9 +21,9 @@ class _CustomAudioPlayingIndicatorState extends State<CustomAudioPlayingIndicato
 
   @override void initState(){
     super.initState();
-    fetchReduxDatabase().audioHandlerClass!.audioPlayer.positionStream.listen((position){
+    appStateClass.audioHandler!.audioPlayer.positionStream.listen((position){
       if(mounted){
-        MyAudioHandler? handler = fetchReduxDatabase().audioHandlerClass!;
+        MyAudioHandler? handler = appStateClass.audioHandler!;
         bool audioIsSelected = handler.audioPlayer.playerState.processingState == ProcessingState.ready;
         if(audioIsSelected && position.inMilliseconds > 0){
           currentValue.value = (currentValue.value + maxHeight / 7) % maxHeight;

@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:music_player_app/class/PlaylistSongsClass.dart';
 import 'package:music_player_app/class/AudioCompleteDataNotifier.dart';
 import 'package:music_player_app/custom/CustomAudioPlayer.dart';
 import 'package:music_player_app/custom/CustomCurrentlyPlayingBottomWidget.dart';
 import 'package:music_player_app/redux/reduxLibrary.dart';
+import 'package:music_player_app/streams/UpdatePlaylistStreamClass.dart';
 import 'package:music_player_app/styles/AppStyles.dart';
 
 class DisplayPlaylistSongsWidget extends StatelessWidget {
@@ -26,16 +29,29 @@ class _DisplayPlaylistSongsWidgetStateful extends StatefulWidget {
 
 class _DisplayPlaylistSongsWidgetState extends State<_DisplayPlaylistSongsWidgetStateful> with AutomaticKeepAliveClientMixin{
   late PlaylistSongsClass playlistSongsData;
+  late StreamSubscription updatePlaylistStreamClassSubscription;
 
   @override
   void initState(){
     super.initState();
     playlistSongsData = widget.playlistSongsData;
+    updatePlaylistStreamClassSubscription = UpdatePlaylistStreamClass().updatePlaylistStream.listen((UpdatePlaylistStreamControllerClass data) {
+      if(data.playlistID == playlistSongsData.playlistID){
+        int findPlaylistIndex = data.playlistsList.indexWhere((e) => e.playlistID == data.playlistID);
+        if(mounted){
+          if(findPlaylistIndex > -1){
+            playlistSongsData = data.playlistsList[findPlaylistIndex];
+            setState((){});
+          }
+        }
+      }
+    });
   }
 
   @override
   void dispose(){
     super.dispose();
+    updatePlaylistStreamClassSubscription.cancel();
   }
 
   @override

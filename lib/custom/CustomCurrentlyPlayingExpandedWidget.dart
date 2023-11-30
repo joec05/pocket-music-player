@@ -6,7 +6,7 @@ import 'package:music_player_app/appdata/GlobalLibrary.dart';
 import 'package:music_player_app/class/AudioCompleteDataClass.dart';
 import 'package:music_player_app/class/PlaylistSongsClass.dart';
 import 'package:music_player_app/custom/CustomButton.dart';
-import 'package:music_player_app/redux/reduxLibrary.dart';
+import 'package:music_player_app/state/main.dart';
 import 'package:music_player_app/streams/EditAudioMetadataStreamClass.dart';
 import 'package:music_player_app/streams/CurrentAudioStreamClass.dart';
 import 'package:music_player_app/styles/AppStyles.dart';
@@ -35,7 +35,7 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
     super.initState();
     initializeCurrentAudio();
     if(mounted){
-      currentLoopStatus.value = fetchReduxDatabase().audioHandlerClass!.currentLoopStatus;
+      currentLoopStatus.value = appStateClass.audioHandler!.currentLoopStatus;
     }
     updateSliderPosition();
     isDraggingSlider.addListener((){
@@ -45,7 +45,7 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
         }
       }
     });
-    fetchReduxDatabase().audioHandlerClass!.audioPlayer.positionStream.listen((newPosition) {
+    appStateClass.audioHandler!.audioPlayer.positionStream.listen((newPosition) {
       if(mounted){
         if(audioCompleteData.value != null && !isDraggingSlider.value && newPosition.inMilliseconds <= audioCompleteData.value!.audioMetadataInfo.duration){
           currentPosition.value = min((newPosition.inMilliseconds / audioCompleteData.value!.audioMetadataInfo.duration), 1);
@@ -66,7 +66,9 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
     editAudioMetadataStreamClassSubscription = EditAudioMetadataStreamClass().editAudioMetadataStream.listen((EditAudioMetadataStreamControllerClass data) {
       if(mounted){
         if(audioCompleteData.value != null){
-          audioCompleteData.value = data.newAudioData;  
+          if(appStateClass.audioHandler!.currentAudioUrl == data.newAudioData.audioUrl){
+            audioCompleteData.value = data.newAudioData;
+          }
         }
       }
     });
@@ -74,7 +76,7 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
 
   void initializeCurrentAudio(){
     if(mounted){
-      String currentAudioUrl = fetchReduxDatabase().audioHandlerClass!.currentAudioUrl;
+      String currentAudioUrl = appStateClass.audioHandler!.currentAudioUrl;
       audioCompleteData.value = fetchReduxDatabase().allAudiosList[currentAudioUrl] == null ? null : fetchReduxDatabase().allAudiosList[currentAudioUrl]!.notifier.value;
     }
   }
@@ -94,8 +96,8 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
 
   void updateSliderPosition(){
     if(mounted){
-      if(fetchReduxDatabase().audioHandlerClass != null && audioCompleteData.value != null){
-        Duration? currentDuration = fetchReduxDatabase().audioHandlerClass!.audioPlayer.duration;
+      if(appStateClass.audioHandler != null && audioCompleteData.value != null){
+        Duration? currentDuration = appStateClass.audioHandler!.audioPlayer.duration;
         if(currentDuration != null){
           currentPosition.value = min((currentDuration.inMilliseconds / audioCompleteData.value!.audioMetadataInfo.duration), 1);
           currentDurationStr.value = _formatDuration(currentDuration);
@@ -106,26 +108,26 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
   }
 
   void pauseAudio() async{
-    await fetchReduxDatabase().audioHandlerClass!.pause();
+    await appStateClass.audioHandler!.pause();
   }  
 
   void resumeAudio() async{
-    await fetchReduxDatabase().audioHandlerClass!.play();
+    await appStateClass.audioHandler!.play();
   }
 
   void modifyLoopStatus(LoopStatus loopStatus){
     if(mounted){
       currentLoopStatus.value = loopStatus;
     }
-    fetchReduxDatabase().audioHandlerClass!.modifyLoopStatus(loopStatus);
+    appStateClass.audioHandler!.modifyLoopStatus(loopStatus);
   }
 
   void playNext() async{
-    await fetchReduxDatabase().audioHandlerClass!.skipToNext();
+    await appStateClass.audioHandler!.skipToNext();
   }
 
   void playPrev() async{
-    await fetchReduxDatabase().audioHandlerClass!.skipToPrevious();
+    await appStateClass.audioHandler!.skipToPrevious();
   }
 
   void onSliderChange(value){ 
@@ -142,7 +144,7 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
       var duration = ((value * audioCompleteData.value!.audioMetadataInfo.duration) ~/ 10) * 10;
       currentPosition.value = value ;
       isDraggingSlider.value = false;
-      await fetchReduxDatabase().audioHandlerClass!.audioPlayer.seek(Duration(milliseconds: duration));
+      await appStateClass.audioHandler!.audioPlayer.seek(Duration(milliseconds: duration));
     } 
   }
 
@@ -175,7 +177,7 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
   }
 
   void displayOptionsBottomSheet(){
-    List<String> favouritesList = fetchReduxDatabase().favouritesList;
+    List<String> favouritesList = appStateClass.favouritesList;
     if(mounted){
       showModalBottomSheet(
         context: context,
@@ -230,9 +232,9 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
                               if(favouritesList.contains(audioCompleteData.value!.audioUrl)){
                                 favouritesList.remove(audioCompleteData.value!.audioUrl);
                               }else{
-                                favouritesList.add(audioCompleteData.value!.audioUrl);
+                                favouritesList.insert(0, audioCompleteData.value!.audioUrl);
                               }
-                              StoreProvider.of<AppState>(context).dispatch(FavouritesList(favouritesList));
+                              appStateClass.setFavouritesList(favouritesList);
                             }
                           }, navigationDelayDuration);
                         },
@@ -363,7 +365,7 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
   }
 
   void displaySelectExistingPlaylistDialog(){
-    List<PlaylistSongsClass> playlistList = fetchReduxDatabase().playlistList;
+    List<PlaylistSongsClass> playlistList = appStateClass.playlistList;
     if(mounted){
       showDialog(
         context: context,
@@ -477,23 +479,24 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
   
   void createPlaylistAndAddSong(String playlistName){
     if(mounted){
-      List<PlaylistSongsClass> playlistList = fetchReduxDatabase().playlistList;
+      String playlistID = const Uuid().v4();
+      List<PlaylistSongsClass> playlistList = appStateClass.playlistList;
       playlistList.add(PlaylistSongsClass(
-        const Uuid().v4(), playlistName, fetchReduxDatabase().audioImageDataClass!, DateTime.now().toIso8601String(), [audioCompleteData.value!.audioUrl]
+        playlistID, playlistName, appStateClass.audioImageData!, DateTime.now().toIso8601String(), [audioCompleteData.value!.audioUrl]
       ));
-      StoreProvider.of<AppState>(context).dispatch(PlaylistList(playlistList));
+      appStateClass.setPlaylistList(playlistID, playlistList);
     }
   }
 
   void addToPlaylist(String playlistID){
     if(mounted){
-      List<PlaylistSongsClass> playlistList = fetchReduxDatabase().playlistList;
+      List<PlaylistSongsClass> playlistList = appStateClass.playlistList;
       for(int i = 0; i < playlistList.length; i++){
         if(playlistList[i].playlistID == playlistID){
           playlistList[i].songsList.add(audioCompleteData.value!.audioUrl);
         }
       }
-      StoreProvider.of<AppState>(context).dispatch(PlaylistList(playlistList));
+      appStateClass.setPlaylistList(playlistID, playlistList);
     }
   }
 
@@ -526,7 +529,7 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
                             image: DecorationImage(
                               image: MemoryImage(
                                 audioCompleteData.value!.audioMetadataInfo.albumArt.bytes.isEmpty ?
-                                  fetchReduxDatabase().audioImageDataClass!.bytes
+                                  appStateClass.audioImageData!.bytes
                                 : 
                                   audioCompleteData.value!.audioMetadataInfo.albumArt.bytes
                               ), fit: BoxFit.fill

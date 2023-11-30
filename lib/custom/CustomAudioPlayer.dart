@@ -6,7 +6,7 @@ import 'package:music_player_app/class/AudioCompleteDataClass.dart';
 import 'package:music_player_app/class/PlaylistSongsClass.dart';
 import 'package:music_player_app/custom/CustomButton.dart';
 import 'package:music_player_app/custom/CustomPlayingIndicator.dart';
-import 'package:music_player_app/redux/reduxLibrary.dart';
+import 'package:music_player_app/state/main.dart';
 import 'package:music_player_app/styles/AppStyles.dart';
 import 'package:music_player_app/transition/RightToLeftTransition.dart';
 import 'package:uuid/uuid.dart';
@@ -28,7 +28,7 @@ class CustomAudioPlayerWidget extends StatefulWidget{
   State<CustomAudioPlayerWidget> createState() =>_CustomAudioPlayerWidgetState();
 }
 
-class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with SingleTickerProviderStateMixin{
+class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with SingleTickerProviderStateMixin {
   late AudioCompleteDataClass audioCompleteData;
 
   @override initState(){
@@ -40,15 +40,14 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
     List<String> directorySongsList = [...widget.directorySongsList];
     List<String> directorySongsListShuffled = [...widget.directorySongsList];
     directorySongsListShuffled.shuffle();
-    fetchReduxDatabase().audioHandlerClass!.updateListDirectory(
+    appStateClass.audioHandler!.updateListDirectory(
       directorySongsList, directorySongsListShuffled
     );
-    fetchReduxDatabase().audioHandlerClass!.setCurrentSong(audioCompleteData);
-    fetchReduxDatabase().audioHandlerClass!.play();
+    appStateClass.audioHandler!.setCurrentSong(audioCompleteData);
+    appStateClass.audioHandler!.play();
   }
 
   void displayOptionsBottomSheet(){
-    List<String> favouritesList = fetchReduxDatabase().favouritesList;
     if(mounted){
       showModalBottomSheet(
         context: context,
@@ -95,6 +94,7 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
                       splashFactory: InkRipple.splashFactory,
                       child: CustomButton(
                         onTapped: (){
+                          List<String> favouritesList = appStateClass.favouritesList;
                           if(mounted){
                             Navigator.of(bottomSheetContext).pop();
                           }
@@ -103,13 +103,13 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
                               if(favouritesList.contains(audioCompleteData.audioUrl)){
                                 favouritesList.remove(audioCompleteData.audioUrl);
                               }else{
-                                favouritesList.add(audioCompleteData.audioUrl);
+                                favouritesList.insert(0, audioCompleteData.audioUrl);
                               }
-                              StoreProvider.of<AppState>(context).dispatch(FavouritesList(favouritesList));
+                              appStateClass.setFavouritesList(favouritesList);
                             }
                           }, navigationDelayDuration);
                         },
-                        buttonText: favouritesList.contains(audioCompleteData.audioUrl) ? 'Remove from favourites' : 'Add to favourites',
+                        buttonText: appStateClass.favouritesList.contains(audioCompleteData.audioUrl) ? 'Remove from favourites' : 'Add to favourites',
                         width: double.infinity,
                         height: getScreenHeight() * 0.075,
                         buttonColor: Colors.transparent,
@@ -252,7 +252,7 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
   }
 
   void displaySelectExistingPlaylistDialog(){
-    List<PlaylistSongsClass> playlistList = fetchReduxDatabase().playlistList;
+    List<PlaylistSongsClass> playlistList = appStateClass.playlistList;
     if(mounted){
       showDialog(
         context: context,
@@ -366,36 +366,44 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
   
   void createPlaylistAndAddSong(String playlistName){
     if(mounted){
-      List<PlaylistSongsClass> playlistList = fetchReduxDatabase().playlistList;
+      String playlistID = const Uuid().v4();
+      List<PlaylistSongsClass> playlistList = appStateClass.playlistList;
       playlistList.add(PlaylistSongsClass(
-        const Uuid().v4(), playlistName, fetchReduxDatabase().audioImageDataClass!, DateTime.now().toIso8601String(), [audioCompleteData.audioUrl]
+        playlistID, playlistName, appStateClass.audioImageData!, DateTime.now().toIso8601String(), [audioCompleteData.audioUrl]
       ));
-      StoreProvider.of<AppState>(context).dispatch(PlaylistList(playlistList));
+      appStateClass.setPlaylistList(playlistID, playlistList);
     }
   }
 
   void addToPlaylist(String playlistID){
     if(mounted){
-      List<PlaylistSongsClass> playlistList = fetchReduxDatabase().playlistList;
+      List<PlaylistSongsClass> playlistList = appStateClass.playlistList;
       for(int i = 0; i < playlistList.length; i++){
         if(playlistList[i].playlistID == playlistID){
-          playlistList[i].songsList.add(audioCompleteData.audioUrl);
+          playlistList[i].songsList.insert(0, audioCompleteData.audioUrl);
         }
       }
-      StoreProvider.of<AppState>(context).dispatch(PlaylistList(playlistList));
+      appStateClass.setPlaylistList(playlistID, playlistList);
     }
   }
 
   void removeFromPlaylist(){
     if(mounted){
       String playlistID = widget.playlistSongsData!.playlistID;
-      List<PlaylistSongsClass> playlistList = fetchReduxDatabase().playlistList;
-      for(int i = 0; i < playlistList.length; i++){
+      List<PlaylistSongsClass> playlistList = appStateClass.playlistList;
+      for(int i = playlistList.length - 1; i >= 0; i--){
         if(playlistList[i].playlistID == playlistID){
           playlistList[i].songsList.remove(audioCompleteData.audioUrl);
+          if(playlistList[i].songsList.isEmpty){
+            playlistList.removeAt(i);
+          }
         }
       }
-      StoreProvider.of<AppState>(context).dispatch(PlaylistList(playlistList));
+      int getIndex = playlistList.indexWhere((e) => e.playlistID == playlistID);
+      if(getIndex == -1){
+        Navigator.pop(context);
+      }
+      appStateClass.setPlaylistList(playlistID, playlistList);
     }
   }
 
@@ -414,7 +422,7 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
         splashFactory: InkRipple.splashFactory,
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding / 2, vertical: defaultVerticalPadding / 2),
-          color: audioIsSelected || fetchReduxDatabase().audioHandlerClass!.currentAudioUrl == audioCompleteData.audioUrl ? Colors.grey.withOpacity(0.6) : Colors.transparent,
+          color: audioIsSelected || appStateClass.audioHandler!.currentAudioUrl == audioCompleteData.audioUrl ? Colors.grey.withOpacity(0.6) : Colors.transparent,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -435,7 +443,7 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
                                 image: DecorationImage(
                                   image: MemoryImage(
                                     audioCompleteData.audioMetadataInfo.albumArt.bytes.isEmpty ?
-                                      fetchReduxDatabase().audioImageDataClass!.bytes
+                                      appStateClass.audioImageData!.bytes
                                     : 
                                       audioCompleteData.audioMetadataInfo.albumArt.bytes
                                   ), fit: BoxFit.fill
@@ -443,7 +451,7 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
                               )
                             ),
                             audioIsSelected ?
-                              CustomAudioPlayingIndicator()
+                              const CustomAudioPlayingIndicator()
                             : Container()
                           ]
                         ),

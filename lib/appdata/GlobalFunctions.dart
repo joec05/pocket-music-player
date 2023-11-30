@@ -8,6 +8,7 @@ import 'package:ffmpeg_kit_flutter_audio/ffprobe_session.dart';
 import 'package:http/http.dart' as http;
 import 'package:music_player_app/class/AudioListenCountClass.dart';
 import 'package:music_player_app/class/ImageDataClass.dart';
+import 'package:music_player_app/state/main.dart';
 import 'package:music_player_app/streams/DeleteAudioDataStreamClass.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
@@ -49,9 +50,9 @@ String getTimeDifference(String day) {
 }
 
 void addAudioListenCount(AudioCompleteDataClass audioCompleteData){
-  AudioListenCountClass listenCountData = fetchReduxDatabase().audioListenCount[audioCompleteData.audioUrl]!.notifier.value;
+  AudioListenCountClass listenCountData = appStateClass.audioListenCount[audioCompleteData.audioUrl]!.notifier.value;
   AudioListenCountClass updatedListenCountData = AudioListenCountClass(listenCountData.audioUrl, listenCountData.listenCount + 1);
-  fetchReduxDatabase().audioListenCount[audioCompleteData.audioUrl]!.notifier.value = updatedListenCountData;
+  appStateClass.audioListenCount[audioCompleteData.audioUrl]!.notifier.value = updatedListenCountData;
 }
 
 Future<AudioMetadataInfoClass?> fetchAudioMetadata(String audioUrl) async{
@@ -101,8 +102,8 @@ void deleteAudioFile(AudioCompleteDataClass audioData) async{
     DeleteAudioDataStreamClass().emitData(
       DeleteAudioDataStreamControllerClass(x)
     );
-    if(fetchReduxDatabase().audioHandlerClass!.currentAudioUrl == audioData.audioUrl){
-      fetchReduxDatabase().audioHandlerClass!.stop();
+    if(appStateClass.audioHandler!.currentAudioUrl == audioData.audioUrl){
+      appStateClass.audioHandler!.stop();
     }
     File selectedFile = File(audioData.audioUrl);
     if(await selectedFile.exists()){

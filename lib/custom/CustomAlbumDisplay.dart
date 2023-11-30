@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:music_player_app/DisplayAlbumSongs.dart';
 import 'package:music_player_app/appdata/GlobalLibrary.dart';
 import 'package:music_player_app/class/AlbumSongsClass.dart';
+import 'package:music_player_app/state/main.dart';
 import 'package:music_player_app/styles/AppStyles.dart';
 import 'package:music_player_app/transition/RightToLeftTransition.dart';
 
@@ -67,7 +68,7 @@ class _CustomAlbumDisplayWidgetState extends State<CustomAlbumDisplayWidget>{
                           image: DecorationImage(
                             image: MemoryImage(
                               albumSongsData.albumProfilePic.bytes.isEmpty ?
-                                fetchReduxDatabase().audioImageDataClass!.bytes
+                                appStateClass.audioImageData!.bytes
                               : 
                                 albumSongsData.albumProfilePic.bytes
                             ), fit: BoxFit.fill

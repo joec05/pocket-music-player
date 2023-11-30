@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:music_player_app/appdata/GlobalLibrary.dart';
+import 'package:music_player_app/appdata/GlobalFunctions.dart';
 import 'package:music_player_app/class/AudioCompleteDataNotifier.dart';
 import 'package:music_player_app/custom/CustomAudioPlayer.dart';
 import 'package:music_player_app/custom/CustomCurrentlyPlayingBottomWidget.dart';
-import 'package:music_player_app/redux/reduxLibrary.dart';
+import 'package:music_player_app/state/main.dart';
+import 'package:music_player_app/streams/UpdateFavouriteStreamClass.dart';
 import 'package:music_player_app/styles/AppStyles.dart';
 
 class DisplayFavouritesClassWidget extends StatelessWidget {
@@ -15,7 +18,6 @@ class DisplayFavouritesClassWidget extends StatelessWidget {
   }
 }
 
-
 class _DisplayFavouritesClassWidgetStateful extends StatefulWidget {
   const _DisplayFavouritesClassWidgetStateful();
 
@@ -24,21 +26,27 @@ class _DisplayFavouritesClassWidgetStateful extends StatefulWidget {
 }
 
 class _DisplayFavouritesClassWidgetState extends State<_DisplayFavouritesClassWidgetStateful> {
-  late List<String> favouriteSongsData;
+  List<String> favouriteSongsData = appStateClass.favouritesList;
+  late StreamSubscription updateFavouriteStreamClassSubscription;
 
   @override
   void initState(){
     super.initState();
-    favouriteSongsData = fetchReduxDatabase().favouritesList;
+    updateFavouriteStreamClassSubscription = UpdateFavouriteStreamClass().updateFavouriteStream.listen((UpdateFavouriteStreamControllerClass data) {
+      favouriteSongsData = data.favouritesList;
+      setState((){});
+    });
   }
 
   @override
   void dispose(){
     super.dispose();
+    updateFavouriteStreamClassSubscription.cancel();
   }
 
   @override
   Widget build(BuildContext context) {
+    Map<String, AudioCompleteDataNotifier> audiosListNotifiers = fetchReduxDatabase().allAudiosList;
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: Container(
@@ -46,44 +54,31 @@ class _DisplayFavouritesClassWidgetState extends State<_DisplayFavouritesClassWi
         ),
         title: const Text('Favourites'), titleSpacing: defaultAppBarTitleSpacingWithBackBtn,
       ),
-      body: StoreConnector<AppState, Map<String, AudioCompleteDataNotifier>>(
-        converter: (store) => store.state.allAudiosList,
-        builder: (context, Map<String, AudioCompleteDataNotifier> audiosListNotifiers){
-          return StoreConnector<AppState, List<String>>(
-            converter: (store) => store.state.favouritesList,
-            builder: (context, List<String> favouritesListValue){
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                favouriteSongsData = favouritesListValue;
-              });
-              return Center(
-                child: ListView.builder(
-                  shrinkWrap: false,
-                  key: UniqueKey(),
-                  scrollDirection: Axis.vertical,
-                  primary: false,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  itemCount: favouriteSongsData.length,
-                  itemBuilder: (context, index){
-                    if(audiosListNotifiers[favouriteSongsData[index]] == null){
-                      return Container();
-                    }
-                    return ValueListenableBuilder(
-                      valueListenable: audiosListNotifiers[favouriteSongsData[index]]!.notifier, 
-                      builder: (context, audioCompleteData, child){
-                        return CustomAudioPlayerWidget(
-                          audioCompleteData: audioCompleteData,
-                          key: UniqueKey(),
-                          directorySongsList: favouriteSongsData,
-                          playlistSongsData: null
-                        );
-                      }
-                    );
-                  }
-                )
-              );
+      body: Center(
+        child: ListView.builder(
+          shrinkWrap: false,
+          key: UniqueKey(),
+          scrollDirection: Axis.vertical,
+          primary: false,
+          physics: const AlwaysScrollableScrollPhysics(),
+          itemCount: favouriteSongsData.length,
+          itemBuilder: (context, index){
+            if(audiosListNotifiers[favouriteSongsData[index]] == null){
+              return Container();
             }
-          );
-        }
+            return ValueListenableBuilder(
+              valueListenable: audiosListNotifiers[favouriteSongsData[index]]!.notifier, 
+              builder: (context, audioCompleteData, child){
+                return CustomAudioPlayerWidget(
+                  audioCompleteData: audioCompleteData,
+                  key: UniqueKey(),
+                  directorySongsList: favouriteSongsData,
+                  playlistSongsData: null
+                );
+              }
+            );
+          }
+        )
       ),
       bottomNavigationBar: CustomCurrentlyPlayingBottomWidget(key: UniqueKey()),
     );
