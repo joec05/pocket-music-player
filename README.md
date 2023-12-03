@@ -24,25 +24,17 @@ A simple music player app made with Flutter.
 
 ## Music player app in display  
 
-![Music player app](https://github.com/joec05/files/blob/main/music_player_app/music_player_app_demo_8.jpg?raw=true "Music player app demo image 8")
+![Music player app](https://github.com/joec05/files/blob/main/music_player_app/demo_1.png?raw=true "Music player app demo image 1")
 
-![Music player app](https://github.com/joec05/files/blob/main/music_player_app/music_player_app_demo_6.jpg?raw=true "Music player app demo image 6")
+![Music player app](https://github.com/joec05/files/blob/main/music_player_app/demo_2.png?raw=true "Music player app demo image 2")
 
-![Music player app](https://github.com/joec05/files/blob/main/music_player_app/music_player_app_demo_2.jpg?raw=true "Music player app demo image 2")
+![Music player app](https://github.com/joec05/files/blob/main/music_player_app/demo_3.png?raw=true "Music player app demo image 3")
 
-![Music player app](https://github.com/joec05/files/blob/main/music_player_app/music_player_app_demo_1.jpg?raw=true "Music player app demo image 1")
-
-![Music player app](https://github.com/joec05/files/blob/main/music_player_app/music_player_app_demo_3.jpg?raw=true "Music player app demo image 3")
-
-![Music player app](https://github.com/joec05/files/blob/main/music_player_app/music_player_app_demo_7.jpg?raw=true "Music player app demo image 7")
-
-![Music player app](https://github.com/joec05/files/blob/main/music_player_app/music_player_app_demo_4.jpg?raw=true "Music player app demo image 4")
+![Music player app](https://github.com/joec05/files/blob/main/music_player_app/demo_4.png?raw=true "Music player app demo image 4")
 
 <br />
 
 ## Future plans
-
-* Fix early lags during scroll after render
 
 * Enable search feature for music, artists, albums, and playlists
 

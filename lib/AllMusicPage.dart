@@ -107,7 +107,7 @@ class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with A
         if(mounted){
           audioUrls = songUrlsList;
           StoreProvider.of<AppState>(context).dispatch(AllAudiosList(filesCompleteDataList));
-          appStateClass.setAudioListenCount(getListenCountData);
+          appStateClass.audioListenCount = getListenCountData;
           appStateClass.setFavouritesList(await LocalDatabase().fetchAudioFavouritesData());
           appStateClass.setPlaylistList('', await LocalDatabase().fetchAudioPlaylistsData());
         }
@@ -130,7 +130,7 @@ class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with A
       );
       audioHandler.init();
       if(mounted){
-        appStateClass.setAudioHandler(audioHandler);
+        appStateClass.audioHandler = audioHandler;
       }
     }
   }

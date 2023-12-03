@@ -20,10 +20,6 @@ class AppStateClass{
     required this.audioImageData
   });
 
-  void setAudioListenCount(Map<String, AudioListenCountNotifier> arg){
-    audioListenCount = arg;
-  }
-
   void setFavouritesList(List<String> arg){
     favouritesList = arg;
     UpdateFavouriteStreamClass().emitData(
@@ -36,14 +32,6 @@ class AppStateClass{
     UpdatePlaylistStreamClass().emitData(
       UpdatePlaylistStreamControllerClass(playlistID, arg)
     );
-  }
-
-  void setAudioHandler(MyAudioHandler arg){
-    audioHandler = arg;
-  }
-
-  void setAudioImageData(ImageDataClass arg){
-    audioImageData = arg;
   }
 }
 

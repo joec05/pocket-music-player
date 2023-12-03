@@ -74,7 +74,7 @@ class __MainPageWidgetStatefulState extends State<_MainPageWidgetStateful>{
       file.path, byteData.buffer.asUint8List()
     );
     if(mounted){
-      appStateClass.setAudioImageData(audioImageDataClass);
+      appStateClass.audioImageData = audioImageDataClass;
       widgetOptions = [
         AllMusicPageWidget(setLoadingState: setLoadingState), const SortedArtistsPageWidget(), const SortedAlbumsPageWidget(), const PlaylistPageWidget()
       ];
@@ -198,8 +198,13 @@ class __MainPageWidgetStatefulState extends State<_MainPageWidgetStateful>{
                       )
                     );
                   }
-                  return const Center(
-                    child: CircularProgressIndicator()
+                  return Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: Colors.transparent,
+                    child: const Center(
+                      child: CircularProgressIndicator()
+                    ),
                   );
                 }
               );

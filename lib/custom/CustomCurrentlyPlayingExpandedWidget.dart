@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:music_player_app/TagEditor.dart';
 import 'package:music_player_app/appdata/GlobalLibrary.dart';
 import 'package:music_player_app/class/AudioCompleteDataClass.dart';
+import 'package:music_player_app/class/ImageDataClass.dart';
 import 'package:music_player_app/class/PlaylistSongsClass.dart';
 import 'package:music_player_app/custom/CustomButton.dart';
 import 'package:music_player_app/state/main.dart';
@@ -482,7 +484,7 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
       String playlistID = const Uuid().v4();
       List<PlaylistSongsClass> playlistList = appStateClass.playlistList;
       playlistList.add(PlaylistSongsClass(
-        playlistID, playlistName, appStateClass.audioImageData!, DateTime.now().toIso8601String(), [audioCompleteData.value!.audioUrl]
+        playlistID, playlistName, ImageDataClass('', Uint8List.fromList([])), DateTime.now().toIso8601String(), [audioCompleteData.value!.audioUrl]
       ));
       appStateClass.setPlaylistList(playlistID, playlistList);
     }
