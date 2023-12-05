@@ -3,6 +3,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:music_player_app/TagEditor.dart';
 import 'package:music_player_app/class/AudioCompleteDataClass.dart';
 import 'package:music_player_app/class/ImageDataClass.dart';
@@ -53,133 +54,117 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
   void displayOptionsBottomSheet(){
     if(mounted){
       showModalBottomSheet(
+        backgroundColor: Colors.transparent,
         context: context,
         builder: (BuildContext bottomSheetContext) {
           return SingleChildScrollView(
             child: Container(
-              padding: EdgeInsets.zero,
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 56, 54, 54),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                  topRight: Radius.circular(10.0)
+                )
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: [     
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: (){},
-                      splashFactory: InkRipple.splashFactory,
-                      child: CustomButton(
-                        onTapped: (){
-                          if(mounted){
-                            Navigator.of(bottomSheetContext).pop();
-                          }
-                          runDelay((){
-                            if(mounted){
-                              Navigator.push(
-                                context,
-                                SliderRightToLeftRoute(
-                                  page: TagEditorWidget(audioCompleteData: audioCompleteData)
-                                )
-                              );
-                            }
-                          }, navigationDelayDuration);
-                        },
-                        buttonText: 'Edit tags',
-                        width: double.infinity,
-                        height: getScreenHeight() * 0.075,
-                        buttonColor: Colors.transparent,
-                        setBorderRadius: false,
-                      )
+                children: [
+                  SizedBox(height: getScreenHeight() * 0.015),
+                  Container(
+                    height: getScreenHeight() * 0.01,
+                    width: getScreenWidth() * 0.15,
+                    decoration: const BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.all(Radius.circular(10))
                     )
                   ),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: (){},
-                      splashFactory: InkRipple.splashFactory,
-                      child: CustomButton(
-                        onTapped: (){
-                          List<String> favouritesList = appStateClass.favouritesList;
-                          if(mounted){
-                            Navigator.of(bottomSheetContext).pop();
-                          }
-                          runDelay((){
-                            if(mounted){
-                              if(favouritesList.contains(audioCompleteData.audioUrl)){
-                                favouritesList.remove(audioCompleteData.audioUrl);
-                              }else{
-                                favouritesList.insert(0, audioCompleteData.audioUrl);
-                              }
-                              appStateClass.setFavouritesList(favouritesList);
-                            }
-                          }, navigationDelayDuration);
-                        },
-                        buttonText: appStateClass.favouritesList.contains(audioCompleteData.audioUrl) ? 'Remove from favourites' : 'Add to favourites',
-                        width: double.infinity,
-                        height: getScreenHeight() * 0.075,
-                        buttonColor: Colors.transparent,
-                        setBorderRadius: false,
-                      )
-                    )
+                  SizedBox(height: getScreenHeight() * 0.015),   
+                  CustomButton(
+                    onTapped: (){
+                      if(mounted){
+                        Navigator.of(bottomSheetContext).pop();
+                      }
+                      runDelay((){
+                        if(mounted){
+                          Navigator.push(
+                            context,
+                            SliderRightToLeftRoute(
+                              page: TagEditorWidget(audioCompleteData: audioCompleteData)
+                            )
+                          );
+                        }
+                      }, navigationDelayDuration);
+                    },
+                    buttonText: 'Edit tags',
+                    width: double.infinity,
+                    height: getScreenHeight() * 0.08,
+                    buttonColor: Colors.transparent,
+                    setBorderRadius: false,
                   ),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: (){},
-                      splashFactory: InkRipple.splashFactory,
-                      child: CustomButton(
-                        onTapped: (){
-                          if(mounted){
-                            Navigator.of(bottomSheetContext).pop();
+                  CustomButton(
+                    onTapped: (){
+                      List<String> favouritesList = appStateClass.favouritesList;
+                      if(mounted){
+                        Navigator.of(bottomSheetContext).pop();
+                      }
+                      runDelay((){
+                        if(mounted){
+                          if(favouritesList.contains(audioCompleteData.audioUrl)){
+                            favouritesList.remove(audioCompleteData.audioUrl);
+                          }else{
+                            favouritesList.insert(0, audioCompleteData.audioUrl);
                           }
-                          runDelay(() => displayAddToPlaylistDialog(), navigationDelayDuration);
-                        },
-                        buttonText: 'Add to playlist',
-                        width: double.infinity,
-                        height: getScreenHeight() * 0.075,
-                        buttonColor: Colors.transparent,
-                        setBorderRadius: false,
-                      )
+                          appStateClass.setFavouritesList(favouritesList);
+                        }
+                      }, navigationDelayDuration);
+                    },
+                    buttonText: appStateClass.favouritesList.contains(audioCompleteData.audioUrl) ? 'Remove from favourites' : 'Add to favourites',
+                    width: double.infinity,
+                    height: getScreenHeight() * 0.08,
+                    buttonColor: Colors.transparent,
+                    setBorderRadius: false,
+                  ),
+                  CustomButton(
+                    onTapped: (){
+                      if(mounted){
+                        Navigator.of(bottomSheetContext).pop();
+                      }
+                      runDelay(() => displayAddToPlaylistDialog(), navigationDelayDuration);
+                    },
+                    buttonText: 'Add to playlist',
+                    width: double.infinity,
+                    height: getScreenHeight() * 0.08,
+                    buttonColor: Colors.transparent,
+                    setBorderRadius: false,
+                  ),
+                  widget.playlistSongsData != null ? 
+                    CustomButton(
+                      onTapped: (){
+                        if(mounted){
+                          Navigator.of(bottomSheetContext).pop();
+                        }
+                        runDelay(() => removeFromPlaylist(), navigationDelayDuration);
+                      },
+                      buttonText: 'Remove from playlist',
+                      width: double.infinity,
+                      height: getScreenHeight() * 0.08,
+                      buttonColor: Colors.transparent,
+                      setBorderRadius: false
                     )
-                  ) ,
-                  widget.playlistSongsData != null ? Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: (){},
-                      splashFactory: InkRipple.splashFactory,
-                      child: CustomButton(
-                        onTapped: (){
-                          if(mounted){
-                            Navigator.of(bottomSheetContext).pop();
-                          }
-                          runDelay(() => removeFromPlaylist(), navigationDelayDuration);
-                        },
-                        buttonText: 'Remove from playlist',
-                        width: double.infinity,
-                        height: getScreenHeight() * 0.075,
-                        buttonColor: Colors.transparent,
-                        setBorderRadius: false
-                      )
-                    )
-                  ) : Container(),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: (){},
-                      splashFactory: InkRipple.splashFactory,
-                      child: CustomButton(
-                        onTapped: (){
-                          if(mounted){
-                            Navigator.of(bottomSheetContext).pop();
-                          }
-                          runDelay(() => deleteAudioFile(audioCompleteData), navigationDelayDuration);
-                        },
-                        buttonText: 'Delete',
-                        width: double.infinity,
-                        height: getScreenHeight() * 0.075,
-                        buttonColor: Colors.transparent,
-                        setBorderRadius: false,
-                      )
-                    )
-                  ) ,
+                  : Container(),
+                  CustomButton(
+                    onTapped: (){
+                      if(mounted){
+                        Navigator.of(bottomSheetContext).pop();
+                      }
+                      runDelay(() => deleteAudioFile(audioCompleteData), navigationDelayDuration);
+                    },
+                    buttonText: 'Delete',
+                    width: double.infinity,
+                    height: getScreenHeight() * 0.08,
+                    buttonColor: Colors.transparent,
+                    setBorderRadius: false,
+                  ),
                 ]
               )
             )
@@ -206,45 +191,31 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
                   color: Colors.grey,
                   height: 1.5
                 ),
-                Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: (){},
-                    splashFactory: InkRipple.splashFactory,
-                    child: CustomButton(
-                      onTapped: (){
-                        if(mounted){
-                          Navigator.of(bottomSheetContext).pop();
-                        }
-                        runDelay(() => displayCreatePlaylistDialog(), navigationDelayDuration);
-                      },
-                      buttonText: 'Create new playlist',
-                      width: double.infinity,
-                      height: getScreenHeight() * 0.075,
-                      buttonColor: Colors.transparent,
-                      setBorderRadius: false,
-                    )
-                  )
+                CustomButton(
+                  onTapped: (){
+                    if(mounted){
+                      Navigator.of(bottomSheetContext).pop();
+                    }
+                    runDelay(() => displayCreatePlaylistDialog(), navigationDelayDuration);
+                  },
+                  buttonText: 'Create new playlist',
+                  width: double.infinity,
+                  height: getScreenHeight() * 0.08,
+                  buttonColor: Colors.transparent,
+                  setBorderRadius: false,
                 ),
-                Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: (){},
-                    splashFactory: InkRipple.splashFactory,
-                    child: CustomButton(
-                      onTapped: (){
-                        if(mounted){
-                          Navigator.of(bottomSheetContext).pop();
-                        }
-                        runDelay(() => displaySelectExistingPlaylistDialog(), navigationDelayDuration);
-                      },
-                      buttonText: 'Select existing playlist',
-                      width: double.infinity,
-                      height: getScreenHeight() * 0.075,
-                      buttonColor: Colors.transparent,
-                      setBorderRadius: false,
-                    )
-                  )
+                CustomButton(
+                  onTapped: (){
+                    if(mounted){
+                      Navigator.of(bottomSheetContext).pop();
+                    }
+                    runDelay(() => displaySelectExistingPlaylistDialog(), navigationDelayDuration);
+                  },
+                  buttonText: 'Select existing playlist',
+                  width: double.infinity,
+                  height: getScreenHeight() * 0.08,
+                  buttonColor: Colors.transparent,
+                  setBorderRadius: false,
                 ),
               ],
             )
@@ -276,26 +247,19 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
                   playlistList[i].songsList.contains(audioCompleteData.audioUrl) ?
                     const Material(color: Colors.transparent)
                   :
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: (){},
-                        splashFactory: InkRipple.splashFactory,
-                        child: CustomButton(
-                          onTapped: (){
-                            if(mounted){
-                              Navigator.of(bottomSheetContext).pop();
-                            }
-                            runDelay(() => addToPlaylist(playlistList[i].playlistID), navigationDelayDuration);
-                          },
-                          buttonText: playlistList[i].playlistName,
-                          width: double.infinity,
-                          height: getScreenHeight() * 0.075,
-                          buttonColor: Colors.transparent,
-                          setBorderRadius: false,
-                        )
-                      )
-                    ) 
+                    CustomButton(
+                      onTapped: (){
+                        if(mounted){
+                          Navigator.of(bottomSheetContext).pop();
+                        }
+                        runDelay(() => addToPlaylist(playlistList[i].playlistID), navigationDelayDuration);
+                      },
+                      buttonText: playlistList[i].playlistName,
+                      width: double.infinity,
+                      height: getScreenHeight() * 0.08,
+                      buttonColor: Colors.transparent,
+                      setBorderRadius: false,
+                    )
               ],
             )
           );
@@ -326,15 +290,11 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
                       height: 1.5
                     ),
                     SizedBox(
-                      height: getScreenHeight() * 0.075,
+                      height: getScreenHeight() * 0.08,
                       child: TextField(
                         maxLength: defaultTextFieldLimit,
                         controller: inputController,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.only(left: getScreenWidth() * 0.035),
-                          hintText: 'Enter playlist name',
-                          counterText: ''
-                        ),
+                        decoration: generateFormTextFieldDecoration('playlist name', FontAwesomeIcons.list),
                         onChanged: (text){
                           setState((){
                             verifyInput = text.isNotEmpty;

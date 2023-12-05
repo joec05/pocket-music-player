@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:music_player_app/TagEditor.dart';
 import 'package:music_player_app/appdata/GlobalLibrary.dart';
 import 'package:music_player_app/class/AudioCompleteDataClass.dart';
@@ -182,116 +183,105 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
     List<String> favouritesList = appStateClass.favouritesList;
     if(mounted){
       showModalBottomSheet(
+        backgroundColor: Colors.transparent,
         context: context,
         builder: (BuildContext bottomSheetContext) {
           return SingleChildScrollView(
             child: Container(
-              padding: EdgeInsets.zero,
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 56, 54, 54),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                  topRight: Radius.circular(10.0)
+                )
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: [     
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: (){},
-                      splashFactory: InkRipple.splashFactory,
-                      child: CustomButton(
-                        onTapped: (){
-                          if(mounted){
-                            Navigator.of(bottomSheetContext).pop();
-                          }
-                          runDelay((){
-                            if(mounted){
-                              Navigator.push(
-                                context,
-                                SliderRightToLeftRoute(
-                                  page: TagEditorWidget(audioCompleteData: audioCompleteData.value!)
-                                )
-                              );
-                            }
-                          }, navigationDelayDuration);
-                        },
-                        buttonText: 'Edit tags',
-                        width: double.infinity,
-                        height: getScreenHeight() * 0.075,
-                        buttonColor: Colors.transparent,
-                        setBorderRadius: false,
-                      )
+                children: [
+                  SizedBox(height: getScreenHeight() * 0.015),
+                  Container(
+                    height: getScreenHeight() * 0.01,
+                    width: getScreenWidth() * 0.15,
+                    decoration: const BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.all(Radius.circular(10))
                     )
                   ),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: (){},
-                      splashFactory: InkRipple.splashFactory,
-                      child: CustomButton(
-                        onTapped: (){
-                          if(mounted){
-                            Navigator.of(bottomSheetContext).pop();
-                          }
-                          runDelay((){
-                            if(mounted && mounted){
-                              if(favouritesList.contains(audioCompleteData.value!.audioUrl)){
-                                favouritesList.remove(audioCompleteData.value!.audioUrl);
-                              }else{
-                                favouritesList.insert(0, audioCompleteData.value!.audioUrl);
-                              }
-                              appStateClass.setFavouritesList(favouritesList);
-                            }
-                          }, navigationDelayDuration);
-                        },
-                        buttonText: favouritesList.contains(audioCompleteData.value!.audioUrl) ? 'Remove from favourites' : 'Add to favourites',
-                        width: double.infinity,
-                        height: getScreenHeight() * 0.075,
-                        buttonColor: Colors.transparent,
-                        setBorderRadius: false,
-                      )
-                    )
+                  SizedBox(height: getScreenHeight() * 0.015),
+                  CustomButton(
+                    onTapped: (){
+                      if(mounted){
+                        Navigator.of(bottomSheetContext).pop();
+                      }
+                      runDelay((){
+                        if(mounted){
+                          Navigator.push(
+                            context,
+                            SliderRightToLeftRoute(
+                              page: TagEditorWidget(audioCompleteData: audioCompleteData.value!)
+                            )
+                          );
+                        }
+                      }, navigationDelayDuration);
+                    },
+                    buttonText: 'Edit tags',
+                    width: double.infinity,
+                    height: getScreenHeight() * 0.08,
+                    buttonColor: Colors.transparent,
+                    setBorderRadius: false,
                   ),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: (){},
-                      splashFactory: InkRipple.splashFactory,
-                      child: CustomButton(
-                        onTapped: (){
-                          if(mounted){
-                            Navigator.of(bottomSheetContext).pop();
+                  CustomButton(
+                    onTapped: (){
+                      if(mounted){
+                        Navigator.of(bottomSheetContext).pop();
+                      }
+                      runDelay((){
+                        if(mounted && mounted){
+                          if(favouritesList.contains(audioCompleteData.value!.audioUrl)){
+                            favouritesList.remove(audioCompleteData.value!.audioUrl);
+                          }else{
+                            favouritesList.insert(0, audioCompleteData.value!.audioUrl);
                           }
-                          runDelay(() => displayAddToPlaylistDialog(), navigationDelayDuration);
-                        },
-                        buttonText: 'Add to playlist',
-                        width: double.infinity,
-                        height: getScreenHeight() * 0.075,
-                        buttonColor: Colors.transparent,
-                        setBorderRadius: false,
-                      )
-                    )
+                          appStateClass.setFavouritesList(favouritesList);
+                        }
+                      }, navigationDelayDuration);
+                    },
+                    buttonText: favouritesList.contains(audioCompleteData.value!.audioUrl) ? 'Remove from favourites' : 'Add to favourites',
+                    width: double.infinity,
+                    height: getScreenHeight() * 0.08,
+                    buttonColor: Colors.transparent,
+                    setBorderRadius: false,
                   ),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: (){},
-                      splashFactory: InkRipple.splashFactory,
-                      child: CustomButton(
-                        onTapped: (){
-                          if(mounted){
-                            Navigator.of(bottomSheetContext).pop();
-                          }
-                          runDelay((){
-                            if(mounted){
-                              deleteAudioFile(audioCompleteData.value!);
-                            }
-                          }, navigationDelayDuration);
-                        },
-                        buttonText: 'Delete',
-                        width: double.infinity,
-                        height: getScreenHeight() * 0.075,
-                        buttonColor: Colors.transparent,
-                        setBorderRadius: false,
-                      )
-                    )
-                  ) ,
+                  CustomButton(
+                    onTapped: (){
+                      if(mounted){
+                        Navigator.of(bottomSheetContext).pop();
+                      }
+                      runDelay(() => displayAddToPlaylistDialog(), navigationDelayDuration);
+                    },
+                    buttonText: 'Add to playlist',
+                    width: double.infinity,
+                    height: getScreenHeight() * 0.08,
+                    buttonColor: Colors.transparent,
+                    setBorderRadius: false,
+                  ),
+                  CustomButton(
+                    onTapped: (){
+                      if(mounted){
+                        Navigator.of(bottomSheetContext).pop();
+                      }
+                      runDelay((){
+                        if(mounted){
+                          deleteAudioFile(audioCompleteData.value!);
+                        }
+                      }, navigationDelayDuration);
+                    },
+                    buttonText: 'Delete',
+                    width: double.infinity,
+                    height: getScreenHeight() * 0.08,
+                    buttonColor: Colors.transparent,
+                    setBorderRadius: false,
+                  ),
                 ]
               )
             )
@@ -318,45 +308,31 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
                   color: Colors.grey,
                   height: 1.5
                 ),
-                Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: (){},
-                    splashFactory: InkRipple.splashFactory,
-                    child: CustomButton(
-                      onTapped: (){
-                        if(mounted){
-                          Navigator.of(bottomSheetContext).pop();
-                        }
-                        runDelay(() => displayCreatePlaylistDialog(), navigationDelayDuration);
-                      },
-                      buttonText: 'Create new playlist',
-                      width: double.infinity,
-                      height: getScreenHeight() * 0.075,
-                      buttonColor: Colors.transparent,
-                      setBorderRadius: false,
-                    )
-                  )
+                CustomButton(
+                  onTapped: (){
+                    if(mounted){
+                      Navigator.of(bottomSheetContext).pop();
+                    }
+                    runDelay(() => displayCreatePlaylistDialog(), navigationDelayDuration);
+                  },
+                  buttonText: 'Create new playlist',
+                  width: double.infinity,
+                  height: getScreenHeight() * 0.08,
+                  buttonColor: Colors.transparent,
+                  setBorderRadius: false,
                 ),
-                Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: (){},
-                    splashFactory: InkRipple.splashFactory,
-                    child: CustomButton(
-                      onTapped: (){
-                        if(mounted){
-                          Navigator.of(bottomSheetContext).pop();
-                        }
-                        runDelay(() => displaySelectExistingPlaylistDialog(), navigationDelayDuration);
-                      },
-                      buttonText: 'Select existing playlist',
-                      width: double.infinity,
-                      height: getScreenHeight() * 0.075,
-                      buttonColor: Colors.transparent,
-                      setBorderRadius: false,
-                    )
-                  )
+                CustomButton(
+                  onTapped: (){
+                    if(mounted){
+                      Navigator.of(bottomSheetContext).pop();
+                    }
+                    runDelay(() => displaySelectExistingPlaylistDialog(), navigationDelayDuration);
+                  },
+                  buttonText: 'Select existing playlist',
+                  width: double.infinity,
+                  height: getScreenHeight() * 0.08,
+                  buttonColor: Colors.transparent,
+                  setBorderRadius: false,
                 ),
               ],
             )
@@ -388,26 +364,19 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
                   playlistList[i].songsList.contains(audioCompleteData.value!.audioUrl) ?
                     const Material(color: Colors.transparent)
                   :
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: (){},
-                        splashFactory: InkRipple.splashFactory,
-                        child: CustomButton(
-                          onTapped: (){
-                            if(mounted){
-                              Navigator.of(bottomSheetContext).pop();
-                              runDelay(() => addToPlaylist(playlistList[i].playlistID), navigationDelayDuration);
-                            }
-                          },
-                          buttonText: playlistList[i].playlistName,
-                          width: double.infinity,
-                          height: getScreenHeight() * 0.075,
-                          buttonColor: Colors.transparent,
-                          setBorderRadius: false,
-                        )
-                      )
-                    ) 
+                    CustomButton(
+                      onTapped: (){
+                        if(mounted){
+                          Navigator.of(bottomSheetContext).pop();
+                          runDelay(() => addToPlaylist(playlistList[i].playlistID), navigationDelayDuration);
+                        }
+                      },
+                      buttonText: playlistList[i].playlistName,
+                      width: double.infinity,
+                      height: getScreenHeight() * 0.08,
+                      buttonColor: Colors.transparent,
+                      setBorderRadius: false,
+                    )
               ],
             )
           );
@@ -438,15 +407,11 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
                       height: 1.5
                     ),
                     SizedBox(
-                      height: getScreenHeight() * 0.075,
+                      height: getScreenHeight() * 0.08,
                       child: TextField(
                         maxLength: defaultTextFieldLimit,
                         controller: inputController,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.only(left: getScreenWidth() * 0.035),
-                          hintText: 'Enter playlist name',
-                          counterText: ''
-                        ),
+                        decoration: generateFormTextFieldDecoration('playlist name', FontAwesomeIcons.list),
                         onChanged: (text){
                           setState((){
                             verifyInput = text.isNotEmpty;

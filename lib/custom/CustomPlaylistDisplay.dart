@@ -43,63 +43,66 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
   void displayOptionsBottomSheet(){
     if(mounted){
       showModalBottomSheet(
+        backgroundColor: Colors.transparent,
         context: context,
         builder: (BuildContext bottomSheetContext) {
           return SingleChildScrollView(
             child: Container(
-              padding: EdgeInsets.zero,
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 56, 54, 54),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                  topRight: Radius.circular(10.0)
+                )
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: [   
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: (){},
-                      splashFactory: InkRipple.splashFactory,
-                      child: CustomButton(
-                        onTapped: (){
-                          if(mounted){
-                            Navigator.of(bottomSheetContext).pop();
-                          }
-                          runDelay(() async{
-                            if(mounted){
-                              var updatedPlaylist = await Navigator.push(
-                                context,
-                                SliderRightToLeftRoute(page: PlaylistEditorWidget(playlistSongsData: playlistSongsData))
-                              );
-                              if(updatedPlaylist != null){
-                                appStateClass.setPlaylistList(playlistSongsData.playlistID, updatedPlaylist);
-                              }
-                            }
-                          }, navigationDelayDuration);
-                        },
-                        buttonText: 'Edit playlist',
-                        width: double.infinity,
-                        height: getScreenHeight() * 0.075,
-                        buttonColor: Colors.transparent,
-                        setBorderRadius: false,
-                      )
+                children: [
+                  SizedBox(height: getScreenHeight() * 0.015),
+                  Container(
+                    height: getScreenHeight() * 0.01,
+                    width: getScreenWidth() * 0.15,
+                    decoration: const BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.all(Radius.circular(10))
                     )
-                  ),  
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: (){},
-                      splashFactory: InkRipple.splashFactory,
-                      child: CustomButton(
-                        onTapped: (){
-                          if(mounted){
-                            Navigator.of(bottomSheetContext).pop();
+                  ),
+                  SizedBox(height: getScreenHeight() * 0.015), 
+                  CustomButton(
+                    onTapped: (){
+                      if(mounted){
+                        Navigator.of(bottomSheetContext).pop();
+                      }
+                      runDelay(() async{
+                        if(mounted){
+                          var updatedPlaylist = await Navigator.push(
+                            context,
+                            SliderRightToLeftRoute(page: PlaylistEditorWidget(playlistSongsData: playlistSongsData))
+                          );
+                          if(updatedPlaylist != null){
+                            appStateClass.setPlaylistList(playlistSongsData.playlistID, updatedPlaylist);
                           }
-                          runDelay(() => deletePlaylist(), navigationDelayDuration);
-                        },
-                        buttonText: 'Delete playlist',
-                        width: double.infinity,
-                        height: getScreenHeight() * 0.075,
-                        buttonColor: Colors.transparent,
-                        setBorderRadius: false,
-                      )
-                    )
+                        }
+                      }, navigationDelayDuration);
+                    },
+                    buttonText: 'Edit playlist',
+                    width: double.infinity,
+                    height: getScreenHeight() * 0.08,
+                    buttonColor: Colors.transparent,
+                    setBorderRadius: false,
+                  ),
+                  CustomButton(
+                    onTapped: (){
+                      if(mounted){
+                        Navigator.of(bottomSheetContext).pop();
+                      }
+                      runDelay(() => deletePlaylist(), navigationDelayDuration);
+                    },
+                    buttonText: 'Delete playlist',
+                    width: double.infinity,
+                    height: getScreenHeight() * 0.08,
+                    buttonColor: Colors.transparent,
+                    setBorderRadius: false,
                   ),
                 ]
               )
@@ -169,7 +172,7 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
                               ],
                             ),
                             SizedBox(height: getScreenHeight() * 0.005),
-                            Text('${playlistSongsData.songsList.length} songs', style: const TextStyle(color: Colors.grey, fontSize: 14),)
+                            Text(playlistSongsData.songsList.length == 1 ? '1 song' : '${playlistSongsData.songsList.length} songs', style: const TextStyle(color: Colors.grey, fontSize: 14),)
                           ]
                         ),
                       ),

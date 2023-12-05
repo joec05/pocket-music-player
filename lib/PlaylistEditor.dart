@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:music_player_app/class/ImageDataClass.dart';
 import 'package:music_player_app/class/PlaylistSongsClass.dart';
@@ -161,7 +162,7 @@ class _PlaylistEditorWidgetState extends State<_PlaylistEditorWidgetStateful> {
                   ),
                   SizedBox(height: defaultTextFieldVerticalMargin),
                   TextField(
-                    decoration: generateFormTextFieldDecoration('playlist name'),
+                    decoration: generateFormTextFieldDecoration('playlist name', FontAwesomeIcons.list),
                     controller: playlistNameController,
                     maxLength: defaultTextFieldLimit,
                   ),

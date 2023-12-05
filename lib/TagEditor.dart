@@ -2,6 +2,7 @@
 
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:music_player_app/class/ImageDataClass.dart';
 import 'package:music_player_app/custom/CustomButton.dart';
@@ -275,25 +276,25 @@ class _TagEditorWidgetState extends State<_TagEditorWidgetStateful> {
                   ),
                   SizedBox(height: defaultTextFieldVerticalMargin),
                   TextField(
-                    decoration: generateFormTextFieldDecoration('title'),
+                    decoration: generateFormTextFieldDecoration('title', FontAwesomeIcons.music),
                     controller: titleController,
                     maxLength: defaultTextFieldLimit,
                   ),
                   SizedBox(height: defaultTextFieldVerticalMargin),
                   TextField(
-                    decoration: generateFormTextFieldDecoration('artist'),
+                    decoration: generateFormTextFieldDecoration('artist', FontAwesomeIcons.user),
                     controller: artistController,
                     maxLength: defaultTextFieldLimit,
                   ),
                   SizedBox(height: defaultTextFieldVerticalMargin),
                   TextField(
                     controller: albumController,
-                    decoration: generateFormTextFieldDecoration('album name'),
+                    decoration: generateFormTextFieldDecoration('album name', FontAwesomeIcons.recordVinyl),
                     maxLength: defaultTextFieldLimit,
                   ),
                   SizedBox(height: defaultTextFieldVerticalMargin),
                   TextField(
-                    decoration: generateFormTextFieldDecoration('album artist'),
+                    decoration: generateFormTextFieldDecoration('album artist', FontAwesomeIcons.user),
                     controller: albumArtistController,
                     maxLength: defaultTextFieldLimit,
                   ),

@@ -37,21 +37,16 @@ BoxDecoration defaultInitialScreenDecoration = const BoxDecoration(
 
 Color defaultCustomButtonColor = const Color.fromARGB(255, 66, 63, 63);
 
-InputDecoration generateFormTextFieldDecoration(content){
-  OutlineInputBorder textFieldBorder = const OutlineInputBorder(
-    borderSide: BorderSide(width: 2, color: Colors.black),
-  );
-
-  OutlineInputBorder focusedTextFieldBorder = const OutlineInputBorder(
-    borderSide: BorderSide(width: 2, color: Colors.brown),
-  );
+InputDecoration generateFormTextFieldDecoration(content, prefixIcon){
   return InputDecoration(
     counterText: "",
-    contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.01, horizontal: getScreenWidth() * 0.02),
-    focusedBorder: focusedTextFieldBorder,
-    enabledBorder: textFieldBorder,
-    disabledBorder: textFieldBorder,
-    hintText: 'Enter $content'
+    contentPadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.0225, horizontal: getScreenWidth() * 0.02),
+    fillColor: const Color.fromARGB(255, 70, 64, 64),
+    filled: true,
+    border: InputBorder.none,
+    hintText: 'Enter $content',
+    prefixIcon: Icon(prefixIcon, size: 18),
+    prefixIconColor: Colors.blueGrey,
   );
 }
 
