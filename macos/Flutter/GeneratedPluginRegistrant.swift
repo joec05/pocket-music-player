@@ -8,7 +8,7 @@ import Foundation
 import audio_service
 import audio_session
 import device_info_plus
-import ffmpeg_kit_flutter_audio
+import ffmpeg_kit_flutter_min
 import file_selector_macos
 import just_audio
 import path_provider_foundation

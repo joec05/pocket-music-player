@@ -2,9 +2,9 @@
 
 import 'dart:convert';
 import 'dart:io';
-import 'package:ffmpeg_kit_flutter_audio/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter_audio/ffprobe_kit.dart';
-import 'package:ffmpeg_kit_flutter_audio/ffprobe_session.dart';
+import 'package:ffmpeg_kit_flutter_min/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter_min/ffprobe_kit.dart';
+import 'package:ffmpeg_kit_flutter_min/ffprobe_session.dart';
 import 'package:http/http.dart' as http;
 import 'package:music_player_app/class/AudioListenCountClass.dart';
 import 'package:music_player_app/class/ImageDataClass.dart';

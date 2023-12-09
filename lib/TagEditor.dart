@@ -2,6 +2,8 @@
 
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:ffmpeg_kit_flutter_min/ffmpeg_kit_config.dart';
+import 'package:ffmpeg_kit_flutter_min/return_code.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:music_player_app/class/ImageDataClass.dart';
@@ -10,10 +12,7 @@ import 'package:music_player_app/streams/EditAudioMetadataStreamClass.dart';
 import 'package:music_player_app/styles/AppStyles.dart';
 import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:ffmpeg_kit_flutter_audio/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter_audio/ffmpeg_kit_config.dart';
-import 'package:ffmpeg_kit_flutter_audio/log.dart';
-import 'package:ffmpeg_kit_flutter_audio/return_code.dart';
+import 'package:ffmpeg_kit_flutter_min/ffmpeg_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:music_player_app/appdata/GlobalLibrary.dart';
 import 'package:music_player_app/class/AudioCompleteDataClass.dart';
@@ -217,7 +216,7 @@ class _TagEditorWidgetState extends State<_TagEditorWidgetStateful> {
                   );
                 }
               }
-            }, (Log log) {},
+            }
           );
         }else{
           if(mounted){
