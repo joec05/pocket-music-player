@@ -22,6 +22,10 @@ A simple music player app made with Flutter.
 
 * Display most played music
 
+## Download app
+
+[![Download Music Player App](https://stc.utdstc.com/img/mediakit/download-gio-big.png)](https://music-player-app.en.uptodown.com/android "Download Music Player App")
+
 ## Music player app in display  
 
 ![Music player app](https://github.com/joec05/files/blob/main/music_player_app/app_demo_1.png?raw=true "Music player app demo image 1")
