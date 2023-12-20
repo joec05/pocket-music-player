@@ -51,6 +51,8 @@ dependencies:
   device_info_plus: 9.1.0
   flutter_launcher_icons: 0.13.1
   ffmpeg_kit_flutter_min: 6.0.3-LTS
+  rxdart: ^0.27.7
+  path: ^1.8.3
 
 dev_dependencies:
   flutter_test:

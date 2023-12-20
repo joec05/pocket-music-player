@@ -1,9 +1,9 @@
-import 'package:music_player_app/class/AudioListenCountNotifier.dart';
-import 'package:music_player_app/class/ImageDataClass.dart';
-import 'package:music_player_app/class/PlaylistSongsClass.dart';
-import 'package:music_player_app/service/AudioHandler.dart';
-import 'package:music_player_app/streams/UpdateFavouriteStreamClass.dart';
-import 'package:music_player_app/streams/UpdatePlaylistStreamClass.dart';
+import 'package:music_player_app/class/audio_listen_count_notifier.dart';
+import 'package:music_player_app/class/image_data_class.dart';
+import 'package:music_player_app/class/playlist_songs_class.dart';
+import 'package:music_player_app/service/audio_handler.dart';
+import 'package:music_player_app/streams/update_favourite_stream_class.dart';
+import 'package:music_player_app/streams/update_playlist_stream_class.dart';
 
 class AppStateClass{
   Map<String, AudioListenCountNotifier> audioListenCount;

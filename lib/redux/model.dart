@@ -1,5 +1,5 @@
-import 'package:music_player_app/class/AudioCompleteDataNotifier.dart';
-import 'package:music_player_app/redux/reduxLibrary.dart';
+import 'package:music_player_app/class/audio_complete_data_notifier.dart';
+import 'package:music_player_app/redux/redux_library.dart';
 
 class ViewModel {
   Map<String, AudioCompleteDataNotifier> allAudiosList = {};

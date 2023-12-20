@@ -1,10 +1,8 @@
-// ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
-import 'package:music_player_app/MainPage.dart';
-import 'package:music_player_app/observer/GlobalObserver.dart';
-import 'package:music_player_app/redux/reduxLibrary.dart';
-import 'package:music_player_app/sqflite/localDatabaseConfiguration.dart';
+import 'package:music_player_app/main_page.dart';
+import 'package:music_player_app/observer/global_observer.dart';
+import 'package:music_player_app/redux/redux_library.dart';
+import 'package:music_player_app/sqflite/local_db_configuration.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,10 +21,10 @@ class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  _MyAppState createState() => _MyAppState();
+  MyAppState createState() => MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
