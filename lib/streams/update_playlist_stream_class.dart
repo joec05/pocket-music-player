@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:music_player_app/class/playlist_songs_class.dart';
+import 'package:music_player_app/global_files.dart';
 
 class UpdatePlaylistStreamControllerClass{
   final String playlistID;

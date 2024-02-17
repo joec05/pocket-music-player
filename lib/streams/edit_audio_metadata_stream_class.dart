@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:music_player_app/class/audio_complete_data_class.dart';
+import 'package:music_player_app/global_files.dart';
 
 class EditAudioMetadataStreamControllerClass{
   final AudioCompleteDataClass newAudioData;

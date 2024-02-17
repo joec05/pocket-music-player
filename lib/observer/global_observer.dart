@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:music_player_app/sqflite/local_db_configuration.dart';
-import 'package:music_player_app/state/main.dart';
+import 'package:music_player_app/global_files.dart';
 
 class GlobalObserver extends WidgetsBindingObserver{
   @override
@@ -19,15 +18,15 @@ class GlobalObserver extends WidgetsBindingObserver{
         break;
       case AppLifecycleState.paused:
         debugPrint('appLifeCycleState paused');
-        await LocalDatabase().replaceAudioFavouritesData(appStateClass.favouritesList);
-        await LocalDatabase().replaceAudioPlaylistsData(appStateClass.playlistList);
-        await LocalDatabase().replaceAudioListenCountData(appStateClass.audioListenCount);
+        await LocalDatabase().replaceAudioFavouritesData(appStateRepo.favouritesList);
+        await LocalDatabase().replaceAudioPlaylistsData(appStateRepo.playlistList);
+        await LocalDatabase().replaceAudioListenCountData(appStateRepo.audioListenCount);
         break;
       case AppLifecycleState.detached:
         debugPrint('appLifeCycleState detached');
-        await LocalDatabase().replaceAudioFavouritesData(appStateClass.favouritesList);
-        await LocalDatabase().replaceAudioPlaylistsData(appStateClass.playlistList);
-        await LocalDatabase().replaceAudioListenCountData(appStateClass.audioListenCount);
+        await LocalDatabase().replaceAudioFavouritesData(appStateRepo.favouritesList);
+        await LocalDatabase().replaceAudioPlaylistsData(appStateRepo.playlistList);
+        await LocalDatabase().replaceAudioListenCountData(appStateRepo.audioListenCount);
         break;
       case AppLifecycleState.hidden:
         break;

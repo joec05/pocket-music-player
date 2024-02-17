@@ -1,0 +1,81 @@
+import 'package:flutter/material.dart';
+import 'package:music_player_app/global_files.dart';
+
+class DisplayMostPlayedClassWidget extends StatelessWidget {
+  const DisplayMostPlayedClassWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const _DisplayMostPlayedClassWidgetStateful();
+  }
+}
+
+class _DisplayMostPlayedClassWidgetStateful extends StatefulWidget {
+  const _DisplayMostPlayedClassWidgetStateful();
+
+  @override
+  State<_DisplayMostPlayedClassWidgetStateful> createState() => _DisplayMostPlayedClassWidgetState();
+}
+
+class _DisplayMostPlayedClassWidgetState extends State<_DisplayMostPlayedClassWidgetStateful> {
+  late MostPlayedSongsController controller;
+
+  @override
+  void initState(){
+    super.initState();
+    controller = MostPlayedSongsController(context);
+    controller.initializeController();
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    controller.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: defaultAppBarDecoration
+        ),
+        title: const Text('Most played'), titleSpacing: defaultAppBarTitleSpacingWithBackBtn,
+      ),
+      body: Center(
+        child: ValueListenableBuilder(
+          valueListenable: controller.mostPlayedSongsData,
+          builder: (context, songsList, child) {
+            return ListView.builder(
+              shrinkWrap: false,
+              key: UniqueKey(),
+              scrollDirection: Axis.vertical,
+              primary: false,
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: songsList.length,
+              itemBuilder: (context, index){
+                if(appStateRepo.allAudiosList[songsList[index].audioUrl] == null){
+                  return Container();
+                }
+                return ValueListenableBuilder(
+                  valueListenable: appStateRepo.allAudiosList[songsList[index].audioUrl]!.notifier, 
+                  builder: (context, audioCompleteData, child){
+                    return CustomAudioPlayerWidget(
+                      audioCompleteData: audioCompleteData,
+                      key: UniqueKey(),
+                      directorySongsList: songsList.map((e) => e.audioUrl).toList(),
+                      playlistSongsData: null
+                    );
+                  }
+                );
+              }
+            );
+          }
+        )
+      ),
+      bottomNavigationBar: CustomCurrentlyPlayingBottomWidget(key: UniqueKey()),
+    );
+  }
+}
+
+

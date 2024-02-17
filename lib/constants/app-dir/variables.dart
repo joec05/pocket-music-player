@@ -1,0 +1,1 @@
+String defaultDirectory = '/storage/emulated/0';

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:music_player_app/main_page.dart';
-import 'package:music_player_app/observer/global_observer.dart';
-import 'package:music_player_app/redux/redux_library.dart';
-import 'package:music_player_app/sqflite/local_db_configuration.dart';
+import 'package:music_player_app/global_files.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,10 +7,7 @@ void main() async{
   GlobalObserver globalObserver = GlobalObserver();
   WidgetsBinding.instance.addObserver(globalObserver);
   runApp(
-    StoreProvider(
-      store: store, 
-      child: const MyApp()
-    )
+    const MyApp()
   );
 }
 
@@ -46,7 +40,7 @@ class MyAppState extends State<MyApp> {
             return null;
         }
       },
-      theme: ThemeData.dark()
+      theme: globalTheme.dark
     );
   }
 }

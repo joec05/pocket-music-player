@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:music_player_app/appdata/global_library.dart';
+import 'package:music_player_app/global_files.dart';
 
 double defaultHorizontalPadding = getScreenWidth() * 0.045;
 

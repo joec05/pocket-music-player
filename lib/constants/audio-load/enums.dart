@@ -1,0 +1,3 @@
+enum LoadType{
+  initial, scan
+}

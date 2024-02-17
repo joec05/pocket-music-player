@@ -1,0 +1,1 @@
+int defaultTextFieldLimit = 30;
