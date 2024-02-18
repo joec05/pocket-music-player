@@ -27,6 +27,13 @@ class SuccessLabels {
   final deleteSong = "Successfully deleted your song";
 }
 
+class WarningLabels {
+  
+  final metadataPermission = "Your permission is needed to update your song's metadata information!!!";
+
+}
+
+final tWarning = WarningLabels();
 
 final tErr = ErrorLabels();
 

@@ -10,7 +10,7 @@ class MainPageController {
   ValueNotifier<int> selectedIndexValue = ValueNotifier(0);
   final PageController pageController = PageController(initialPage: 0, keepPage: true);
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  ValueNotifier<bool> isLoaded = ValueNotifier(true);
+  ValueNotifier<bool> isLoaded = ValueNotifier(false);
   ValueNotifier<List<Widget>> widgetOptions = ValueNotifier(<Widget>[]);
   ValueNotifier<LoadType> loadType = ValueNotifier(LoadType.initial);
 

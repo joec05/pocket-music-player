@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:ffmpeg_kit_flutter_audio/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter_audio/ffprobe_kit.dart';
 import 'package:ffmpeg_kit_flutter_audio/ffprobe_session.dart';
+import 'package:permission_handler/permission_handler.dart' as ph;
 
 /// Controller used for handling FFmpeg commands
 class FFmpegController {
@@ -100,31 +101,50 @@ class FFmpegController {
             final returnCode = await session.getReturnCode();
             if(mounted){
               if (ReturnCode.isSuccess(returnCode)) {
-                handler.displaySnackbar(
-                  context, 
-                  SnackbarType.successful, 
-                  tSuccess.modifyTags
-                );
-                ImageDataClass imageData = imageUrl.isNotEmpty ? ImageDataClass(imageUrl, File(imageUrl).readAsBytesSync()) : ImageDataClass('', Uint8List.fromList([]));
-                if(await File(outputFilePath).exists()){
-                  await File(outputFilePath).copy(audioCompleteData.audioUrl);
+                bool permissionIsGranted = false;
+                ph.Permission? permission = ph.Permission.manageExternalStorage;
+                permissionIsGranted = await permission.isGranted;
+                if(!permissionIsGranted){
+                  await permission.request();
+                  permissionIsGranted = await permission.isGranted;
                 }
-                AudioMetadataInfoClass x = audioCompleteData.audioMetadataInfo;
-                AudioCompleteDataClass y = AudioCompleteDataClass(
-                  audioCompleteData.audioUrl, AudioMetadataInfoClass(
-                    x.fileName, x.duration, title,
-                    artist.isEmpty ? null : artist, 
-                    album.isEmpty ? null : album, 
-                    albumArtist.isEmpty ? null : albumArtist, 
-                    imageData
-                  ), audioCompleteData.playerState, audioCompleteData.deleted
-                );
-                appStateRepo.allAudiosList[audioCompleteData.audioUrl]!.notifier.value = y;
-                EditAudioMetadataStreamClass().emitData(
-                  EditAudioMetadataStreamControllerClass(
-                    y, audioCompleteData
-                  )
-                );
+                if(permissionIsGranted){
+                  ImageDataClass imageData = imageUrl.isNotEmpty ? ImageDataClass(imageUrl, File(imageUrl).readAsBytesSync()) : ImageDataClass('', Uint8List.fromList([]));
+                  if(await File(outputFilePath).exists()){
+                    await File(outputFilePath).copy(audioCompleteData.audioUrl);
+                  }
+                  AudioMetadataInfoClass x = audioCompleteData.audioMetadataInfo;
+                  AudioCompleteDataClass y = AudioCompleteDataClass(
+                    audioCompleteData.audioUrl, AudioMetadataInfoClass(
+                      x.fileName, x.duration, title,
+                      artist.isEmpty ? null : artist, 
+                      album.isEmpty ? null : album, 
+                      albumArtist.isEmpty ? null : albumArtist, 
+                      imageData
+                    ), audioCompleteData.playerState, audioCompleteData.deleted
+                  );
+                  appStateRepo.allAudiosList[audioCompleteData.audioUrl]!.notifier.value = y;
+                  EditAudioMetadataStreamClass().emitData(
+                    EditAudioMetadataStreamControllerClass(
+                      y, audioCompleteData
+                    )
+                  );
+                  if(context.mounted) {
+                    handler.displaySnackbar(
+                      context, 
+                      SnackbarType.successful, 
+                      tSuccess.modifyTags
+                    );
+                  }
+                } else {
+                  if(context.mounted) {
+                    handler.displaySnackbar(
+                      context, 
+                      SnackbarType.warning, 
+                      tWarning.metadataPermission
+                    );
+                  }
+                }
               } else if (ReturnCode.isCancel(returnCode)) {
                 handler.displaySnackbar(
                   context, 
