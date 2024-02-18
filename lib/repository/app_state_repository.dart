@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:music_player_app/global_files.dart';
 
 class AppStateRepository{
@@ -5,7 +6,7 @@ class AppStateRepository{
   Map<String, AudioListenCountNotifier> audioListenCount = {};
   List<String> favouritesList = [];
   List<PlaylistSongsClass> playlistList = [];
-  MyAudioHandler? audioHandler;
+  ValueNotifier<MyAudioHandler?> audioHandler = ValueNotifier(null);
   ImageDataClass? audioImageData;
 
   void setFavouritesList(List<String> arg){

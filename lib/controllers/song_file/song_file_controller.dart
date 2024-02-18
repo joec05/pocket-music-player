@@ -14,8 +14,8 @@ class SongFileController {
       DeleteAudioDataStreamClass().emitData(
         DeleteAudioDataStreamControllerClass(x)
       );
-      if(appStateRepo.audioHandler!.currentAudioUrl == audioData.audioUrl){
-        appStateRepo.audioHandler!.stop();
+      if(appStateRepo.audioHandler.value!.currentAudioUrl == audioData.audioUrl){
+        appStateRepo.audioHandler.value!.stop();
       }
       File selectedFile = File(audioData.audioUrl);
       if(await selectedFile.exists()){

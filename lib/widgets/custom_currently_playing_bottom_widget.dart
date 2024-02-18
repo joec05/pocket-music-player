@@ -21,15 +21,13 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
   @override initState(){
     super.initState();
     initializeCurrentAudio();
-    if(appStateRepo.audioHandler != null){
-      appStateRepo.audioHandler!.audioPlayer.positionStream.listen((newPosition) {
-        if(mounted){
-          if(audioCompleteData.value != null){
-            currentSlidingWidth.value = min((newPosition.inMilliseconds / audioCompleteData.value!.audioMetadataInfo.duration), 1) * getScreenWidth();
-          }
+    appStateRepo.audioHandler.value!.audioPlayer.positionStream.listen((newPosition) {
+      if(mounted){
+        if(audioCompleteData.value != null){
+          currentSlidingWidth.value = min((newPosition.inMilliseconds / audioCompleteData.value!.audioMetadataInfo.duration), 1) * getScreenWidth();
         }
-      });
-    }
+      }
+    });
     currentAudioStreamClassSubscription = CurrentAudioStreamClass().currentAudioStream.listen((CurrentAudioStreamControllerClass data) {
       if(mounted){
         audioCompleteData.value = data.audioCompleteData.copy();
@@ -38,7 +36,7 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
     editAudioMetadataStreamClassSubscription = EditAudioMetadataStreamClass().editAudioMetadataStream.listen((EditAudioMetadataStreamControllerClass data) {
       if(mounted){
         if(audioCompleteData.value != null){
-          if(appStateRepo.audioHandler!.currentAudioUrl == data.newAudioData.audioUrl){
+          if(appStateRepo.audioHandler.value!.currentAudioUrl == data.newAudioData.audioUrl){
             audioCompleteData.value = data.newAudioData.copy();
           }
         }
@@ -47,8 +45,8 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
   }
 
   void initializeCurrentAudio(){
-    if(appStateRepo.audioHandler != null && mounted){
-      String currentAudioUrl = appStateRepo.audioHandler!.currentAudioUrl;
+    if(appStateRepo.audioHandler.value != null && mounted){
+      String currentAudioUrl = appStateRepo.audioHandler.value!.currentAudioUrl;
       audioCompleteData.value = appStateRepo.allAudiosList[currentAudioUrl] == null ? null : appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value.copy();
     }
   }
@@ -62,11 +60,11 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
   }
 
   void pauseAudio() async{
-    await appStateRepo.audioHandler!.pause();
+    await appStateRepo.audioHandler.value!.pause();
   }  
 
   void resumeAudio() async{
-    await appStateRepo.audioHandler!.play();
+    await appStateRepo.audioHandler.value!.play();
   }
 
   void expandBottomSheet(){

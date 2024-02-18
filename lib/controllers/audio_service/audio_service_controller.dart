@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_player_app/global_files.dart';
@@ -29,8 +31,8 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
     });
   }
 
-  void updateListDirectory(List<String> directory,List<String> directoryShuffled){
-    currentDirectoryAudioList = directory;
+  void updateListDirectory(List<String> directory, List<String> directoryShuffled){
+    currentDirectoryAudioList = directory.where((songID) => appStateRepo.allAudiosList[songID] != null).toList();
     currentDirectoryAudioListShuffled = directoryShuffled;
     List<MediaItem> mediaItemList = currentDirectoryAudioList.map((songID){
       AudioCompleteDataClass audioData = appStateRepo.allAudiosList[songID]!.notifier.value;
@@ -74,39 +76,45 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
   }
 
   Future<void> setCurrentSong(AudioCompleteDataClass audioCompleteData) async{
-    if(audioCompleteData.audioUrl != currentAudioUrl){
-      updateAudioPlayerState(AudioPlayerState.completed);
-    }
-    await setNewAudioSession(audioCompleteData);
-    playerState = AudioPlayerState.playing;    
+    if(File(audioCompleteData.audioUrl).existsSync()) {
+      if(audioCompleteData.audioUrl != currentAudioUrl){
+        updateAudioPlayerState(AudioPlayerState.completed);
+      }
+      await setNewAudioSession(audioCompleteData);
+      playerState = AudioPlayerState.playing;  
+    }  
   }
 
-  void addAudioListenCount(AudioCompleteDataClass audioCompleteData){
-    AudioListenCountClass listenCountData = appStateRepo.audioListenCount[audioCompleteData.audioUrl]!.notifier.value;
-    AudioListenCountClass updatedListenCountData = AudioListenCountClass(listenCountData.audioUrl, listenCountData.listenCount + 1);
-    appStateRepo.audioListenCount[audioCompleteData.audioUrl]!.notifier.value = updatedListenCountData;
+  void addAudioListenCount(AudioCompleteDataClass audioCompleteData) async{
+    if(File(audioCompleteData.audioUrl).existsSync()) {
+      AudioListenCountClass listenCountData = appStateRepo.audioListenCount[audioCompleteData.audioUrl]!.notifier.value;
+      AudioListenCountClass updatedListenCountData = AudioListenCountClass(listenCountData.audioUrl, listenCountData.listenCount + 1);
+      appStateRepo.audioListenCount[audioCompleteData.audioUrl]!.notifier.value = updatedListenCountData;
+    }
   }
 
   Future<void> setNewAudioSession(AudioCompleteDataClass audioCompleteData) async{
-    AudioMetadataInfoClass metadata = audioCompleteData.audioMetadataInfo;
-    currentSong.add(audioCompleteData);
-    currentAudioUrl = audioCompleteData.audioUrl;
-    mediaItem.add(
-      MediaItem(
-        id: audioCompleteData.audioUrl,
-        album: metadata.albumName,
-        artist: metadata.artistName,
-        title: metadata.title ?? audioCompleteData.audioUrl.split('/').last,
-        artUri: Uri.file(appStateRepo.audioImageData!.path),
-        extras: <String, dynamic>{
-        },
-      )
-    );
-    addAudioListenCount(audioCompleteData);
-    await audioPlayer.setAudioSource(
-      ProgressiveAudioSource(Uri.parse(audioCompleteData.audioUrl)),
-    );
-    emitCurrentAudioStreamData();
+    if(File(audioCompleteData.audioUrl).existsSync()) {
+      AudioMetadataInfoClass metadata = audioCompleteData.audioMetadataInfo;
+      currentSong.add(audioCompleteData);
+      currentAudioUrl = audioCompleteData.audioUrl;
+      mediaItem.add(
+        MediaItem(
+          id: audioCompleteData.audioUrl,
+          album: metadata.albumName,
+          artist: metadata.artistName,
+          title: metadata.title ?? audioCompleteData.audioUrl.split('/').last,
+          artUri: Uri.file(appStateRepo.audioImageData!.path),
+          extras: <String, dynamic>{
+          },
+        )
+      );
+      addAudioListenCount(audioCompleteData);
+      await audioPlayer.setAudioSource(
+        ProgressiveAudioSource(Uri.parse(audioCompleteData.audioUrl)),
+      );
+      emitCurrentAudioStreamData();
+    }
   }
 
   void updateAudioPlayerState(AudioPlayerState newState){
@@ -139,12 +147,16 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
 
   @override
   Future<void> play() async {
-    await audioPlayer.play();
+    try {
+      await audioPlayer.play();
+    } catch (_) {}
   }
 
   @override
   Future<void> pause() async {
-    await audioPlayer.pause();
+    try {
+      await audioPlayer.pause();
+    } catch (_) {}
   }
   
   @override

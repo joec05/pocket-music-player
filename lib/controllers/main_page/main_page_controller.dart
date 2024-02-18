@@ -3,6 +3,7 @@ import 'package:music_player_app/global_files.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+import 'package:audio_service/audio_service.dart';
 
 class MainPageController {
   final BuildContext context;
@@ -21,6 +22,14 @@ class MainPageController {
 
   void initializeController(){
     initializeDefaultStartingDisplayImage();
+    initializeAudioService();
+    appStateRepo.audioHandler.addListener(() {
+      if(appStateRepo.audioHandler.value != null) {
+        widgetOptions.value = [
+          AllSongsPageWidget(setLoadingState: setLoadingState), const SortedArtistsPageWidget(), const SortedAlbumsPageWidget(), const PlaylistPageWidget()
+        ];
+      }
+    });
   }
 
   void dispose(){
@@ -28,6 +37,20 @@ class MainPageController {
     pageController.dispose();
     isLoaded.dispose();
     loadType.dispose();
+  }
+
+  Future<void> initializeAudioService() async{
+    if(appStateRepo.audioHandler.value == null){
+      MyAudioHandler audioHandler = await AudioService.init(
+        builder: () => MyAudioHandler(),
+        config: const AudioServiceConfig(
+          androidNotificationChannelId: 'com.example.music_player_app',
+          androidNotificationChannelName: 'Music playback',
+        ),
+      );
+      audioHandler.initializeController();
+      appStateRepo.audioHandler.value = audioHandler;
+    }
   }
 
   void setLoadingState(bool state, LoadType loadingType){
@@ -56,9 +79,6 @@ class MainPageController {
     );
     if(mounted){
       appStateRepo.audioImageData = audioImageDataClass;
-      widgetOptions.value = [
-        AllSongsPageWidget(setLoadingState: setLoadingState), const SortedArtistsPageWidget(), const SortedAlbumsPageWidget(), const PlaylistPageWidget()
-      ];
     }
   }
 

@@ -27,7 +27,7 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
   @override initState(){
     super.initState();
     initializeCurrentAudio();
-    currentLoopStatus.value = appStateRepo.audioHandler!.currentLoopStatus;
+    currentLoopStatus.value = appStateRepo.audioHandler.value!.currentLoopStatus;
     updateSliderPosition();
     isDraggingSlider.addListener((){
       if(mounted){
@@ -36,7 +36,7 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
         }
       }
     });
-    appStateRepo.audioHandler!.audioPlayer.positionStream.listen((newPosition) {
+    appStateRepo.audioHandler.value!.audioPlayer.positionStream.listen((newPosition) {
       if(mounted){
         if(audioCompleteData.value != null && !isDraggingSlider.value && newPosition.inMilliseconds <= audioCompleteData.value!.audioMetadataInfo.duration){
           currentPosition.value = min((newPosition.inMilliseconds / audioCompleteData.value!.audioMetadataInfo.duration), 1);
@@ -62,7 +62,7 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
     editAudioMetadataStreamClassSubscription = EditAudioMetadataStreamClass().editAudioMetadataStream.listen((EditAudioMetadataStreamControllerClass data) {
       if(mounted){
         if(audioCompleteData.value != null){
-          if(appStateRepo.audioHandler!.currentAudioUrl == data.newAudioData.audioUrl){
+          if(appStateRepo.audioHandler.value!.currentAudioUrl == data.newAudioData.audioUrl){
             audioCompleteData.value = data.newAudioData;
             controller.value = SongOptionController(
               context, 
@@ -77,7 +77,7 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
 
   void initializeCurrentAudio(){
     if(mounted){
-      String currentAudioUrl = appStateRepo.audioHandler!.currentAudioUrl;
+      String currentAudioUrl = appStateRepo.audioHandler.value!.currentAudioUrl;
       audioCompleteData.value = appStateRepo.allAudiosList[currentAudioUrl] == null ? null : appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value;
       controller.value = SongOptionController(
         context, 
@@ -103,8 +103,8 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
 
   void updateSliderPosition(){
     if(mounted){
-      if(appStateRepo.audioHandler != null && audioCompleteData.value != null){
-        Duration? currentDuration = appStateRepo.audioHandler!.audioPlayer.duration;
+      if(appStateRepo.audioHandler.value != null && audioCompleteData.value != null){
+        Duration? currentDuration = appStateRepo.audioHandler.value!.audioPlayer.duration;
         if(currentDuration != null){
           currentPosition.value = min((currentDuration.inMilliseconds / audioCompleteData.value!.audioMetadataInfo.duration), 1);
           currentDurationStr.value = _formatDuration(currentDuration);
@@ -115,26 +115,26 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
   }
 
   void pauseAudio() async{
-    await appStateRepo.audioHandler!.pause();
+    await appStateRepo.audioHandler.value!.pause();
   }  
 
   void resumeAudio() async{
-    await appStateRepo.audioHandler!.play();
+    await appStateRepo.audioHandler.value!.play();
   }
 
   void modifyLoopStatus(LoopStatus loopStatus){
     if(mounted){
       currentLoopStatus.value = loopStatus;
     }
-    appStateRepo.audioHandler!.modifyLoopStatus(loopStatus);
+    appStateRepo.audioHandler.value!.modifyLoopStatus(loopStatus);
   }
 
   void playNext() async{
-    await appStateRepo.audioHandler!.skipToNext();
+    await appStateRepo.audioHandler.value!.skipToNext();
   }
 
   void playPrev() async{
-    await appStateRepo.audioHandler!.skipToPrevious();
+    await appStateRepo.audioHandler.value!.skipToPrevious();
   }
 
   void onSliderChange(value){ 
@@ -151,7 +151,7 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
       var duration = ((value * audioCompleteData.value!.audioMetadataInfo.duration) ~/ 10) * 10;
       currentPosition.value = value ;
       isDraggingSlider.value = false;
-      await appStateRepo.audioHandler!.audioPlayer.seek(Duration(milliseconds: duration));
+      await appStateRepo.audioHandler.value!.audioPlayer.seek(Duration(milliseconds: duration));
     } 
   }
 

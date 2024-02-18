@@ -35,11 +35,11 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
     List<String> directorySongsList = [...widget.directorySongsList];
     List<String> directorySongsListShuffled = [...widget.directorySongsList];
     directorySongsListShuffled.shuffle();
-    appStateRepo.audioHandler!.updateListDirectory(
+    appStateRepo.audioHandler.value!.updateListDirectory(
       directorySongsList, directorySongsListShuffled
     );
-    appStateRepo.audioHandler!.setCurrentSong(audioCompleteData);
-    appStateRepo.audioHandler!.play();
+    appStateRepo.audioHandler.value!.setCurrentSong(audioCompleteData);
+    appStateRepo.audioHandler.value!.play();
   }
   
   @override
@@ -57,7 +57,7 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
         splashFactory: InkRipple.splashFactory,
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding / 2, vertical: defaultVerticalPadding / 2),
-          color: audioIsSelected || appStateRepo.audioHandler!.currentAudioUrl == audioCompleteData.audioUrl ? Colors.grey.withOpacity(0.6) : Colors.transparent,
+          color: audioIsSelected || appStateRepo.audioHandler.value!.currentAudioUrl == audioCompleteData.audioUrl ? Colors.grey.withOpacity(0.6) : Colors.transparent,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

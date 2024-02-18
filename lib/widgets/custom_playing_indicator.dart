@@ -19,14 +19,20 @@ class _CustomAudioPlayingIndicatorState extends State<CustomAudioPlayingIndicato
 
   @override void initState(){
     super.initState();
-    appStateRepo.audioHandler!.audioPlayer.positionStream.listen((position){
+    appStateRepo.audioHandler.value!.audioPlayer.playingStream.listen((playing){
       if(mounted){
-        MyAudioHandler? handler = appStateRepo.audioHandler!;
+        MyAudioHandler? handler = appStateRepo.audioHandler.value!;
         bool audioIsSelected = handler.audioPlayer.playerState.processingState == ProcessingState.ready;
-        if(audioIsSelected && position.inMilliseconds > 0){
-          currentValue.value = (currentValue.value + maxHeight / 7) % maxHeight;
-          currentValue2.value = (currentValue2.value + maxHeight / 5) % maxHeight;
-          currentValue3.value = (currentValue3.value + maxHeight / 6) % maxHeight;
+        if(audioIsSelected && playing){
+          appStateRepo.audioHandler.value!.audioPlayer.positionStream.listen((event) {
+            if(playing){
+              currentValue.value = (currentValue.value + maxHeight / 7) % maxHeight;
+              currentValue2.value = (currentValue2.value + maxHeight / 5) % maxHeight;
+              currentValue3.value = (currentValue3.value + maxHeight / 6) % maxHeight;
+            }
+          });
+        }else{
+          if(!appStateRepo.audioHandler.value!.audioPlayer.playing){}
         }
       }
     });
@@ -34,9 +40,9 @@ class _CustomAudioPlayingIndicatorState extends State<CustomAudioPlayingIndicato
 
   @override void dispose(){
     super.dispose();
-    currentValue.dispose();
-    currentValue2.dispose();
-    currentValue3.dispose();
+    //currentValue.dispose();
+    //currentValue2.dispose();
+    //currentValue3.dispose();
   }
 
   @override
@@ -56,7 +62,7 @@ class _CustomAudioPlayingIndicatorState extends State<CustomAudioPlayingIndicato
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 125),
                     alignment: Alignment.bottomCenter,
-                    width: getScreenWidth() * 0.125 / 6,
+                    width: getScreenWidth() * 0.125 / 8,
                     height: value,
                     color: Colors.red
                   ),
@@ -73,7 +79,7 @@ class _CustomAudioPlayingIndicatorState extends State<CustomAudioPlayingIndicato
                 children: [
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 125),
-                    width: getScreenWidth() * 0.125 / 6,
+                    width: getScreenWidth() * 0.125 / 8,
                     height: value,
                     color: Colors.green
                   ),
@@ -90,7 +96,7 @@ class _CustomAudioPlayingIndicatorState extends State<CustomAudioPlayingIndicato
                 children: [
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 125),
-                    width: getScreenWidth() * 0.125 / 6,
+                    width: getScreenWidth() * 0.125 / 8,
                     height: value,
                     color: Colors.blue
                   ),
