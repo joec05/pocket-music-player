@@ -28,15 +28,9 @@ A simple music player app made with Flutter.
 
 ## Music player app in display  
 
-![Music player app](https://github.com/joec05/files/blob/main/music_player_app/app_demo_1.png?raw=true "Music player app demo image 1")
+![Music player app](https://github.com/joec05/files/blob/main/music_player_app/demo_2.png?raw=true "Music player app demo image 2")
 
-![Music player app](https://github.com/joec05/files/blob/main/music_player_app/app_demo_2.png?raw=true "Music player app demo image 2")
-
-![Music player app](https://github.com/joec05/files/blob/main/music_player_app/app_demo_3.png?raw=true "Music player app demo image 3")
-
-![Music player app](https://github.com/joec05/files/blob/main/music_player_app/app_demo_4.png?raw=true "Music player app demo image 4")
-
-![Music player app](https://github.com/joec05/files/blob/main/music_player_app/app_demo_5.png?raw=true "Music player app demo image 5")
+![Music player app](https://github.com/joec05/files/blob/main/music_player_app/demo_1.png?raw=true "Music player app demo image 1")
 
 ## Future plans
 
