@@ -81,7 +81,9 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
                                       appStateRepo.audioImageData!.bytes
                                     : 
                                       audioCompleteData.audioMetadataInfo.albumArt.bytes
-                                  ), fit: BoxFit.fill
+                                  ), 
+                                  fit: BoxFit.fill,
+                                  onError: (exception, stackTrace) => Image.memory(appStateRepo.audioImageData!.bytes),
                                 )
                               )
                             ),

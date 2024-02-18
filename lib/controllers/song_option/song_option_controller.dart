@@ -125,13 +125,26 @@ class SongOptionController {
       showDialog(
         context: context,
         builder: (bottomSheetContext) {
-          return AlertDialog(
-            titlePadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.015, horizontal: getScreenWidth() * 0.035),
-            contentPadding: const EdgeInsets.only(top: 0, bottom: 0),
-            title: const Text('Add to playlist'),
-            content: Column(
+          return Dialog(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12.5),
+                topRight: Radius.circular(12.5)
+              )
+            ),
+            child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                SizedBox(
+                  height: getScreenHeight() * 0.02
+                ),
+                const Text(
+                  'Add to playlist',
+                  style: TextStyle(fontWeight: FontWeight.bold)
+                ),
+                SizedBox(
+                  height: getScreenHeight() * 0.02
+                ),
                 Container(
                   width: double.infinity,
                   color: Colors.grey,
@@ -159,6 +172,7 @@ class SongOptionController {
                   buttonColor: Colors.transparent,
                   setBorderRadius: false,
                 ),
+
               ],
             )
           );
@@ -173,13 +187,26 @@ class SongOptionController {
       showDialog(
         context: context,
         builder: (bottomSheetContext) {
-          return AlertDialog(
-            titlePadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.015, horizontal: getScreenWidth() * 0.035),
-            contentPadding: const EdgeInsets.only(top: 0, bottom: 0),
-            title: const Text('Select existing playlist'),
-            content: Column(
+          return Dialog(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12.5),
+                topRight: Radius.circular(12.5)
+              )
+            ),
+            child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                SizedBox(
+                  height: getScreenHeight() * 0.02
+                ),
+                const Text(
+                  'Select existing playlist',
+                  style: TextStyle(fontWeight: FontWeight.bold)
+                ),
+                SizedBox(
+                  height: getScreenHeight() * 0.02
+                ),
                 Container(
                   width: double.infinity,
                   color: Colors.grey,
@@ -217,24 +244,40 @@ class SongOptionController {
         builder: (bottomSheetContext) {
           return StatefulBuilder(
             builder: (context, setState) {
-              return AlertDialog(
-                titlePadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.015, horizontal: getScreenWidth() * 0.035),
-                contentPadding: const EdgeInsets.only(top: 0, bottom: 0),
-                title: const Text('Create new playlist'),
-                content: Column(
+              return Dialog(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(12.5),
+                    topRight: Radius.circular(12.5)
+                  )
+                ),
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    SizedBox(
+                      height: getScreenHeight() * 0.02
+                    ),
+                    const Text(
+                      'Create new playlist',
+                      style: TextStyle(fontWeight: FontWeight.bold)
+                    ),
+                    SizedBox(
+                      height: getScreenHeight() * 0.02
+                    ),
                     Container(
                       width: double.infinity,
                       color: Colors.grey,
                       height: 1.5
                     ),
                     SizedBox(
+                      height: getScreenHeight() * 0.01
+                    ),
+                    SizedBox(
                       height: getScreenHeight() * 0.08,
                       child: TextField(
                         maxLength: defaultTextFieldLimit,
                         controller: inputController,
-                        decoration: generateFormTextFieldDecoration('playlist name', FontAwesomeIcons.list),
+                        decoration: generatePlaylistNameTextFieldDecoration('playlist name', FontAwesomeIcons.list),
                         onChanged: (text){
                           setState((){
                             verifyInput = text.isNotEmpty;
@@ -242,9 +285,12 @@ class SongOptionController {
                         },
                       ),
                     ),
+                    SizedBox(
+                      height: getScreenHeight() * 0.01
+                    ),
                     CustomButton(
                       width: double.infinity, height: getScreenHeight() * 0.065, 
-                      buttonColor: verifyInput ? Colors.red : Colors.grey.withOpacity(0.5), 
+                      buttonColor: verifyInput ? const Color.fromARGB(255, 143, 58, 52) : Colors.grey.withOpacity(0.5), 
                       buttonText: 'Create playlist and add song', 
                       onTapped: (){
                         if(mounted){
@@ -255,8 +301,9 @@ class SongOptionController {
                             return;
                           }
                         }
-                      }, setBorderRadius: false
-                    )
+                      }, 
+                      setBorderRadius: false
+                    ),
                   ],
                 )
               );
@@ -272,13 +319,26 @@ class SongOptionController {
       showDialog(
         context: context,
         builder: (bottomSheetContext) {
-          return AlertDialog(
-            titlePadding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.015, horizontal: getScreenWidth() * 0.035),
-            contentPadding: const EdgeInsets.only(top: 0, bottom: 0),
-            title: const Text('Are you sure you want to delete this song?'),
-            content: Column(
+          return Dialog(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12.5),
+                topRight: Radius.circular(12.5)
+              )
+            ),
+            child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                SizedBox(
+                  height: getScreenHeight() * 0.02
+                ),
+                const Text(
+                  'Are you sure you want to delete this song?',
+                  style: TextStyle(fontWeight: FontWeight.bold)
+                ),
+                SizedBox(
+                  height: getScreenHeight() * 0.02
+                ),
                 Container(
                   width: double.infinity,
                   color: Colors.grey,

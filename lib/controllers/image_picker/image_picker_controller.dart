@@ -26,11 +26,13 @@ class ImagePickerController {
     ph.Permission? permission;
     if(Platform.isAndroid){
       final androidInfo = await DeviceInfoPlugin().androidInfo;
-      if(androidInfo.version.sdkInt <= 32){
+      if(androidInfo.version.sdkInt <= 32) {
         permission = ph.Permission.storage;
-      }else{
+      } else {
         permission = ph.Permission.photos;
       }
+    } else if (Platform.isIOS) {
+      permission = ph.Permission.photos;
     }
     permissionIsGranted = await permission!.isGranted;
     if(!permissionIsGranted){

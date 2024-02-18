@@ -143,9 +143,9 @@ class LocalDatabase {
           'playlist_id': playlistData.playlistID,
           'playlist_name': playlistData.playlistName,
           'playlist_profile_pic_link_path': playlistData.playlistProfilePic.path,
-          'playlist_profile_pic_link_bytes': jsonEncode(playlistData.playlistProfilePic.bytes),
+          'playlist_profile_pic_link_bytes': playlistData.playlistProfilePic.bytes,
           'creation_date': playlistData.creationDate,
-          'songs_list': jsonEncode(playlistData.songsList)
+          'songs_list': jsonEncode(playlistData.songsList),
         });
       }
     });
@@ -162,7 +162,7 @@ class LocalDatabase {
     final List<PlaylistSongsClass> results = getAudioPlaylistsData.map((e) {
       return PlaylistSongsClass(
         e['playlist_id'], e['playlist_name'], ImageDataClass(
-          e['playlist_profile_pic_link_path'], Uint8List.fromList(List<int>.from(jsonDecode(e['playlist_profile_pic_link_bytes'])))
+          e['playlist_profile_pic_link_path'], Uint8List.fromList(List<int>.from((e['playlist_profile_pic_link_bytes'])))
         ),
         e['creation_date'], List<String>.from(jsonDecode(e['songs_list']))
       );

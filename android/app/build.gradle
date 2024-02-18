@@ -60,11 +60,32 @@ android {
         }
     }
 
-    buildTypes {
+    signingConfigs {
+        debug {
+            keyAlias 'debug-keystore'
+            keyPassword 'music-player-app-debug'
+            storeFile file('debug-keystore.jks')
+            storePassword 'music-player-app-debug'
+        }
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            keyAlias 'release-keystore'
+            keyPassword 'music-player-app-release'
+            storeFile file('release-keystore.jks')
+            storePassword 'music-player-app-release'
+        }
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled true
+            multiDexEnabled true
             signingConfig signingConfigs.debug
+        }
+        
+        release {
+            minifyEnabled true
+            multiDexEnabled true
+            signingConfig signingConfigs.release
         }
     }
 }

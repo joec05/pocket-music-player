@@ -66,7 +66,9 @@ class _CustomAlbumDisplayWidgetState extends State<CustomAlbumDisplayWidget>{
                                 appStateRepo.audioImageData!.bytes
                               : 
                                 albumSongsData.albumProfilePic.bytes
-                            ), fit: BoxFit.fill
+                            ), 
+                            fit: BoxFit.fill,
+                            onError: (exception, stackTrace) => Image.memory(appStateRepo.audioImageData!.bytes),
                           )
                         ),
                       ),

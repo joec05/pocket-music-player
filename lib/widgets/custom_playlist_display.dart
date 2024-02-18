@@ -148,7 +148,9 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
                                 appStateRepo.audioImageData!.bytes
                               : 
                                 playlistSongsData.playlistProfilePic.bytes
-                            ), fit: BoxFit.fill
+                            ), 
+                            fit: BoxFit.fill,
+                            onError: (exception, stackTrace) => Image.memory(appStateRepo.audioImageData!.bytes),
                           )
                         ),
                       ),

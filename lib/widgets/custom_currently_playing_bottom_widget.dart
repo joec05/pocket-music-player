@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_null_aware_operators
+
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -128,7 +130,9 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
                                           appStateRepo.audioImageData!.bytes
                                         : 
                                           audioCompleteData.value!.audioMetadataInfo.albumArt.bytes
-                                      ), fit: BoxFit.fill
+                                      ), 
+                                      fit: BoxFit.fill,
+                                      onError: (exception, stackTrace) => Image.memory(appStateRepo.audioImageData!.bytes),
                                     )
                                   ),
                                 ),

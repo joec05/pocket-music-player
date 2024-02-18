@@ -10,7 +10,7 @@ class MainPageController {
   final PageController pageController = PageController(initialPage: 0, keepPage: true);
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   ValueNotifier<bool> isLoaded = ValueNotifier(true);
-  List<Widget> widgetOptions = <Widget>[];
+  ValueNotifier<List<Widget>> widgetOptions = ValueNotifier(<Widget>[]);
   ValueNotifier<LoadType> loadType = ValueNotifier(LoadType.initial);
 
   MainPageController(
@@ -56,7 +56,7 @@ class MainPageController {
     );
     if(mounted){
       appStateRepo.audioImageData = audioImageDataClass;
-      widgetOptions = [
+      widgetOptions.value = [
         AllSongsPageWidget(setLoadingState: setLoadingState), const SortedArtistsPageWidget(), const SortedAlbumsPageWidget(), const PlaylistPageWidget()
       ];
     }

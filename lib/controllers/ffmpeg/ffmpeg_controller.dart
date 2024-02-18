@@ -132,7 +132,6 @@ class FFmpegController {
                   tErr.cancelled
                 );
               } else {
-                print(ReturnCode.isSuccess(returnCode));
                 handler.displaySnackbar(
                   context, 
                   SnackbarType.error, 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+Color defaultCustomButtonColor = const Color.fromARGB(255, 66, 63, 63);
+
 class CustomButton extends StatefulWidget {
   final double width;
   final double height;

@@ -27,7 +27,6 @@ class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with A
     super.initState();
     controller = AllSongsController(context, widget.setLoadingState);
     controller.initializeController();
-    widget.setLoadingState(true, LoadType.initial);
   }
 
   @override void dispose(){

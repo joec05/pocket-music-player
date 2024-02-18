@@ -39,7 +39,7 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
         id: audioData.audioUrl,
         album: metadata.albumName,
         artist: metadata.artistName,
-        title: metadata.title ?? 'Unknown',
+        title: metadata.title ?? audioData.audioUrl.split('/').last,
         artUri: Uri.file(appStateRepo.audioImageData!.path)
       );      
     }).toList();
@@ -96,7 +96,7 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
         id: audioCompleteData.audioUrl,
         album: metadata.albumName,
         artist: metadata.artistName,
-        title: metadata.title ?? 'Unknown',
+        title: metadata.title ?? audioCompleteData.audioUrl.split('/').last,
         artUri: Uri.file(appStateRepo.audioImageData!.path),
         extras: <String, dynamic>{
         },

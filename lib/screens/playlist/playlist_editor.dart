@@ -81,7 +81,7 @@ class _PlaylistEditorWidgetState extends State<_PlaylistEditorWidgetStateful> {
                             )
                           ),
                         ],
-                      );       
+                      );
                     }
                   ),
                   SizedBox(height: defaultTextFieldVerticalMargin),
@@ -91,21 +91,21 @@ class _PlaylistEditorWidgetState extends State<_PlaylistEditorWidgetStateful> {
                     maxLength: defaultTextFieldLimit,
                   ),
                   SizedBox(height: defaultTextFieldVerticalMargin),
-                  ValueListenableBuilder(
-                    valueListenable: controller.verifyPlaylistName,
-                    builder: (context, verifyPlaylistName, child){
-                      return ValueListenableBuilder(
-                        valueListenable: controller.isLoading,
-                        builder: (context, isLoading, child){
-                          return CustomButton(
-                            width: double.infinity,
-                            height: getScreenHeight() * 0.065,
-                            buttonColor: verifyPlaylistName && !isLoading ? Colors.orange : Colors.grey.withOpacity(0.5),
-                            onTapped: verifyPlaylistName && !isLoading ? () => controller.modifyPlaylist() : (){},
-                            buttonText: 'Update playlist data',
-                            setBorderRadius: true,
-                          );
-                        }
+                  ListenableBuilder(
+                    listenable: Listenable.merge([
+                      controller.verifyPlaylistName,
+                      controller.isLoading
+                    ]),
+                    builder: (context, child) {
+                      bool verifyPlaylistName = controller.verifyPlaylistName.value;
+                      bool isLoading = controller.isLoading.value;
+                      return CustomButton(
+                        width: double.infinity,
+                        height: getScreenHeight() * 0.065,
+                        buttonColor: verifyPlaylistName && !isLoading ? Colors.orange : Colors.grey.withOpacity(0.5),
+                        onTapped: verifyPlaylistName && !isLoading ? () => controller.modifyPlaylist() : (){},
+                        buttonText: 'Update playlist data',
+                        setBorderRadius: true,
                       );
                     }
                   )
