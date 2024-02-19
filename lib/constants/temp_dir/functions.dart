@@ -5,11 +5,20 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart';
 
-Future<String> copyTemporaryPath(String url) async{
+Future<String> copyTemporaryAudioPath(String url) async{
   Directory temporaryDirectory = await getTemporaryDirectory();
   Directory directory = await Directory('${temporaryDirectory.path}/audio').create(recursive: true);
   File originalFile = File(url);
   String filePath = '${directory.path}/${const Uuid().v4()}.mp3';
+  File newFile = await originalFile.copy(filePath);
+  return newFile.path;
+}
+
+Future<String> copyTemporaryImagePath(String url) async{
+  Directory temporaryDirectory = await getTemporaryDirectory();
+  Directory directory = await Directory('${temporaryDirectory.path}/image').create(recursive: true);
+  File originalFile = File(url);
+  String filePath = '${directory.path}/${const Uuid().v4()}.png';
   File newFile = await originalFile.copy(filePath);
   return newFile.path;
 }

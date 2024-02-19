@@ -1,10 +1,14 @@
 /// Stores fixed text to display in an error snackbar, depending on the type of the error
 class ErrorLabels {
+
   final title = "Error!!!";
 
   final unknown = "An unknown error occured";
 
   final cancelled = "Process has been cancelled";
+
+  final dirNotFound = "Cannot find directory";
+  
 }
 
 class SuccessLabels {
