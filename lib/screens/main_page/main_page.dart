@@ -106,17 +106,6 @@ class __MainPageWidgetStatefulState extends State<_MainPageWidgetStateful>{
                 return ValueListenableBuilder(
                   valueListenable: controller.loadType,
                   builder: (context, loadType, child){
-                    ImageDataClass? imageDataClass = appStateRepo.audioImageData;
-                    if(loadType == LoadType.initial){
-                      return Container(
-                        decoration: defaultInitialScreenDecoration,
-                        width: double.infinity,
-                        height: double.infinity,
-                        child: Center(
-                          child: imageDataClass != null ? Image.memory(imageDataClass.bytes, width: getScreenWidth() * 0.325, height: getScreenWidth() * 0.325) : Container()
-                        )
-                      );
-                    }
                     return Container(
                       width: double.infinity,
                       height: double.infinity,

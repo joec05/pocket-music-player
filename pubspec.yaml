@@ -54,6 +54,7 @@ dependencies:
   rxdart: ^0.27.7
   path: ^1.8.3
   index_generator: ^3.4.1
+  flutter_native_splash: ^2.3.10
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +73,14 @@ dev_dependencies:
 flutter_launcher_icons:
   image_path: "assets/images/music-icon.png"
   android: true
+
+flutter_native_splash:
+  image: assets/images/music-icon.png
+  color: "ffffff"
+  android: true
+  android_12:
+    image: assets/images/music-icon.png
+  ios: true
 
 index_generator:
   exclude:
