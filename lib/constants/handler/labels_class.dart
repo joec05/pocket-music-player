@@ -32,6 +32,8 @@ class SuccessLabels {
 }
 
 class WarningLabels {
+
+  final scanPermission = "Your permission is needed to scan your folders!!!";
   
   final metadataPermission = "Your permission is needed to update your song's metadata information!!!";
 

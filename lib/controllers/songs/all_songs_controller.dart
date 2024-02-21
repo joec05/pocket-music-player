@@ -101,10 +101,16 @@ class AllSongsController {
         appStateRepo.setFavouritesList(await LocalDatabase().fetchAudioFavouritesData());
         appStateRepo.setPlaylistList('', await LocalDatabase().fetchAudioPlaylistsData());
       }   
+    }else{
+      if(mounted) {
+        handler.displaySnackbar(
+          context,
+          SnackbarType.warning,
+          tWarning.scanPermission
+        );
+      }
     }
-    Future.delayed(const Duration(milliseconds: 1500), (){
-      setLoadingState(true, loadType);
-    });
+    setLoadingState(true, loadType);
   }
 
   void scan() async{
