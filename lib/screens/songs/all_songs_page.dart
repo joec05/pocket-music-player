@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:music_player_app/global_files.dart';
 
 class AllSongsPageWidget extends StatelessWidget {
@@ -147,6 +148,9 @@ class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with A
             ValueListenableBuilder(
               valueListenable: controller.audioUrls,
               builder: (context, audioUrls, child) {
+                if(audioUrls.isEmpty) {
+                  return noItemsWidget(FontAwesomeIcons.music, 'songs');
+                }
                 return ListView.builder(
                   shrinkWrap: true,
                   key: UniqueKey(),

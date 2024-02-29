@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:music_player_app/global_files.dart';
 
 class SortedAlbumsPageWidget extends StatelessWidget {
@@ -40,6 +41,9 @@ class _SortedAlbumsPageWidgetState extends State<_SortedAlbumsPageWidgetStateful
         child: ValueListenableBuilder(
           valueListenable: controller.albumsSongsList,
           builder: (context, albumSongsListValue, child) {
+            if(albumSongsListValue.isEmpty) {
+              return noItemsWidget(FontAwesomeIcons.recordVinyl, 'albums');
+            }
             return ListView.builder(
               shrinkWrap: false,
               key: UniqueKey(),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:music_player_app/global_files.dart';
 
 class DisplayArtistSongsWidget extends StatelessWidget {
@@ -48,7 +49,8 @@ class _DisplayArtistSongsWidgetState extends State<_DisplayArtistSongsWidgetStat
         titleSpacing: defaultAppBarTitleSpacingWithBackBtn,
       ),
       body: Center(
-        child: ListView.builder(
+        child: controller.artistSongsData.songsList.isEmpty ? noItemsWidget(FontAwesomeIcons.music, 'songs') : 
+        ListView.builder(
           shrinkWrap: false,
           key: UniqueKey(),
           scrollDirection: Axis.vertical,

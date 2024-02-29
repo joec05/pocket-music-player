@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:music_player_app/global_files.dart';
 
 class DisplayPlaylistSongsWidget extends StatelessWidget {
@@ -50,6 +51,9 @@ class _DisplayPlaylistSongsWidgetState extends State<_DisplayPlaylistSongsWidget
         child: ValueListenableBuilder(
           valueListenable: controller.playlistSongsDataValue,
           builder: (context, playlistData, child) {
+            if(playlistData.songsList.isEmpty) {
+              return noItemsWidget(FontAwesomeIcons.music, 'songs');
+            }
             return ListView.builder(
               shrinkWrap: false,
               key: UniqueKey(),

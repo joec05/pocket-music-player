@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:music_player_app/global_files.dart';
 
 class SortedArtistsPageWidget extends StatelessWidget {
@@ -40,6 +41,9 @@ class _SortedArtistsPageWidgetState extends State<_SortedArtistsPageWidgetStatef
         child: ValueListenableBuilder(
           valueListenable: controller.artistsSongsList,
           builder: (context, artistsSongsListValue, child) {
+            if(artistsSongsListValue.isEmpty) {
+              return noItemsWidget(FontAwesomeIcons.user, 'artists');
+            }
             return ListView.builder(
               shrinkWrap: false,
               key: UniqueKey(),
