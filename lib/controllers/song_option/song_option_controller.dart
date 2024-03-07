@@ -339,12 +339,15 @@ class SongOptionController {
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
                   height: getScreenHeight() * 0.02
                 ),
                 const Text(
                   'Are you sure you want to delete this song?',
+                  textAlign: TextAlign.center,
                   style: TextStyle(fontWeight: FontWeight.bold)
                 ),
                 SizedBox(
@@ -374,7 +377,7 @@ class SongOptionController {
                   onTapped: (){
                     Navigator.of(bottomSheetContext).pop();
                   },
-                  text: 'Select existing playlist',
+                  text: 'No',
                   width: double.infinity,
                   height: getScreenHeight() * 0.08,
                   color: Colors.transparent,
