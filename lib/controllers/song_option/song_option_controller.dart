@@ -59,33 +59,39 @@ class SongOptionController {
                         }
                       }, navigationDelayDuration);
                     },
-                    buttonText: 'Edit tags',
+                    text: 'Edit tags',
                     width: double.infinity,
                     height: getScreenHeight() * 0.08,
-                    buttonColor: Colors.transparent,
+                    color: Colors.transparent,
                     setBorderRadius: false,
+                    prefix: null,
+                    loading: false
                   ),
                   CustomButton(
                     onTapped: () {
                       Navigator.of(bottomSheetContext).pop();
                       toggleFavourites();
                     },
-                    buttonText: appStateRepo.favouritesList.contains(audioCompleteData.audioUrl) ? 'Remove from favourites' : 'Add to favourites',
+                    text: appStateRepo.favouritesList.contains(audioCompleteData.audioUrl) ? 'Remove from favourites' : 'Add to favourites',
                     width: double.infinity,
                     height: getScreenHeight() * 0.08,
-                    buttonColor: Colors.transparent,
+                    color: Colors.transparent,
                     setBorderRadius: false,
+                    prefix: null,
+                    loading: false
                   ),
                   CustomButton(
                     onTapped: (){
                       Navigator.of(bottomSheetContext).pop();
                       runDelay(() => displayAddToPlaylistDialog(), navigationDelayDuration);
                     },
-                    buttonText: 'Add to playlist',
+                    text: 'Add to playlist',
                     width: double.infinity,
                     height: getScreenHeight() * 0.08,
-                    buttonColor: Colors.transparent,
+                    color: Colors.transparent,
                     setBorderRadius: false,
+                    prefix: null,
+                    loading: false
                   ),
                   playlistSongsData != null ? 
                     CustomButton(
@@ -93,11 +99,13 @@ class SongOptionController {
                         Navigator.of(bottomSheetContext).pop();
                         runDelay(() => removeFromPlaylist(), navigationDelayDuration);
                       },
-                      buttonText: 'Remove from playlist',
+                      text: 'Remove from playlist',
                       width: double.infinity,
                       height: getScreenHeight() * 0.08,
-                      buttonColor: Colors.transparent,
-                      setBorderRadius: false
+                      color: Colors.transparent,
+                      setBorderRadius: false,
+                      prefix: null,
+                      loading: false
                     )
                   : Container(),
                   CustomButton(
@@ -105,11 +113,13 @@ class SongOptionController {
                       Navigator.of(bottomSheetContext).pop();
                       displayConfirmDeleteSongDialog();
                     },
-                    buttonText: 'Delete',
+                    text: 'Delete',
                     width: double.infinity,
                     height: getScreenHeight() * 0.08,
-                    buttonColor: Colors.transparent,
+                    color: Colors.transparent,
                     setBorderRadius: false,
+                    prefix: null,
+                    loading: false
                   ),
                 ]
               )
@@ -155,24 +165,27 @@ class SongOptionController {
                     Navigator.of(bottomSheetContext).pop();
                     runDelay(() => displayCreatePlaylistDialog(), navigationDelayDuration);
                   },
-                  buttonText: 'Create new playlist',
+                  text: 'Create new playlist',
                   width: double.infinity,
                   height: getScreenHeight() * 0.08,
-                  buttonColor: Colors.transparent,
+                  color: Colors.transparent,
                   setBorderRadius: false,
+                  prefix: null,
+                  loading: false
                 ),
                 CustomButton(
                   onTapped: (){
                     Navigator.of(bottomSheetContext).pop();
                     runDelay(() => displaySelectExistingPlaylistDialog(), navigationDelayDuration);
                   },
-                  buttonText: 'Select existing playlist',
+                  text: 'Select existing playlist',
                   width: double.infinity,
                   height: getScreenHeight() * 0.08,
-                  buttonColor: Colors.transparent,
+                  color: Colors.transparent,
                   setBorderRadius: false,
+                  prefix: null,
+                  loading: false
                 ),
-
               ],
             )
           );
@@ -221,11 +234,13 @@ class SongOptionController {
                         Navigator.of(bottomSheetContext).pop();
                         runDelay(() => addToPlaylist(playlistList[i].playlistID), navigationDelayDuration);
                       },
-                      buttonText: playlistList[i].playlistName,
+                      text: playlistList[i].playlistName,
                       width: double.infinity,
                       height: getScreenHeight() * 0.08,
-                      buttonColor: Colors.transparent,
+                      color: Colors.transparent,
                       setBorderRadius: false,
+                      prefix: null,
+                      loading: false
                     )
               ],
             )
@@ -270,14 +285,11 @@ class SongOptionController {
                       height: 1.5
                     ),
                     SizedBox(
-                      height: getScreenHeight() * 0.01
-                    ),
-                    SizedBox(
                       height: getScreenHeight() * 0.08,
                       child: TextField(
                         maxLength: defaultTextFieldLimit,
                         controller: inputController,
-                        decoration: generatePlaylistNameTextFieldDecoration('playlist name', FontAwesomeIcons.list),
+                        decoration: generatePlaylistNameTextFieldDecorationNoFocus('playlist name', FontAwesomeIcons.list),
                         onChanged: (text){
                           setState((){
                             verifyInput = text.isNotEmpty;
@@ -285,13 +297,10 @@ class SongOptionController {
                         },
                       ),
                     ),
-                    SizedBox(
-                      height: getScreenHeight() * 0.01
-                    ),
                     CustomButton(
                       width: double.infinity, height: getScreenHeight() * 0.065, 
-                      buttonColor: verifyInput ? const Color.fromARGB(255, 143, 58, 52) : Colors.grey.withOpacity(0.5), 
-                      buttonText: 'Create playlist and add song', 
+                      color: verifyInput ? const Color.fromARGB(255, 143, 58, 52) : Colors.grey.withOpacity(0.5), 
+                      text: 'Create playlist and add song', 
                       onTapped: (){
                         if(mounted){
                           if(verifyInput){
@@ -302,7 +311,9 @@ class SongOptionController {
                           }
                         }
                       }, 
-                      setBorderRadius: false
+                      setBorderRadius: false,
+                      prefix: null,
+                      loading: false
                     ),
                   ],
                 )
@@ -351,21 +362,25 @@ class SongOptionController {
                       context, audioCompleteData
                     ), navigationDelayDuration);
                   },
-                  buttonText: 'Yes',
+                  text: 'Yes',
                   width: double.infinity,
                   height: getScreenHeight() * 0.08,
-                  buttonColor: Colors.transparent,
+                  color: Colors.transparent,
                   setBorderRadius: false,
+                  prefix: null,
+                  loading: false
                 ),
                 CustomButton(
                   onTapped: (){
                     Navigator.of(bottomSheetContext).pop();
                   },
-                  buttonText: 'Select existing playlist',
+                  text: 'Select existing playlist',
                   width: double.infinity,
                   height: getScreenHeight() * 0.08,
-                  buttonColor: Colors.transparent,
+                  color: Colors.transparent,
                   setBorderRadius: false,
+                  prefix: null,
+                  loading: false
                 ),
               ],
             )

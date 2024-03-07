@@ -12,7 +12,7 @@ class TextFieldTheme {
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(7.5),
-      borderSide: const BorderSide(width: 2, color: Colors.teal),
+      borderSide: const BorderSide(width: 1, color: Colors.teal),
     ),
     fillColor: Colors.grey.withOpacity(0.5)
   );
@@ -28,7 +28,7 @@ class TextFieldTheme {
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(7.5),
-      borderSide: const BorderSide(width: 2, color: Colors.teal),
+      borderSide: const BorderSide(width: 1, color: Colors.teal),
     ),
     fillColor: Colors.grey.withOpacity(0.5)
   );

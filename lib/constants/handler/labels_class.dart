@@ -16,6 +16,8 @@ class SuccessLabels {
 
   final modifyTags = "Successfully updated your song's information";
 
+  final modifyPlaylist = "Successfully updated your playlist's information";
+
   final scan = "Successfully scanned your folders";
 
   final createPlaylistAddSong = "Successfully created your playlist and added your song";

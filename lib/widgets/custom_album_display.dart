@@ -58,7 +58,7 @@ class _CustomAlbumDisplayWidgetState extends State<CustomAlbumDisplayWidget>{
                       Container(
                         width: getScreenWidth() * 0.125, height: getScreenWidth() * 0.125,
                         decoration: BoxDecoration(
-                          border: Border.all(width: 2),
+                          border: Border.all(width: 1),
                           borderRadius: BorderRadius.circular(100),
                           image: DecorationImage(
                             image: MemoryImage(

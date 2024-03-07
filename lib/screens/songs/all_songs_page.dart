@@ -62,14 +62,16 @@ class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with A
                           CustomButton(
                             width: (getScreenWidth() - defaultHorizontalPadding) / 2 - defaultHorizontalPadding / 2, 
                             height: getScreenHeight() * 0.075, 
-                            buttonColor: defaultCustomButtonColor, 
-                            buttonText: 'Scan folder', 
+                            color: defaultCustomButtonColor, 
+                            text: 'Scan folder', 
                             onTapped: () => runDelay((){
                               if(mounted){
                                 controller.scan();
                               }
                             }, navigationDelayDuration), 
-                            setBorderRadius: true
+                            setBorderRadius: true,
+                            prefix: null,
+                            loading: false
                           ),
                           SizedBox(
                             width: defaultHorizontalPadding / 2
@@ -77,8 +79,8 @@ class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with A
                           CustomButton(
                             width: (getScreenWidth() - defaultHorizontalPadding) / 2 - defaultHorizontalPadding / 2, 
                             height: getScreenHeight() * 0.075, 
-                            buttonColor: defaultCustomButtonColor, 
-                            buttonText: 'Favourites', 
+                            color: defaultCustomButtonColor, 
+                            text: 'Favourites', 
                             onTapped: () => runDelay((){
                               if(mounted){
                                 Navigator.push(
@@ -89,7 +91,9 @@ class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with A
                                 );
                               }
                             }, navigationDelayDuration), 
-                            setBorderRadius: true
+                            setBorderRadius: true,
+                            prefix: null,
+                            loading: false
                           ),
                         ],
                       ),
@@ -101,8 +105,8 @@ class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with A
                           CustomButton(
                             width: (getScreenWidth() - defaultHorizontalPadding) / 2 - defaultHorizontalPadding / 2, 
                             height: getScreenHeight() * 0.075, 
-                            buttonColor: defaultCustomButtonColor, 
-                            buttonText: 'Most played', 
+                            color: defaultCustomButtonColor, 
+                            text: 'Most played', 
                             onTapped: () => runDelay((){
                               if(mounted){
                                 Navigator.push(
@@ -113,7 +117,9 @@ class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with A
                                 );
                               }
                             }, navigationDelayDuration),
-                            setBorderRadius: true
+                            setBorderRadius: true,
+                            prefix: null,
+                            loading: false
                           ),
                           SizedBox(
                             width: defaultHorizontalPadding / 2
@@ -121,8 +127,8 @@ class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with A
                           CustomButton(
                             width: (getScreenWidth() - defaultHorizontalPadding) / 2 - defaultHorizontalPadding / 2, 
                             height: getScreenHeight() * 0.075, 
-                            buttonColor: defaultCustomButtonColor, 
-                            buttonText: 'Recently added', 
+                            color: defaultCustomButtonColor, 
+                            text: 'Recently added', 
                             onTapped: () => runDelay((){
                               if(mounted){
                                 Navigator.push(
@@ -133,7 +139,9 @@ class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with A
                                 );
                               }
                             }, navigationDelayDuration),
-                            setBorderRadius: true
+                            setBorderRadius: true,
+                            prefix: null,
+                            loading: false
                           ),
                         ],
                       )

@@ -76,11 +76,13 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
                         }
                       }, navigationDelayDuration);
                     },
-                    buttonText: 'Edit playlist',
+                    text: 'Edit playlist',
                     width: double.infinity,
                     height: getScreenHeight() * 0.08,
-                    buttonColor: Colors.transparent,
+                    color: Colors.transparent,
                     setBorderRadius: false,
+                    prefix: null,
+                    loading: false
                   ),
                   CustomButton(
                     onTapped: (){
@@ -89,11 +91,13 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
                       }
                       runDelay(() => deletePlaylist(), navigationDelayDuration);
                     },
-                    buttonText: 'Delete playlist',
+                    text: 'Delete playlist',
                     width: double.infinity,
                     height: getScreenHeight() * 0.08,
-                    buttonColor: Colors.transparent,
+                    color: Colors.transparent,
                     setBorderRadius: false,
+                    prefix: null,
+                    loading: false
                   ),
                 ]
               )
@@ -140,7 +144,7 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
                       Container(
                         width: getScreenWidth() * 0.125, height: getScreenWidth() * 0.125,
                         decoration: BoxDecoration(
-                          border: Border.all(width: 2, color: Colors.black),
+                          border: Border.all(width: 1, color: Colors.black),
                           borderRadius: BorderRadius.circular(100),
                           image: DecorationImage(
                             image: MemoryImage(

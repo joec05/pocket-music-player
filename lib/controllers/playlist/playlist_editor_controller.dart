@@ -63,6 +63,13 @@ class PlaylistEditorController {
               break;
             }
           }
+          if(context.mounted) {
+            handler.displaySnackbar(
+              context, 
+              SnackbarType.successful, 
+              tSuccess.modifyPlaylist
+            );
+          }
           runDelay(() => Navigator.pop(context, playlistList), navigationDelayDuration);
         }, actionDelayDuration);
       }

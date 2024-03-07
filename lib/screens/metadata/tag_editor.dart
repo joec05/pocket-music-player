@@ -60,7 +60,7 @@ class _TagEditorWidgetState extends State<_TagEditorWidgetStateful> {
                           Container(
                             width: getScreenWidth() * 0.35, height: getScreenWidth() * 0.35,
                             decoration: BoxDecoration(
-                              border: Border.all(width: 2),
+                              border: Border.all(width: 1),
                               borderRadius: BorderRadius.circular(100),
                               image: imageUrlValue.isNotEmpty ?
                                 DecorationImage(
@@ -109,30 +109,28 @@ class _TagEditorWidgetState extends State<_TagEditorWidgetStateful> {
                     maxLength: defaultTextFieldLimit,
                   ),
                   SizedBox(height: defaultTextFieldVerticalMargin),
-                  ValueListenableBuilder(
-                    valueListenable: controller.verifyTitle,
-                    builder: (context, verifyTitle, child){
+                  ListenableBuilder(
+                    listenable: Listenable.merge([
+                      controller.verifyTitle,
+                      controller.isLoading
+                    ]),
+                    builder: (context, child) {
+                      bool isLoading = controller.isLoading.value;
+                      bool verifyTitle = controller.verifyTitle.value;
                       return CustomButton(
                         width: double.infinity,
                         height: getScreenHeight() * 0.065,
-                        buttonColor: verifyTitle ? Colors.orange : Colors.grey.withOpacity(0.5),
-                        onTapped: verifyTitle ? () => controller.modifyTags() : (){},
-                        buttonText: 'Update metadata',
+                        color: verifyTitle && !isLoading ? Colors.orange : Colors.grey.withOpacity(0.5),
+                        onTapped: verifyTitle && !isLoading ? () => controller.modifyTags() : (){},
+                        text: 'Update metadata',
                         setBorderRadius: true,
+                        prefix: null,
+                        loading: isLoading
                       );
-                    }
-                  ) 
+                    },
+                  )
                 ],
               ),
-              ValueListenableBuilder(
-                valueListenable: controller.isLoading,
-                builder: (context, isLoading, child){
-                  if(isLoading){
-                    return const Center(child: CircularProgressIndicator(),);
-                  }
-                  return Container();
-                }
-              )
             ],
           )
         )

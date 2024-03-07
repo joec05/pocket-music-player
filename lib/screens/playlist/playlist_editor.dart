@@ -60,7 +60,7 @@ class _PlaylistEditorWidgetState extends State<_PlaylistEditorWidgetStateful> {
                           Container(
                             width: getScreenWidth() * 0.35, height: getScreenWidth() * 0.35,
                             decoration: BoxDecoration(
-                              border: Border.all(width: 2),
+                              border: Border.all(width: 1),
                               borderRadius: BorderRadius.circular(100),
                               image: imageUrlValue.isNotEmpty ?
                                 DecorationImage(
@@ -102,24 +102,17 @@ class _PlaylistEditorWidgetState extends State<_PlaylistEditorWidgetStateful> {
                       return CustomButton(
                         width: double.infinity,
                         height: getScreenHeight() * 0.065,
-                        buttonColor: verifyPlaylistName && !isLoading ? Colors.orange : Colors.grey.withOpacity(0.5),
+                        color: verifyPlaylistName && !isLoading ? Colors.orange : Colors.grey.withOpacity(0.5),
                         onTapped: verifyPlaylistName && !isLoading ? () => controller.modifyPlaylist() : (){},
-                        buttonText: 'Update playlist data',
+                        text: 'Update playlist data',
                         setBorderRadius: true,
+                        prefix: null,
+                        loading: isLoading
                       );
                     }
                   )
                 ]
               ),
-              ValueListenableBuilder(
-                valueListenable: controller.isLoading,
-                builder: (context, isLoading, child){
-                  if(isLoading){
-                    return const Center(child: CircularProgressIndicator(),);
-                  }
-                  return Container();
-                }
-              )
             ],
           )
         )

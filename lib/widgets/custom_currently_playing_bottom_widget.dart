@@ -106,7 +106,7 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
                     Container(
                       decoration: const BoxDecoration(
                         color: Color.fromARGB(255, 77, 69, 69),
-                        border: Border(top: BorderSide(width: 2, color: Colors.grey)),
+                        border: Border(top: BorderSide(width: 1, color: Colors.grey)),
                       ),
                       padding: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding / 2, vertical: defaultVerticalPadding / 2),
                       child: Row(
@@ -120,7 +120,7 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
                                 Container(
                                   width: getScreenWidth() * 0.125, height: getScreenWidth() * 0.125,
                                   decoration: BoxDecoration(
-                                    border: Border.all(width: 2),
+                                    border: Border.all(width: 1),
                                     borderRadius: BorderRadius.circular(100),
                                     image: DecorationImage(
                                       image: MemoryImage(

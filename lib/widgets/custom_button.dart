@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:music_player_app/global_files.dart';
 
-Color defaultCustomButtonColor = const Color.fromARGB(255, 66, 63, 63);
+const defaultCustomButtonColor = Color.fromARGB(255, 88, 85, 85);
 
 class CustomButton extends StatefulWidget {
   final double width;
   final double height;
-  final Color buttonColor;
-  final String buttonText;
+  final Color color;
+  final String text;
+  final Widget? prefix;
   final VoidCallback? onTapped;
   final bool setBorderRadius;
+  final bool loading;
 
-  const CustomButton({super.key, 
-    required this.width, required this.height, required this.buttonColor, required this.buttonText,
-    required this.onTapped, required this.setBorderRadius
+  const CustomButton({
+    super.key, 
+    required this.width, 
+    required this.height, 
+    required this.color, 
+    required this.text,
+    required this.prefix,
+    required this.onTapped, 
+    required this.setBorderRadius,
+    required this.loading
   });
 
   @override
@@ -31,7 +41,7 @@ class CustomButtonState extends State<CustomButton> {
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: widget.onTapped == null ? Colors.grey.withOpacity(0.5) : widget.buttonColor,
+          color: widget.onTapped == null ? Colors.grey.withOpacity(0.5) : widget.color,
           borderRadius: widget.setBorderRadius ? const BorderRadius.all(Radius.circular(5)) : BorderRadius.zero
         ),
         child: Material(
@@ -39,10 +49,45 @@ class CustomButtonState extends State<CustomButton> {
           child: InkWell(
             splashFactory: InkRipple.splashFactory,
             onTap: (){
-              Future.delayed(const Duration(milliseconds: 300), (){}).then((value) => widget.onTapped!());
+              Future.delayed(
+                const Duration(milliseconds: 150), 
+                (){}
+              ).then((value) => widget.onTapped!());
             },
             child: Center(
-              child: Text(widget.buttonText, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.5))
+              child: widget.loading ? 
+                SizedBox(
+                  width: widget.height * 0.45,
+                  height: widget.height * 0.45,
+                  child: const CircularProgressIndicator(
+                    color: Colors.cyan,
+                    strokeWidth: 2.5,
+                  )
+                )
+              :
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    widget.prefix != null ?
+                      Row(
+                        children: [
+                          widget.prefix!,
+                          SizedBox(
+                            width: getScreenWidth() * 0.035
+                          )
+                        ]
+                      )
+                    : Container(),
+                    Text(
+                      widget.text, 
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold, 
+                        fontSize: 16.5
+                      )
+                    ),
+                  ],
+                )
             )
           ),
         ),
