@@ -67,7 +67,7 @@ class FFmpegController {
 
     if(mounted){
       String inputFilePath = await copyTemporaryAudioPath(audioCompleteData.audioUrl);
-      String outputFilePath = await createOutputAudioFile();
+      String outputFilePath = await createOutputAudioFile(inputFilePath);
       String ffmpegCommand = '';
       if(imageUrl.isEmpty){
         ffmpegCommand += '-map 0:0 -c copy ';

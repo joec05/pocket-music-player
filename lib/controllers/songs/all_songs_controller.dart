@@ -45,13 +45,23 @@ class AllSongsController {
       List<FileSystemEntity> directoryList = await dir.list().toList();
       directoryList.removeWhere((e) => e.path == restrictedDirectory);
       List<FileSystemEntity> songsList = [];
+      List<String> audioFormats = [
+        '.mp3', // working format
+      ];
+      List ok = ['.wav', '.mp3'];
 
       for(var dir in directoryList){
         if(dir is Directory) {
           try {
-            songsList.addAll(
-              await dir.list(recursive: true).where((e) => e.path.endsWith('.mp3')).toList()
-            );
+            for(int i = 0; i < audioFormats.length; i++) {
+              
+              if(!ok.contains(audioFormats[i])){
+                print(await dir.list(recursive: true).where((e) => e.path.endsWith(audioFormats[i])).toList());
+              }
+              songsList.addAll(
+                await dir.list(recursive: true).where((e) => e.path.endsWith(audioFormats[i])).toList()
+              );
+            }
           } catch (e) {
             if(mounted) {
               handler.displaySnackbar(
@@ -73,6 +83,9 @@ class AllSongsController {
         String path = songsList[i].path;
         if(await File(path).exists()){
           var metadata = await ffmpegController.fetchAudioMetadata(path);
+          if(path.contains('ogg')){
+            print(metadata);
+          }
           if(metadata != null){
             songUrlsList.add(path);
             filesCompleteDataList[path] = AudioCompleteDataNotifier(

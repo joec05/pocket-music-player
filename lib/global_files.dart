@@ -3,6 +3,7 @@
 library global_files;
 
 export 'constants/app_dir/variables.dart';
+export 'constants/audio_format/functions.dart';
 export 'constants/audio_load/enums.dart';
 export 'constants/audio_player/enums.dart';
 export 'constants/delay/functions.dart';

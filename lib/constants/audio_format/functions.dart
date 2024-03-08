@@ -1,0 +1,1 @@
+String getAudioFormat(String audioPath) => audioPath.split('.').last;
