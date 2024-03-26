@@ -9,7 +9,7 @@ Future<String> copyTemporaryAudioPath(String url) async{
   Directory temporaryDirectory = await getTemporaryDirectory();
   Directory directory = await Directory('${temporaryDirectory.path}/audio').create(recursive: true);
   File originalFile = File(url);
-  String filePath = '${directory.path}/${const Uuid().v4()}.${getAudioFormat(url)}}';
+  String filePath = '${directory.path}/${const Uuid().v4()}.${getAudioFormat(url)}';
   File newFile = await originalFile.copy(filePath);
   return newFile.path;
 }
@@ -31,7 +31,7 @@ Future<String> writeTemporaryBytes(String url) async{
   ByteData byteData = ByteData.view(buffer);
   Directory tempDir = await getTemporaryDirectory();
   Directory directory = await Directory('${tempDir.path}/audio').create(recursive: true);
-  String filePath = '${directory.path}/$uniqueID.${getAudioFormat(url)}}';
+  String filePath = '${directory.path}/$uniqueID.${getAudioFormat(url)}';
   File newFile = await File(filePath).writeAsBytes(buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
   return newFile.path;
 }
@@ -39,7 +39,7 @@ Future<String> writeTemporaryBytes(String url) async{
 Future<String?> downloadTemporaryPath(String url, String fileName) async{
   Directory directory = await Directory('$defaultDirectory/music-player-app').create(recursive: true);
   File originalFile = File(url);
-  String filePath = '${directory.path}/${const Uuid().v4()}.${getAudioFormat(url)}}';
+  String filePath = '${directory.path}/${const Uuid().v4()}.${getAudioFormat(url)}';
   File newFile = await originalFile.copy(filePath);
   return newFile.path;
 }
@@ -47,7 +47,7 @@ Future<String?> downloadTemporaryPath(String url, String fileName) async{
 Future<String> createOutputAudioFile(String url) async {
   Directory temporaryDirectory = await getTemporaryDirectory();
   Directory directory = await Directory('${temporaryDirectory.path}/audio/output').create(recursive: true);
-  String filePath = '${directory.path}/${const Uuid().v4()}.${getAudioFormat(url)}}}';
+  String filePath = '${directory.path}/${const Uuid().v4()}.${getAudioFormat(url)}';
   return filePath;
 }
 
