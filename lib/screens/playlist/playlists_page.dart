@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
 
 class PlaylistPageWidget extends StatelessWidget {
@@ -38,28 +39,27 @@ class _PlaylistPageWidgetState extends State<_PlaylistPageWidgetStateful> with A
     super.build(context);
     return Scaffold(
       body: Center(
-        child: ValueListenableBuilder(
-          valueListenable: controller.playlistsSongsList,
-          builder: (context, playlistsList, child) {
-            if(playlistsList.isEmpty) {
-              return noItemsWidget(FontAwesomeIcons.list, 'playlists');
+        child: Obx (() {
+          List<PlaylistSongsModel> playlistsSongsList = controller.playlistsSongsList;
+
+          if(playlistsSongsList.isEmpty) {
+            return noItemsWidget(FontAwesomeIcons.list, 'playlists');
+          }
+          return ListView.builder(
+            shrinkWrap: false,
+            key: UniqueKey(),
+            scrollDirection: Axis.vertical,
+            primary: false,
+            physics: const AlwaysScrollableScrollPhysics(),
+            itemCount: playlistsSongsList.length,
+            itemBuilder: (context, index){
+              return CustomPlaylistDisplayWidget(
+                playlistSongsData: playlistsSongsList[index], 
+                key: UniqueKey()
+              );
             }
-            return ListView.builder(
-              shrinkWrap: false,
-              key: UniqueKey(),
-              scrollDirection: Axis.vertical,
-              primary: false,
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: playlistsList.length,
-              itemBuilder: (context, index){
-                return CustomPlaylistDisplayWidget(
-                  playlistSongsData: playlistsList[index], 
-                  key: UniqueKey()
-                );
-              }
-            );
-          },
-        )
+          );
+        })
       ),
       bottomNavigationBar: CustomCurrentlyPlayingBottomWidget(key: UniqueKey()),
     );

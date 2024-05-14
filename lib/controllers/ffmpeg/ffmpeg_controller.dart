@@ -26,7 +26,6 @@ class FFmpegController {
         Map<String, dynamic> tags = format['tags'];
         String durationStr = format['duration'];
         double durationInMs = double.parse(durationStr) * 1000;
-        await fetchAlbumArtData(audioUrl);
         return AudioMetadataInfoClass(
           format['filename'], 
           durationInMs.round(), 
@@ -72,8 +71,7 @@ class FFmpegController {
       if(imageUrl.isEmpty){
         ffmpegCommand += '-map 0:0 -c copy ';
       }else{
-        String imageCoverPath = await copyTemporaryImagePath(imageUrl);
-        ffmpegCommand += '-i $imageCoverPath -map 0:0 -map 1:0 -c copy -id3v2_version 3 ';
+        ffmpegCommand += '-i $imageUrl -map 0:0 -map 1:0 -c copy -id3v2_version 3 ';
       }
       if(title != audioCompleteData.audioMetadataInfo.title){
         ffmpegCommand += '-metadata title="$title" ';

@@ -1,13 +1,15 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImagePickerController {
   final BuildContext context;
-  ValueNotifier<String> imageUrl = ValueNotifier('');
+  Rx<Uint8List> imageBytes = Uint8List.fromList([]).obs;
 
   ImagePickerController(
     this.context
@@ -17,9 +19,7 @@ class ImagePickerController {
 
   void initializeController(){}
 
-  void dispose() {
-    imageUrl.dispose();
-  }
+  void dispose() {}
 
   Future<void> pickImage(ImageSource source, {BuildContext? context}) async {
     bool permissionIsGranted = false;
@@ -49,7 +49,7 @@ class ImagePickerController {
         );
         if(pickedFile != null && mounted){
           String fetchedImageUrl = pickedFile.path;
-          imageUrl.value = fetchedImageUrl;
+          imageBytes.value = File(fetchedImageUrl).readAsBytesSync();
         }
       } catch (e) {
         debugPrint(e.toString());

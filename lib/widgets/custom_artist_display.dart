@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
 
 class CustomArtistDisplayWidget extends StatefulWidget{
@@ -30,18 +31,7 @@ class _CustomArtistDisplayWidgetState extends State<CustomArtistDisplayWidget>{
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: (){
-            runDelay((){
-              if(mounted){
-                Navigator.push(
-                  context,
-                  SliderRightToLeftRoute(
-                    page: DisplayArtistSongsWidget(artistSongsData: artistSongsData)
-                  )
-                );
-              }
-            }, navigationDelayDuration);
-          },
+          onTap: () => Get.to(DisplayArtistSongsWidget(artistSongsData: artistSongsData)),
           splashFactory: InkRipple.splashFactory,
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding / 2, vertical: defaultVerticalPadding / 2),

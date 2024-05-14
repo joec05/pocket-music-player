@@ -1,12 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
 
 class PlaylistSongsController {
   final BuildContext context;
-  final PlaylistSongsClass playlistSongsData;
-  late ValueNotifier<PlaylistSongsClass> playlistSongsDataValue;
+  final PlaylistSongsModel playlistSongsData;
+  late Rx<PlaylistSongsModel> playlistSongsDataValue;
   late StreamSubscription updatePlaylistStreamClassSubscription;
 
   PlaylistSongsController(
@@ -17,7 +18,7 @@ class PlaylistSongsController {
   bool get mounted => context.mounted;
 
   void initializeController(){
-    playlistSongsDataValue = ValueNotifier(playlistSongsData);
+    playlistSongsDataValue = playlistSongsData.obs;
     updatePlaylistStreamClassSubscription = UpdatePlaylistStreamClass().updatePlaylistStream.listen((UpdatePlaylistStreamControllerClass data) {
       if(data.playlistID == playlistSongsDataValue.value.playlistID){
         int findPlaylistIndex = data.playlistsList.indexWhere((e) => e.playlistID == data.playlistID);
@@ -31,7 +32,6 @@ class PlaylistSongsController {
   }
 
   void dispose(){
-    playlistSongsDataValue.dispose();
     updatePlaylistStreamClassSubscription.cancel();
   }
 }

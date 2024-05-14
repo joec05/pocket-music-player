@@ -2,11 +2,12 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
 
 class RecentlyAddedSongsController {
   BuildContext context;
-  ValueNotifier<List<AudioRecentlyAddedClass>> recentlyAddedSongsData = ValueNotifier([]);
+  List<AudioRecentlyAddedClass> recentlyAddedSongsData = List<AudioRecentlyAddedClass>.from([]).obs;
   late StreamSubscription editAudioMetadataStreamClassSubscription;
 
   RecentlyAddedSongsController(
@@ -20,25 +21,24 @@ class RecentlyAddedSongsController {
     editAudioMetadataStreamClassSubscription = EditAudioMetadataStreamClass().editAudioMetadataStream.listen((EditAudioMetadataStreamControllerClass data) {
       if(mounted){
         String updatedAudioUrl = data.newAudioData.audioUrl;
-        int index = recentlyAddedSongsData.value.indexWhere((e) => e.audioUrl == updatedAudioUrl);
+        int index = recentlyAddedSongsData.indexWhere((e) => e.audioUrl == updatedAudioUrl);
         if(index > -1){
-          recentlyAddedSongsData.value.removeAt(index);
+          recentlyAddedSongsData.removeAt(index);
         }else{
-          recentlyAddedSongsData.value.removeLast();
+          recentlyAddedSongsData.removeLast();
         }
-        recentlyAddedSongsData.value = [
-          ...recentlyAddedSongsData.value,
+        recentlyAddedSongsData.assignAll([
           AudioRecentlyAddedClass(
             updatedAudioUrl, 
             DateTime.now().toIso8601String()
-          )
-        ];
+          ),
+          ...recentlyAddedSongsData
+        ]);
       }
     });
   }
 
   void dispose(){
-    recentlyAddedSongsData.dispose();
     editAudioMetadataStreamClassSubscription.cancel();
   }
 
@@ -48,13 +48,13 @@ class RecentlyAddedSongsController {
       for(var path in allAudioUrl) FileStat.stat(path)
     ]);
     for(int i = 0; i < allAudioUrl.length; i++){
-      recentlyAddedSongsData.value.add(
+      recentlyAddedSongsData.add(
         AudioRecentlyAddedClass(allAudioUrl[i], statResults[i].changed.toIso8601String())
       );
     }
-    recentlyAddedSongsData.value.sort((a, b) => b.modifiedDate.compareTo(a.modifiedDate));
-    recentlyAddedSongsData.value = [...recentlyAddedSongsData.value.sublist(
-      0, min(recentlyAddedSongsData.value.length, 15)
-    )]; 
+    recentlyAddedSongsData.sort((a, b) => b.modifiedDate.compareTo(a.modifiedDate));
+    recentlyAddedSongsData.assignAll([...recentlyAddedSongsData.sublist(
+      0, min(recentlyAddedSongsData.length, 15)
+    )]);; 
   }
 }

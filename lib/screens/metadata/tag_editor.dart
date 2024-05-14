@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:music_player_app/global_files.dart';
 import 'package:flutter/material.dart';
@@ -52,38 +54,36 @@ class _TagEditorWidgetState extends State<_TagEditorWidgetStateful> {
             children: [
               ListView(
                 children: [
-                  ValueListenableBuilder(
-                    valueListenable: controller.imagePickerController.imageUrl,
-                    builder: (context, imageUrlValue, child){
-                      return Column(
-                        children: [
-                          Container(
-                            width: getScreenWidth() * 0.35, height: getScreenWidth() * 0.35,
-                            decoration: BoxDecoration(
-                              border: Border.all(width: 1),
-                              borderRadius: BorderRadius.circular(100),
-                              image: imageUrlValue.isNotEmpty ?
-                                DecorationImage(
-                                  image: FileImage(
-                                    File(imageUrlValue)
-                                  ), fit: BoxFit.fill
-                                )
-                              : null
-                            ),
-                            child: Center(
-                              child: GestureDetector(
-                                onTap: mounted ? imageUrlValue.isNotEmpty ? 
-                                  () => controller.imagePickerController.imageUrl.value = '' : 
-                                  () => controller.pickImage(ImageSource.gallery, context: context) 
-                                : null,
-                                child: Icon(imageUrlValue.isNotEmpty ? Icons.delete : Icons.add, size: 30)
-                              ),
-                            )
+                  Obx(() {
+                    Uint8List imageBytes = controller.imageBytes;
+                    return Column(
+                      children: [
+                        Container(
+                          width: getScreenWidth() * 0.35, height: getScreenWidth() * 0.35,
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 1),
+                            borderRadius: BorderRadius.circular(100),
+                            image: imageBytes.isNotEmpty ?
+                              DecorationImage(
+                                image: MemoryImage(
+                                  imageBytes
+                                ), fit: BoxFit.fill
+                              )
+                            : null
                           ),
-                        ],
-                      );       
-                    }
-                  ),
+                          child: Center(
+                            child: GestureDetector(
+                              onTap: mounted ? imageBytes.isNotEmpty ? 
+                                () => controller.imagePickerController.imageBytes.value = Uint8List.fromList([]) : 
+                                () => controller.pickImage(ImageSource.gallery, context: context) 
+                              : null,
+                              child: Icon(imageBytes.isNotEmpty ? Icons.delete : Icons.add, size: 30)
+                            ),
+                          )
+                        ),
+                      ],
+                    );       
+                  }),
                   SizedBox(height: defaultTextFieldVerticalMargin),
                   TextField(
                     decoration: generateFormTextFieldDecoration('title', FontAwesomeIcons.music),
@@ -109,26 +109,20 @@ class _TagEditorWidgetState extends State<_TagEditorWidgetStateful> {
                     maxLength: defaultTextFieldLimit,
                   ),
                   SizedBox(height: defaultTextFieldVerticalMargin),
-                  ListenableBuilder(
-                    listenable: Listenable.merge([
-                      controller.verifyTitle,
-                      controller.isLoading
-                    ]),
-                    builder: (context, child) {
-                      bool isLoading = controller.isLoading.value;
-                      bool verifyTitle = controller.verifyTitle.value;
-                      return CustomButton(
-                        width: double.infinity,
-                        height: getScreenHeight() * 0.065,
-                        color: verifyTitle && !isLoading ? Colors.orange : Colors.grey.withOpacity(0.5),
-                        onTapped: verifyTitle && !isLoading ? () => controller.modifyTags() : (){},
-                        text: 'Update metadata',
-                        setBorderRadius: true,
-                        prefix: null,
-                        loading: isLoading
-                      );
-                    },
-                  )
+                  Obx(() {
+                    bool isLoading = controller.isLoading.value;
+                    bool verifyTitle = controller.verifyTitle.value;
+                    return CustomButton(
+                      width: double.infinity,
+                      height: getScreenHeight() * 0.065,
+                      color: verifyTitle && !isLoading ? Colors.orange : Colors.grey.withOpacity(0.5),
+                      onTapped: verifyTitle && !isLoading ? () => controller.modifyTags() : (){},
+                      text: 'Update metadata',
+                      setBorderRadius: true,
+                      prefix: null,
+                      loading: isLoading
+                    );
+                  })
                 ],
               ),
             ],

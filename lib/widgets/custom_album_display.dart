@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
 
 class CustomAlbumDisplayWidget extends StatefulWidget{
@@ -30,20 +31,7 @@ class _CustomAlbumDisplayWidgetState extends State<CustomAlbumDisplayWidget>{
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: (){
-            runDelay(
-              (){
-                if(mounted){
-                  Navigator.push(
-                    context,
-                    SliderRightToLeftRoute(
-                      page: DisplayAlbumSongsWidget(albumSongsData: albumSongsData)
-                    )
-                  );
-                }
-              }, navigationDelayDuration
-            );
-          },
+          onTap: () => Get.to(DisplayAlbumSongsWidget(albumSongsData: albumSongsData)),
           splashFactory: InkRipple.splashFactory,
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding / 2, vertical: defaultVerticalPadding / 2),

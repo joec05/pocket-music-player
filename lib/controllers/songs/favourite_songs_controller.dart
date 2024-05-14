@@ -1,11 +1,11 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
 
 class FavouriteSongsController {
   final BuildContext context;
-  ValueNotifier<List<String>> favouriteSongsData = ValueNotifier(appStateRepo.favouritesList);
+  List<FavouriteSongModel> favouriteSongsData = List<FavouriteSongModel>.from(appStateRepo.favouritesList).obs;
   late StreamSubscription updateFavouriteStreamClassSubscription;
 
   FavouriteSongsController(
@@ -16,12 +16,11 @@ class FavouriteSongsController {
 
   void initializeController(){
     updateFavouriteStreamClassSubscription = UpdateFavouriteStreamClass().updateFavouriteStream.listen((UpdateFavouriteStreamControllerClass data) {
-      favouriteSongsData.value = [...data.favouritesList];
+      favouriteSongsData.assignAll(data.favouritesList);
     });
   }
 
   void dispose(){
-    favouriteSongsData.dispose();
     updateFavouriteStreamClassSubscription.cancel();
   }
 }

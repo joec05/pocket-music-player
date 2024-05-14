@@ -1,7 +1,8 @@
 import 'dart:async';
+import 'package:music_player_app/global_files.dart';
 
 class UpdateFavouriteStreamControllerClass{
-  final List<String> favouritesList;
+  final List<FavouriteSongModel> favouritesList;
 
   UpdateFavouriteStreamControllerClass(this.favouritesList);
 }

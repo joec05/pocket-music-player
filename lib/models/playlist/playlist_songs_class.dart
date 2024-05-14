@@ -1,13 +1,13 @@
 import 'package:music_player_app/global_files.dart';
-
-class PlaylistSongsClass{
+/*
+class PlaylistSongsModel{
   final String playlistID;
   String playlistName;
   ImageDataClass playlistProfilePic;
   final String creationDate;
   List<String> songsList;
 
-  PlaylistSongsClass(
+  PlaylistSongsModel(
     this.playlistID, 
     this.playlistName, 
     this.playlistProfilePic, 
@@ -15,8 +15,8 @@ class PlaylistSongsClass{
     this.songsList
   );
 
-  PlaylistSongsClass copy() {
-    return PlaylistSongsClass(
+  PlaylistSongsModel copy() {
+    return PlaylistSongsModel(
       playlistID, 
       playlistName, 
       playlistProfilePic, 
@@ -24,4 +24,4 @@ class PlaylistSongsClass{
       [...songsList]
     );
   }
-}
+}*/

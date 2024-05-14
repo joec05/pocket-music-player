@@ -1,11 +1,13 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:music_player_app/global_files.dart';
 import 'package:flutter/material.dart';
 
 class PlaylistEditorWidget extends StatelessWidget {
-  final PlaylistSongsClass playlistSongsData;
+  final PlaylistSongsModel playlistSongsData;
   const PlaylistEditorWidget({super.key, required this.playlistSongsData});
 
   @override
@@ -15,7 +17,7 @@ class PlaylistEditorWidget extends StatelessWidget {
 }
 
 class _PlaylistEditorWidgetStateful extends StatefulWidget {
-  final PlaylistSongsClass playlistSongsData;
+  final PlaylistSongsModel playlistSongsData;
   const _PlaylistEditorWidgetStateful({required this.playlistSongsData});
 
   @override
@@ -50,69 +52,60 @@ class _PlaylistEditorWidgetState extends State<_PlaylistEditorWidgetStateful> {
           padding: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding / 2, vertical: defaultVerticalPadding),
           child: Stack(
             children: [
-              ListView(
-                children: [
-                  ValueListenableBuilder(
-                    valueListenable: controller.imagePickerController.imageUrl,
-                    builder: (context, imageUrlValue, child){
-                      return Column(
-                        children: [
-                          Container(
-                            width: getScreenWidth() * 0.35, height: getScreenWidth() * 0.35,
-                            decoration: BoxDecoration(
-                              border: Border.all(width: 1),
-                              borderRadius: BorderRadius.circular(100),
-                              image: imageUrlValue.isNotEmpty ?
-                                DecorationImage(
-                                  image: FileImage(
-                                    File(imageUrlValue)
-                                  ), fit: BoxFit.fill
-                                )
-                              : null
-                            ),
-                            child: Center(
-                              child: GestureDetector(
-                                onTap: mounted ? imageUrlValue.isNotEmpty ?
-                                  () => controller.imagePickerController.imageUrl.value = '' : 
-                                  () => controller.pickImage(ImageSource.gallery, context: context) 
-                                : null,
-                                child: Icon(imageUrlValue.isNotEmpty ? Icons.delete : Icons.add, size: 30)
-                              ),
-                            )
+              Obx(() {
+                Uint8List imageBytes = controller.imageBytes;
+                bool verifyPlaylistName = controller.verifyPlaylistName.value;
+                bool isLoading = controller.isLoading.value;
+
+                return ListView(
+                  children: [
+                    Column(
+                      children: [
+                        Container(
+                          width: getScreenWidth() * 0.35, height: getScreenWidth() * 0.35,
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 1),
+                            borderRadius: BorderRadius.circular(100),
+                            image: imageBytes.isNotEmpty ?
+                              DecorationImage(
+                                image: MemoryImage(
+                                  imageBytes
+                                ), fit: BoxFit.fill
+                              )
+                            : null
                           ),
-                        ],
-                      );
-                    }
-                  ),
-                  SizedBox(height: defaultTextFieldVerticalMargin),
-                  TextField(
-                    decoration: generateFormTextFieldDecoration('playlist name', FontAwesomeIcons.list),
-                    controller: controller.playlistNameController,
-                    maxLength: defaultTextFieldLimit,
-                  ),
-                  SizedBox(height: defaultTextFieldVerticalMargin),
-                  ListenableBuilder(
-                    listenable: Listenable.merge([
-                      controller.verifyPlaylistName,
-                      controller.isLoading
-                    ]),
-                    builder: (context, child) {
-                      bool verifyPlaylistName = controller.verifyPlaylistName.value;
-                      bool isLoading = controller.isLoading.value;
-                      return CustomButton(
-                        width: double.infinity,
-                        height: getScreenHeight() * 0.065,
-                        color: verifyPlaylistName && !isLoading ? Colors.orange : Colors.grey.withOpacity(0.5),
-                        onTapped: verifyPlaylistName && !isLoading ? () => controller.modifyPlaylist() : (){},
-                        text: 'Update playlist data',
-                        setBorderRadius: true,
-                        prefix: null,
-                        loading: isLoading
-                      );
-                    }
-                  )
-                ]
-              ),
+                          child: Center(
+                            child: GestureDetector(
+                              onTap: mounted ? imageBytes.isNotEmpty ?
+                                () => controller.imagePickerController.imageBytes.value = Uint8List.fromList([]) : 
+                                () => controller.pickImage(ImageSource.gallery, context: context) 
+                              : null,
+                              child: Icon(imageBytes.isNotEmpty ? Icons.delete : Icons.add, size: 30)
+                            ),
+                          )
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: defaultTextFieldVerticalMargin),
+                    TextField(
+                      decoration: generateFormTextFieldDecoration('playlist name', FontAwesomeIcons.list),
+                      controller: controller.playlistNameController,
+                      maxLength: defaultTextFieldLimit,
+                    ),
+                    SizedBox(height: defaultTextFieldVerticalMargin),
+                    CustomButton(
+                      width: double.infinity,
+                      height: getScreenHeight() * 0.065,
+                      color: verifyPlaylistName && !isLoading ? Colors.orange : Colors.grey.withOpacity(0.5),
+                      onTapped: verifyPlaylistName && !isLoading ? () => controller.modifyPlaylist() : (){},
+                      text: 'Update playlist data',
+                      setBorderRadius: true,
+                      prefix: null,
+                      loading: isLoading
+                    )
+                  ]
+                );
+              })
             ],
           )
         )

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
 
 class DisplayPlaylistSongsWidget extends StatelessWidget {
-  final PlaylistSongsClass playlistSongsData;
+  final PlaylistSongsModel playlistSongsData;
   const DisplayPlaylistSongsWidget({super.key, required this.playlistSongsData});
 
   @override
@@ -13,7 +14,7 @@ class DisplayPlaylistSongsWidget extends StatelessWidget {
 }
 
 class _DisplayPlaylistSongsWidgetStateful extends StatefulWidget {
-  final PlaylistSongsClass playlistSongsData;
+  final PlaylistSongsModel playlistSongsData;
   const _DisplayPlaylistSongsWidgetStateful({required this.playlistSongsData});
 
   @override
@@ -48,38 +49,36 @@ class _DisplayPlaylistSongsWidgetState extends State<_DisplayPlaylistSongsWidget
         titleSpacing: defaultAppBarTitleSpacingWithBackBtn,
       ),
       body: Center(
-        child: ValueListenableBuilder(
-          valueListenable: controller.playlistSongsDataValue,
-          builder: (context, playlistData, child) {
-            if(playlistData.songsList.isEmpty) {
-              return noItemsWidget(FontAwesomeIcons.music, 'songs');
-            }
-            return ListView.builder(
-              shrinkWrap: false,
-              key: UniqueKey(),
-              scrollDirection: Axis.vertical,
-              primary: false,
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: playlistData.songsList.length,
-              itemBuilder: (context, index){
-                if(appStateRepo.allAudiosList[playlistData.songsList[index]] == null){
-                  return Container();
-                }
-                return ValueListenableBuilder(
-                  valueListenable: appStateRepo.allAudiosList[playlistData.songsList[index]]!.notifier, 
-                  builder: (context, audioCompleteData, child){
-                    return CustomAudioPlayerWidget(
-                      audioCompleteData: audioCompleteData,
-                      key: UniqueKey(),
-                      directorySongsList: playlistData.songsList,
-                      playlistSongsData: playlistData
-                    );
-                  }
-                );
-              }
-            );
+        child: Obx(() {
+          PlaylistSongsModel playlistData = controller.playlistSongsDataValue.value;
+          if(playlistData.songsList.isEmpty) {
+            return noItemsWidget(FontAwesomeIcons.music, 'songs');
           }
-        )
+          return ListView.builder(
+            shrinkWrap: false,
+            key: UniqueKey(),
+            scrollDirection: Axis.vertical,
+            primary: false,
+            physics: const AlwaysScrollableScrollPhysics(),
+            itemCount: playlistData.songsList.length,
+            itemBuilder: (context, index){
+              if(appStateRepo.allAudiosList[playlistData.songsList[index]] == null){
+                return Container();
+              }
+
+              return Obx(() {
+                final audioNotifier = appStateRepo.allAudiosList[playlistData.songsList[index]]!.notifier;
+                
+                return CustomAudioPlayerWidget(
+                  audioCompleteData: audioNotifier.value,
+                  key: UniqueKey(),
+                  directorySongsList: playlistData.songsList,
+                  playlistSongsData: playlistData
+                );
+              });
+            }
+          );
+        })
       ),
       bottomNavigationBar: CustomCurrentlyPlayingBottomWidget(key: UniqueKey()),
     );

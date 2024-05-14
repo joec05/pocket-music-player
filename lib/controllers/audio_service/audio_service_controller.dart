@@ -86,9 +86,10 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
 
   void addAudioListenCount(AudioCompleteDataClass audioCompleteData) async{
     if(File(audioCompleteData.audioUrl).existsSync()) {
-      AudioListenCountClass listenCountData = appStateRepo.audioListenCount[audioCompleteData.audioUrl]!.notifier.value;
-      AudioListenCountClass updatedListenCountData = AudioListenCountClass(listenCountData.audioUrl, listenCountData.listenCount + 1);
-      appStateRepo.audioListenCount[audioCompleteData.audioUrl]!.notifier.value = updatedListenCountData;
+      AudioListenCountModel listenCountData = appStateRepo.audioListenCount[audioCompleteData.audioUrl]!;
+      AudioListenCountModel updatedListenCountData = AudioListenCountModel(listenCountData.audioUrl, listenCountData.listenCount + 1);
+      appStateRepo.audioListenCount[audioCompleteData.audioUrl] = updatedListenCountData;
+      isarController.putNewCount(updatedListenCountData);
     }
   }
 

@@ -4,7 +4,7 @@ import 'package:music_player_app/global_files.dart';
 class CustomAudioPlayerWidget extends StatefulWidget{
   final AudioCompleteDataClass audioCompleteData;
   final List<String> directorySongsList;
-  final PlaylistSongsClass? playlistSongsData;
+  final PlaylistSongsModel? playlistSongsData;
 
   const CustomAudioPlayerWidget({
     super.key, 
@@ -35,11 +35,11 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
     List<String> directorySongsList = [...widget.directorySongsList];
     List<String> directorySongsListShuffled = [...widget.directorySongsList];
     directorySongsListShuffled.shuffle();
-    appStateRepo.audioHandler.value!.updateListDirectory(
+    appStateRepo.audioHandler!.updateListDirectory(
       directorySongsList, directorySongsListShuffled
     );
-    appStateRepo.audioHandler.value!.setCurrentSong(audioCompleteData);
-    appStateRepo.audioHandler.value!.play();
+    appStateRepo.audioHandler!.setCurrentSong(audioCompleteData);
+    appStateRepo.audioHandler!.play();
   }
   
   @override
@@ -49,6 +49,7 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
       return Container();
     }
     return Material(
+      key: UniqueKey(),
       color: Colors.transparent,
       child: InkWell(
         onTap: (){
@@ -57,7 +58,7 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
         splashFactory: InkRipple.splashFactory,
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding / 2, vertical: defaultVerticalPadding / 2),
-          color: audioIsSelected || appStateRepo.audioHandler.value!.currentAudioUrl == audioCompleteData.audioUrl ? Colors.grey.withOpacity(0.6) : Colors.transparent,
+          color: audioIsSelected || appStateRepo.audioHandler!.currentAudioUrl == audioCompleteData.audioUrl ? Colors.grey.withOpacity(0.6) : Colors.transparent,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

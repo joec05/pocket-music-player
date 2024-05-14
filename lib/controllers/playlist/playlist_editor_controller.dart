@@ -1,16 +1,17 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
 import 'package:flutter/material.dart';
 
 class PlaylistEditorController {
   final BuildContext context;
-  final PlaylistSongsClass playlistSongsData;
+  final PlaylistSongsModel playlistSongsData;
   late ImagePickerController imagePickerController;
   TextEditingController playlistNameController = TextEditingController();
   String currentMessage = '';
-  ValueNotifier<bool> verifyPlaylistName = ValueNotifier(false);
-  ValueNotifier<bool> isLoading = ValueNotifier(false);
+  RxBool verifyPlaylistName = false.obs;
+  RxBool isLoading = false.obs;
 
   PlaylistEditorController(
     this.context,
@@ -19,13 +20,13 @@ class PlaylistEditorController {
 
   bool get mounted => context.mounted;
   Function get pickImage => imagePickerController.pickImage;
-  String get imageUrl => imagePickerController.imageUrl.value;
+  Uint8List get imageBytes => imagePickerController.imageBytes.value;
 
   void initializeController(){
     if(mounted){
       imagePickerController = ImagePickerController(context);
       playlistNameController.text = playlistSongsData.playlistName;
-      imagePickerController.imageUrl.value = playlistSongsData.playlistProfilePic.path;
+      imagePickerController.imageBytes.value = Uint8List.fromList(playlistSongsData.imageBytes);
       verifyPlaylistName.value = playlistNameController.text.isNotEmpty;
       playlistNameController.addListener(() {
         verifyPlaylistName.value = playlistNameController.text.isNotEmpty;
@@ -36,8 +37,6 @@ class PlaylistEditorController {
   void dispose(){
     imagePickerController.dispose();
     playlistNameController.dispose();
-    verifyPlaylistName.dispose();
-    isLoading.dispose();
   }
 
   void modifyPlaylist() async{
@@ -46,20 +45,12 @@ class PlaylistEditorController {
         isLoading.value = true;
         runDelay((){
           String playlistName = playlistNameController.text.trim();
-          List<PlaylistSongsClass> playlistList = appStateRepo.playlistList;
+          List<PlaylistSongsModel> playlistList = appStateRepo.playlistList;
           for(int i = 0; i < playlistList.length; i++){
             if(playlistList[i].playlistID == playlistSongsData.playlistID){
-              ImageDataClass imageData = imageUrl.isNotEmpty ? 
-                ImageDataClass(
-                  imageUrl, 
-                  File(imageUrl).readAsBytesSync()
-                ) 
-              : 
-                ImageDataClass('', Uint8List.fromList([]));
-
               playlistList[i].playlistName = playlistName;
-              playlistList[i].playlistProfilePic = imageData;
-
+              playlistList[i].imageBytes = imageBytes.isNotEmpty ? imageBytes : Uint8List.fromList([]);
+              isarController.putPlaylist(playlistList[i]);
               break;
             }
           }

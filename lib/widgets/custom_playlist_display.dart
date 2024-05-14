@@ -1,8 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
 
 class CustomPlaylistDisplayWidget extends StatefulWidget{
-  final PlaylistSongsClass playlistSongsData;
+  final PlaylistSongsModel playlistSongsData;
   const CustomPlaylistDisplayWidget({super.key, required this.playlistSongsData});
 
   @override
@@ -10,7 +13,7 @@ class CustomPlaylistDisplayWidget extends StatefulWidget{
 }
 
 class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidget>{
-  late PlaylistSongsClass playlistSongsData;
+  late PlaylistSongsModel playlistSongsData;
 
   @override initState(){
     super.initState();
@@ -24,8 +27,10 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
   void deletePlaylist(){
     if(mounted){
       String playlistID = playlistSongsData.playlistID;
-      List<PlaylistSongsClass> playlistList = appStateRepo.playlistList;
-      playlistList.removeWhere((e) => e.playlistID == playlistID);
+      List<PlaylistSongsModel> playlistList = appStateRepo.playlistList;
+      int index = playlistList.indexWhere((e) => e.playlistID == playlistID);
+      isarController.deletePlaylist(playlistList[index]);
+      playlistList.removeAt(index);
       appStateRepo.setPlaylistList(playlistID, playlistList);
     }
   }
@@ -66,10 +71,7 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
                       }
                       runDelay(() async{
                         if(mounted){
-                          var updatedPlaylist = await Navigator.push(
-                            context,
-                            SliderRightToLeftRoute(page: PlaylistEditorWidget(playlistSongsData: playlistSongsData))
-                          );
+                          var updatedPlaylist = await Get.to(PlaylistEditorWidget(playlistSongsData: playlistSongsData));
                           if(updatedPlaylist != null){
                             appStateRepo.setPlaylistList(playlistSongsData.playlistID, updatedPlaylist);
                           }
@@ -116,20 +118,7 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: (){
-            runDelay(
-              (){
-                if(mounted){
-                  Navigator.push(
-                    context,
-                    SliderRightToLeftRoute(
-                      page: DisplayPlaylistSongsWidget(playlistSongsData: playlistSongsData)
-                    )
-                  );
-                }
-              }, navigationDelayDuration
-            );
-          },
+          onTap: () => Get.to(DisplayPlaylistSongsWidget(playlistSongsData: playlistSongsData)),
           splashFactory: InkRipple.splashFactory,
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding / 2, vertical: defaultVerticalPadding / 2),
@@ -148,10 +137,10 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
                           borderRadius: BorderRadius.circular(100),
                           image: DecorationImage(
                             image: MemoryImage(
-                              playlistSongsData.playlistProfilePic.bytes.isEmpty ?
+                              playlistSongsData.imageBytes.isEmpty ?
                                 appStateRepo.audioImageData!.bytes
                               : 
-                                playlistSongsData.playlistProfilePic.bytes
+                                Uint8List.fromList(playlistSongsData.imageBytes)
                             ), 
                             fit: BoxFit.fill,
                             onError: (exception, stackTrace) => Image.memory(appStateRepo.audioImageData!.bytes),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
 
 class AllSongsPageWidget extends StatelessWidget {
@@ -8,19 +9,19 @@ class AllSongsPageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _AllMusicPageWidgetStateful(setLoadingState: setLoadingState);
+    return AllMusicPageWidgetStateful(setLoadingState: setLoadingState);
   }
 }
 
-class _AllMusicPageWidgetStateful extends StatefulWidget {
+class AllMusicPageWidgetStateful extends StatefulWidget {
   final Function(bool, LoadType) setLoadingState;
-  const _AllMusicPageWidgetStateful({required this.setLoadingState});
+  const AllMusicPageWidgetStateful({required this.setLoadingState});
 
   @override
-  State<_AllMusicPageWidgetStateful> createState() => _AllMusicPageWidgetState();
+  State<AllMusicPageWidgetStateful> createState() => AllMusicPageWidgetState();
 }
 
-class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with AutomaticKeepAliveClientMixin{
+class AllMusicPageWidgetState extends State<AllMusicPageWidgetStateful> with AutomaticKeepAliveClientMixin {
   late AllSongsController controller;
 
   @override
@@ -81,16 +82,7 @@ class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with A
                             height: getScreenHeight() * 0.075, 
                             color: defaultCustomButtonColor, 
                             text: 'Favourites', 
-                            onTapped: () => runDelay((){
-                              if(mounted){
-                                Navigator.push(
-                                  context,
-                                  SliderRightToLeftRoute(
-                                    page: const DisplayFavouritesClassWidget()
-                                  )
-                                );
-                              }
-                            }, navigationDelayDuration), 
+                            onTapped: () => Get.to(const DisplayFavouritesClassWidget()), 
                             setBorderRadius: true,
                             prefix: null,
                             loading: false
@@ -107,16 +99,7 @@ class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with A
                             height: getScreenHeight() * 0.075, 
                             color: defaultCustomButtonColor, 
                             text: 'Most played', 
-                            onTapped: () => runDelay((){
-                              if(mounted){
-                                Navigator.push(
-                                  context,
-                                  SliderRightToLeftRoute(
-                                    page: const DisplayMostPlayedClassWidget()
-                                  )
-                                );
-                              }
-                            }, navigationDelayDuration),
+                            onTapped: () => Get.to(const DisplayMostPlayedClassWidget()),
                             setBorderRadius: true,
                             prefix: null,
                             loading: false
@@ -129,16 +112,7 @@ class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with A
                             height: getScreenHeight() * 0.075, 
                             color: defaultCustomButtonColor, 
                             text: 'Recently added', 
-                            onTapped: () => runDelay((){
-                              if(mounted){
-                                Navigator.push(
-                                  context,
-                                  SliderRightToLeftRoute(
-                                    page: const DisplayRecentlyAddedClassWidget()
-                                  )
-                                );
-                              }
-                            }, navigationDelayDuration),
+                            onTapped: () => Get.to(const DisplayRecentlyAddedClassWidget()),
                             setBorderRadius: true,
                             prefix: null,
                             loading: false
@@ -153,38 +127,37 @@ class _AllMusicPageWidgetState extends State<_AllMusicPageWidgetStateful> with A
             SizedBox(height: getScreenHeight() * 0.0075),
             const Divider(color: Colors.grey, height: 3.5),
             SizedBox(height: getScreenHeight() * 0.0075),
-            ValueListenableBuilder(
-              valueListenable: controller.audioUrls,
-              builder: (context, audioUrls, child) {
-                if(audioUrls.isEmpty) {
-                  return noItemsWidget(FontAwesomeIcons.music, 'songs');
-                }
-                return ListView.builder(
-                  shrinkWrap: true,
-                  key: UniqueKey(),
-                  scrollDirection: Axis.vertical,
-                  primary: false,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: audioUrls.length,
-                  itemBuilder: (context, index){
-                    if(appStateRepo.allAudiosList[audioUrls[index]] == null){
-                      return Container();
-                    }
-                    return ValueListenableBuilder(
-                      valueListenable: appStateRepo.allAudiosList[audioUrls[index]]!.notifier,
-                      builder: (context, audioCompleteData, child){
-                        return CustomAudioPlayerWidget(
-                          audioCompleteData: audioCompleteData,
-                          key: UniqueKey(),
-                          directorySongsList: audioUrls,
-                          playlistSongsData: null
-                        );
-                      }
-                    );
-                  }
-                );
+            Obx(() {
+              List<String> audioUrls = controller.audioUrls;
+              
+              if(audioUrls.isEmpty) {
+                return noItemsWidget(FontAwesomeIcons.music, 'songs');
               }
-            )
+              return ListView.builder(
+                shrinkWrap: true,
+                key: UniqueKey(),
+                scrollDirection: Axis.vertical,
+                primary: false,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: audioUrls.length,
+                itemBuilder: (context, index){
+                  if(appStateRepo.allAudiosList[audioUrls[index]] == null){
+                    return Container();
+                  }
+
+                  return Obx(() {
+                    final audioNotifier = appStateRepo.allAudiosList[audioUrls[index]];
+
+                    return CustomAudioPlayerWidget(
+                      audioCompleteData: audioNotifier!.notifier.value,
+                      key: UniqueKey(),
+                      directorySongsList: audioUrls,
+                      playlistSongsData: null
+                    );
+                  });
+                }
+              );
+            })
           ],
         )
       ),

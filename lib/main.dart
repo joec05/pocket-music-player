@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  await LocalDatabase().initDatabase();
+  await isarController.initialize();
   GlobalObserver globalObserver = GlobalObserver();
   WidgetsBinding.instance.addObserver(globalObserver);
   runApp(
@@ -27,7 +28,7 @@ class MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       initialRoute: '/',
       onGenerateRoute: (settings) {
         switch (settings.name) {
@@ -40,7 +41,15 @@ class MyAppState extends State<MyApp> {
             return null;
         }
       },
-      theme: globalTheme.dark
+      theme: globalTheme.dark,
+      initialBinding: StoreBinding()
     );
+  }
+}
+
+class StoreBinding implements Bindings {
+  @override
+  void dependencies() {
+    /// Get.lazyPut(() => appStateRepo.allAudiosList);
   }
 }

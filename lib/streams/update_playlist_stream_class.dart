@@ -3,7 +3,7 @@ import 'package:music_player_app/global_files.dart';
 
 class UpdatePlaylistStreamControllerClass{
   final String playlistID;
-  final List<PlaylistSongsClass> playlistsList;
+  final List<PlaylistSongsModel> playlistsList;
 
   UpdatePlaylistStreamControllerClass(this.playlistID, this.playlistsList);
 }

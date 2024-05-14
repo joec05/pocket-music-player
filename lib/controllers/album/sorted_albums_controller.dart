@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:music_player_app/constants/loading/enums.dart';
+import 'package:music_player_app/controllers/loading/loading_controller.dart';
 import 'package:music_player_app/global_files.dart';
 
-class SortedAlbumsController {
+class SortedAlbumsController extends LoadingController {
   BuildContext context;
-  ValueNotifier<List<AlbumSongsClass>> albumsSongsList = ValueNotifier([]);
+  List<AlbumSongsClass> albumsSongsList = List<AlbumSongsClass>.from([]).obs;
   late StreamSubscription editAudioDataStreamClassSubscription;
   late StreamSubscription deleteAudioDataStreamClassSubscription;
   
@@ -25,20 +28,19 @@ class SortedAlbumsController {
     deleteAudioDataStreamClassSubscription = DeleteAudioDataStreamClass().deleteAudioDataStream.listen((DeleteAudioDataStreamControllerClass data) {
       if(mounted){
         AudioCompleteDataClass audioData = data.audioData;
-        List<AlbumSongsClass> albumsSongsListValue = [...albumsSongsList.value];
+        List<AlbumSongsClass> albumsSongsListValue = [...albumsSongsList];
         for(int i = albumsSongsListValue.length - 1; i >= 0; i--){
           albumsSongsListValue[i].songsList.remove(audioData.audioUrl);
           if(albumsSongsListValue[i].songsList.isEmpty){
             albumsSongsListValue.removeAt(i);
-            albumsSongsList.value = [...albumsSongsListValue];
           }
         }
+        albumsSongsList.assignAll(albumsSongsListValue);
       }
     });
   }
 
   void dispose(){
-    albumsSongsList.dispose();
     editAudioDataStreamClassSubscription.cancel();
     deleteAudioDataStreamClassSubscription.cancel();
   }
@@ -66,6 +68,7 @@ class SortedAlbumsController {
         }
       }
     }
-    albumsSongsList.value = [...albumsSongsListFetched];
+    albumsSongsList.assignAll(albumsSongsListFetched);
+    changeStatus(LoadingStatus.success);
   }
 }

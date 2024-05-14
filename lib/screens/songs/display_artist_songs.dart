@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
 
 class DisplayArtistSongsWidget extends StatelessWidget {
@@ -61,20 +62,22 @@ class _DisplayArtistSongsWidgetState extends State<_DisplayArtistSongsWidgetStat
             if(appStateRepo.allAudiosList[controller.artistSongsData.songsList[index]] == null){
               return Container();
             }
-            return ValueListenableBuilder(
-              valueListenable: appStateRepo.allAudiosList[controller.artistSongsData.songsList[index]]!.notifier, 
-              builder: (context, audioCompleteData, child){
-                if(audioCompleteData.audioMetadataInfo.artistName == controller.artistSongsData.artistName){
-                  return CustomAudioPlayerWidget(
-                    audioCompleteData: audioCompleteData,
-                    key: UniqueKey(),
-                    directorySongsList: controller.artistSongsData.songsList,
-                    playlistSongsData: null
-                  );
-                }
-                return Container();
+
+            return Obx(() {
+              final audioNotifier = appStateRepo.allAudiosList[controller.artistSongsData.songsList[index]]!.notifier;
+              final AudioCompleteDataClass audioCompleteData = audioNotifier.value;
+              
+              if(audioCompleteData.audioMetadataInfo.artistName == controller.artistSongsData.artistName){
+                return CustomAudioPlayerWidget(
+                  audioCompleteData: audioCompleteData,
+                  key: UniqueKey(),
+                  directorySongsList: controller.artistSongsData.songsList,
+                  playlistSongsData: null
+                );
               }
-            );
+              
+              return Container();
+            });
           },
         )
       ),

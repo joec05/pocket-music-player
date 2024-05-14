@@ -1,13 +1,14 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
 import 'package:uuid/uuid.dart';
 
 class SongOptionController {
   final BuildContext context;
   final AudioCompleteDataClass audioCompleteData;
-  final PlaylistSongsClass? playlistSongsData;
+  final PlaylistSongsModel? playlistSongsData;
 
   SongOptionController(
     this.context,
@@ -48,16 +49,7 @@ class SongOptionController {
                   CustomButton(
                     onTapped: (){
                       Navigator.of(bottomSheetContext).pop();
-                      runDelay((){
-                        if(mounted){
-                          Navigator.push(
-                            context,
-                            SliderRightToLeftRoute(
-                              page: TagEditorWidget(audioCompleteData: audioCompleteData)
-                            )
-                          );
-                        }
-                      }, navigationDelayDuration);
+                      Get.to(TagEditorWidget(audioCompleteData: audioCompleteData));
                     },
                     text: 'Edit tags',
                     width: double.infinity,
@@ -72,7 +64,7 @@ class SongOptionController {
                       Navigator.of(bottomSheetContext).pop();
                       toggleFavourites();
                     },
-                    text: appStateRepo.favouritesList.contains(audioCompleteData.audioUrl) ? 'Remove from favourites' : 'Add to favourites',
+                    text: appStateRepo.favouritesList.map((e) => e.songPath).contains(audioCompleteData.audioUrl) ? 'Remove from favourites' : 'Add to favourites',
                     width: double.infinity,
                     height: getScreenHeight() * 0.08,
                     color: Colors.transparent,
@@ -195,7 +187,7 @@ class SongOptionController {
   }
 
   void displaySelectExistingPlaylistDialog(){
-    List<PlaylistSongsClass> playlistList = appStateRepo.playlistList;
+    List<PlaylistSongsModel> playlistList = appStateRepo.playlistList;
     if(mounted){
       showDialog(
         context: context,
@@ -396,11 +388,14 @@ class SongOptionController {
   void createPlaylistAndAddSong(String playlistName){
     if(mounted){
       String playlistID = const Uuid().v4();
-      List<PlaylistSongsClass> playlistList = appStateRepo.playlistList;
-      playlistList.add(PlaylistSongsClass(
-        playlistID, playlistName, ImageDataClass('', Uint8List.fromList([])), DateTime.now().toIso8601String(), [audioCompleteData.audioUrl]
-      ));
+      List<PlaylistSongsModel> playlistList = appStateRepo.playlistList;
+      PlaylistSongsModel playlistData = PlaylistSongsModel(
+        playlistID, playlistName, Uint8List.fromList([]), DateTime.now().toIso8601String(), 
+        [audioCompleteData.audioUrl]
+      );
+      playlistList.add(playlistData);
       appStateRepo.setPlaylistList(playlistID, playlistList);
+      isarController.putPlaylist(playlistData);
       handler.displaySnackbar(
         context, 
         SnackbarType.successful, 
@@ -411,10 +406,11 @@ class SongOptionController {
 
   void addToPlaylist(String playlistID){
     if(mounted){
-      List<PlaylistSongsClass> playlistList = appStateRepo.playlistList;
+      List<PlaylistSongsModel> playlistList = appStateRepo.playlistList;
       for(int i = 0; i < playlistList.length; i++){
         if(playlistList[i].playlistID == playlistID){
           playlistList[i].songsList.insert(0, audioCompleteData.audioUrl);
+          isarController.putPlaylist(playlistList[i]);
         }
       }
       appStateRepo.setPlaylistList(playlistID, playlistList);
@@ -429,12 +425,17 @@ class SongOptionController {
   void removeFromPlaylist(){
     if(mounted){
       String playlistID = playlistSongsData!.playlistID;
-      List<PlaylistSongsClass> playlistList = appStateRepo.playlistList;
+      List<PlaylistSongsModel> playlistList = appStateRepo.playlistList;
       for(int i = playlistList.length - 1; i >= 0; i--){
         if(playlistList[i].playlistID == playlistID){
-          playlistList[i].songsList.remove(audioCompleteData.audioUrl);
+          List<String> songsList = List<String>.of(playlistList[i].songsList);
+          songsList.remove(audioCompleteData.audioUrl);
+          playlistList[i].songsList = songsList;
           if(playlistList[i].songsList.isEmpty){
+            isarController.deletePlaylist(playlistList[i]);
             playlistList.removeAt(i);
+          } else {
+            isarController.putPlaylist(playlistList[i]);
           }
         }
       }
@@ -452,18 +453,22 @@ class SongOptionController {
   }
 
   void toggleFavourites() {
-    List<String> favouritesList = appStateRepo.favouritesList;
+    List<FavouriteSongModel> favouritesList = appStateRepo.favouritesList;
     runDelay((){
       if(mounted){
-        if(favouritesList.contains(audioCompleteData.audioUrl)){
-          favouritesList.remove(audioCompleteData.audioUrl);
+        int index = favouritesList.indexWhere((e) => e.songPath == audioCompleteData.audioUrl);
+        if(index > -1) {
+          isarController.deleteFavourite(favouritesList[index]);
+          favouritesList.removeAt(index);
           handler.displaySnackbar(
             context, 
             SnackbarType.successful, 
             tSuccess.removeSongFromFavourites
           );
         }else{
-          favouritesList.insert(0, audioCompleteData.audioUrl);
+          FavouriteSongModel songModel = FavouriteSongModel(audioCompleteData.audioUrl);
+          favouritesList.insert(0, songModel);
+          isarController.putFavourite(songModel);
           handler.displaySnackbar(
             context, 
             SnackbarType.successful, 

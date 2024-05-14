@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
 import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:device_info_plus/device_info_plus.dart';
@@ -7,7 +8,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 class AllSongsController {
   final BuildContext context;
   final Function(bool, LoadType) setLoadingState;
-  ValueNotifier<List<String>> audioUrls = ValueNotifier([]);
+  List<String> audioUrls = List<String>.from([]).obs;
 
   AllSongsController(
     this.context,
@@ -17,6 +18,7 @@ class AllSongsController {
   bool get mounted => context.mounted;
 
   void initializeController() {
+    print('2');
     fetchLocalSongs(LoadType.initial);
   }
 
@@ -69,8 +71,8 @@ class AllSongsController {
       }
       
       final Map<String, AudioCompleteDataNotifier> filesCompleteDataList = {};
-      final Map<String, AudioListenCountNotifier> localListenCountData = await LocalDatabase().fetchAudioListenCountData();
-      Map<String, AudioListenCountNotifier> getListenCountData = {};
+      final Map<String, AudioListenCountModel> localListenCountData = await isarController.fetchAllCounts();
+      Map<String, AudioListenCountModel> getListenCountData = {};
       List<String> songUrlsList = [];
       
       for(int i = 0; i < songsList.length; i++){
@@ -81,29 +83,24 @@ class AllSongsController {
             songUrlsList.add(path);
             filesCompleteDataList[path] = AudioCompleteDataNotifier(
               path, 
-              ValueNotifier(
-                AudioCompleteDataClass(
-                  path, metadata, AudioPlayerState.stopped, false
-                )
-              ),
+              AudioCompleteDataClass(
+                path, metadata, AudioPlayerState.stopped, false
+              ).obs
             );
             if(localListenCountData[path] != null){
               getListenCountData[path] = localListenCountData[path]!;
             }else{
-              getListenCountData[path] = AudioListenCountNotifier(
-                path, ValueNotifier(AudioListenCountClass(path, 0))
-              );
+              getListenCountData[path] = AudioListenCountModel(path, 0);
             }
           }
         }
       }
-      
       if(mounted){
-        audioUrls.value = [...songUrlsList];
+        audioUrls.assignAll(songUrlsList);
         appStateRepo.allAudiosList = filesCompleteDataList;
         appStateRepo.audioListenCount = getListenCountData;
-        appStateRepo.setFavouritesList(await LocalDatabase().fetchAudioFavouritesData());
-        appStateRepo.setPlaylistList('', await LocalDatabase().fetchAudioPlaylistsData());
+        appStateRepo.setFavouritesList(await isarController.fetchFavourites());
+        appStateRepo.setPlaylistList('', await isarController.fetchPlaylists());
       }   
     }else{
       if(mounted) {
@@ -114,22 +111,15 @@ class AllSongsController {
         );
       }
     }
+    print('3');
     setLoadingState(true, loadType);
   }
 
   void scan() async{
     if(mounted){
-      await appStateRepo.audioHandler.value!.stop().then((value){
+      await appStateRepo.audioHandler!.stop().then((value){
         setLoadingState(false, LoadType.scan);
-        runDelay(() async{
-          await LocalDatabase().replaceAudioFavouritesData(appStateRepo.favouritesList).then((value) async{
-            await LocalDatabase().replaceAudioPlaylistsData(appStateRepo.playlistList).then((value) async{
-              await LocalDatabase().replaceAudioListenCountData(appStateRepo.audioListenCount).then((value) async{
-                fetchLocalSongs(LoadType.scan);
-              });
-            });
-          });
-        }, actionDelayDuration);
+        runDelay(() => fetchLocalSongs(LoadType.scan), actionDelayDuration);
       });
     }
   }

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 
 class SliderRightToLeftRoute extends PageRouteBuilder {
   final Widget page;
@@ -15,4 +15,4 @@ class SliderRightToLeftRoute extends PageRouteBuilder {
       ).animate(animation), child: child
     )
   );
-}
+}*/

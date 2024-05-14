@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:http/http.dart' as http;
 import 'package:music_player_app/global_files.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
@@ -9,7 +8,7 @@ Future<String> copyTemporaryAudioPath(String url) async{
   Directory temporaryDirectory = await getTemporaryDirectory();
   Directory directory = await Directory('${temporaryDirectory.path}/audio').create(recursive: true);
   File originalFile = File(url);
-  String filePath = '${directory.path}/${const Uuid().v4()}.${getAudioFormat(url)}';
+  String filePath = '${directory.path}/${const Uuid().v4()}.mp3';
   File newFile = await originalFile.copy(filePath);
   return newFile.path;
 }
@@ -23,23 +22,18 @@ Future<String> copyTemporaryImagePath(String url) async{
   return newFile.path;
 }
 
-Future<String> writeTemporaryBytes(String url) async{
+Future<String> writeTemporaryImageBytes(Uint8List list) async{
   String uniqueID = const Uuid().v4();
-  final http.Response responseData = await http.get(Uri.parse(url));
-  Uint8List bytesList = responseData.bodyBytes;
-  var buffer = bytesList.buffer;
-  ByteData byteData = ByteData.view(buffer);
   Directory tempDir = await getTemporaryDirectory();
-  Directory directory = await Directory('${tempDir.path}/audio').create(recursive: true);
-  String filePath = '${directory.path}/$uniqueID.${getAudioFormat(url)}';
-  File newFile = await File(filePath).writeAsBytes(buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
-  return newFile.path;
+  File file = await File('${tempDir.path}/image/$uniqueID.png').create(recursive: true);
+  file.writeAsBytesSync(list);
+  return file.path;
 }
 
 Future<String?> downloadTemporaryPath(String url, String fileName) async{
   Directory directory = await Directory('$defaultDirectory/music-player-app').create(recursive: true);
   File originalFile = File(url);
-  String filePath = '${directory.path}/${const Uuid().v4()}.${getAudioFormat(url)}';
+  String filePath = '${directory.path}/${const Uuid().v4()}.mp3';
   File newFile = await originalFile.copy(filePath);
   return newFile.path;
 }
@@ -47,7 +41,7 @@ Future<String?> downloadTemporaryPath(String url, String fileName) async{
 Future<String> createOutputAudioFile(String url) async {
   Directory temporaryDirectory = await getTemporaryDirectory();
   Directory directory = await Directory('${temporaryDirectory.path}/audio/output').create(recursive: true);
-  String filePath = '${directory.path}/${const Uuid().v4()}.${getAudioFormat(url)}';
+  String filePath = '${directory.path}/${const Uuid().v4()}.mp3';
   return filePath;
 }
 

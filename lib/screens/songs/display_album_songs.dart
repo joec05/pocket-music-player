@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
 
 class DisplayAlbumSongsWidget extends StatelessWidget {
@@ -61,21 +62,23 @@ class _DisplayAlbumSongsWidgetState extends State<_DisplayAlbumSongsWidgetStatef
             if(appStateRepo.allAudiosList[controller.albumSongsData.songsList[index]] == null){
               return Container();
             }
-            return ValueListenableBuilder(
-              valueListenable: appStateRepo.allAudiosList[controller.albumSongsData.songsList[index]]!.notifier, 
-              builder: (context, audioCompleteData, child){
-                if(audioCompleteData.audioMetadataInfo.albumName == controller.albumSongsData.albumName &&
-                  audioCompleteData.audioMetadataInfo.albumArtistName == controller.albumSongsData.artistName){
-                  return CustomAudioPlayerWidget(
-                    audioCompleteData: audioCompleteData,
-                    key: UniqueKey(),
-                    directorySongsList: controller.albumSongsData.songsList,
-                    playlistSongsData: null
-                  );
-                }
-                return Container();
+
+            return Obx(() {
+              final audioNotifier = appStateRepo.allAudiosList[controller.albumSongsData.songsList[index]]!.notifier;
+              final AudioCompleteDataClass audioCompleteData = audioNotifier.value;
+
+              if(audioCompleteData.audioMetadataInfo.albumName == controller.albumSongsData.albumName &&
+                audioCompleteData.audioMetadataInfo.albumArtistName == controller.albumSongsData.artistName){
+                return CustomAudioPlayerWidget(
+                  audioCompleteData: audioCompleteData,
+                  key: UniqueKey(),
+                  directorySongsList: controller.albumSongsData.songsList,
+                  playlistSongsData: null
+                );
               }
-            );
+
+              return Container();
+            });
           }
         )
       ),

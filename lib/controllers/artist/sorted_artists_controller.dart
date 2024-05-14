@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:music_player_app/constants/loading/enums.dart';
+import 'package:music_player_app/controllers/loading/loading_controller.dart';
 import 'package:music_player_app/global_files.dart';
 
-class SortedArtistsController {
+class SortedArtistsController extends LoadingController {
   BuildContext context;
-  ValueNotifier<List<ArtistSongsClass>> artistsSongsList = ValueNotifier([]);
+  List<ArtistSongsClass> artistsSongsList = List<ArtistSongsClass>.from([]).obs;
   late StreamSubscription editAudioDataStreamClassSubscription;
   late StreamSubscription deleteAudioDataStreamClassSubscription;
 
@@ -15,7 +18,7 @@ class SortedArtistsController {
 
   bool get mounted => context.mounted;
 
-  void initializeController(){
+  void initializeController() {
     fetchLocalSongs();
     editAudioDataStreamClassSubscription = EditAudioMetadataStreamClass().editAudioMetadataStream.listen((EditAudioMetadataStreamControllerClass data) {
       if(mounted){
@@ -23,7 +26,7 @@ class SortedArtistsController {
         AudioCompleteDataClass oldAudioData = data.oldAudioData;
         String? newArtistName = newAudioData.audioMetadataInfo.artistName;
         String? oldArtistName = oldAudioData.audioMetadataInfo.artistName;
-        List<ArtistSongsClass> artistsSongsListValue = [...artistsSongsList.value];
+        List<ArtistSongsClass> artistsSongsListValue = [...artistsSongsList];
         if(newArtistName != oldArtistName){
           int findOldIndex = artistsSongsListValue.indexWhere((e) => e.artistName == oldArtistName);
           if(findOldIndex > -1){
@@ -41,27 +44,26 @@ class SortedArtistsController {
               newArtistName, [newAudioData.audioUrl]
             ));
           }
-          artistsSongsList.value = [...artistsSongsListValue];
+          artistsSongsList.assignAll(artistsSongsListValue);
         }
       }
     });
     deleteAudioDataStreamClassSubscription = DeleteAudioDataStreamClass().deleteAudioDataStream.listen((DeleteAudioDataStreamControllerClass data) {
       if(mounted){
         AudioCompleteDataClass audioData = data.audioData;
-        List<ArtistSongsClass> artistsSongsListValue = [...artistsSongsList.value];
+        List<ArtistSongsClass> artistsSongsListValue = [...artistsSongsList];
         for(int i = artistsSongsListValue.length - 1; i >= 0; i--){
           artistsSongsListValue[i].songsList.remove(audioData.audioUrl);
           if(artistsSongsListValue[i].songsList.isEmpty){
             artistsSongsListValue.removeAt(i);
           }
         }
-        artistsSongsList.value = [...artistsSongsListValue];
+        artistsSongsList.assignAll(artistsSongsListValue);
       }
     });
   }
   
   void dispose(){
-    artistsSongsList.dispose();
     editAudioDataStreamClassSubscription.cancel();
     deleteAudioDataStreamClassSubscription.cancel();
   }
@@ -87,6 +89,7 @@ class SortedArtistsController {
         }
       }
     }
-    artistsSongsList.value = [...artistsSongsListFetched];
+    artistsSongsList.assignAll(artistsSongsListFetched);
+    changeStatus(LoadingStatus.success);
   }
 }

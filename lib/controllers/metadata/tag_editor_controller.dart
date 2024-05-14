@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
 import 'package:flutter/material.dart';
 
@@ -9,9 +11,9 @@ class TagEditorController {
   TextEditingController artistController = TextEditingController();
   TextEditingController albumController = TextEditingController();
   TextEditingController albumArtistController = TextEditingController();
-  ValueNotifier<bool> verifyTitle = ValueNotifier(false);
+  RxBool verifyTitle = false.obs;
   String currentMessage = '';
-  ValueNotifier<bool> isLoading = ValueNotifier(false);
+  RxBool isLoading = false.obs;
 
   TagEditorController(
     this.context,
@@ -20,7 +22,7 @@ class TagEditorController {
 
   bool get mounted => context.mounted;
   Function get pickImage => imagePickerController.pickImage;
-  String get imageUrl => imagePickerController.imageUrl.value;
+  Uint8List get imageBytes => imagePickerController.imageBytes.value;
 
   void initializeController(){
     if(mounted){
@@ -29,7 +31,7 @@ class TagEditorController {
       artistController.text = audioCompleteData.audioMetadataInfo.artistName ?? '';
       albumController.text = audioCompleteData.audioMetadataInfo.albumName ?? '';
       albumArtistController.text = audioCompleteData.audioMetadataInfo.albumArtistName ?? '';
-      imagePickerController.imageUrl.value = audioCompleteData.audioMetadataInfo.albumArt.path;
+      imagePickerController.imageBytes.value = audioCompleteData.audioMetadataInfo.albumArt.bytes;
       verifyTitle.value = titleController.text.isNotEmpty;
       titleController.addListener(() {
         verifyTitle.value = titleController.text.isNotEmpty;
@@ -43,14 +45,13 @@ class TagEditorController {
     artistController.dispose();
     albumController.dispose();
     albumArtistController.dispose();
-    verifyTitle.dispose();
-    isLoading.dispose();
   }
 
   void modifyTags() async{
     if(mounted){
       if(!isLoading.value){
         isLoading.value = true;
+        String imageUrl = imageBytes.isEmpty ? '' : await writeTemporaryImageBytes(imageBytes);
         await ffmpegController.modifyTags(
           context, 
           audioCompleteData, 

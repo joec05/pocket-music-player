@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -7,12 +8,12 @@ import 'package:audio_service/audio_service.dart';
 
 class MainPageController {
   final BuildContext context;
-  ValueNotifier<int> selectedIndexValue = ValueNotifier(0);
+  RxInt selectedIndexValue = 0.obs;
   final PageController pageController = PageController(initialPage: 0, keepPage: true);
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  ValueNotifier<bool> isLoaded = ValueNotifier(false);
-  ValueNotifier<List<Widget>> widgetOptions = ValueNotifier(<Widget>[]);
-  ValueNotifier<LoadType> loadType = ValueNotifier(LoadType.initial);
+  RxBool isLoaded = false.obs;
+  List<Widget> widgetOptions = List<Widget>.from([]).obs;
+  Rx<LoadType> loadType = LoadType.initial.obs;
 
   MainPageController(
     this.context
@@ -23,24 +24,20 @@ class MainPageController {
   void initializeController(){
     initializeDefaultStartingDisplayImage();
     initializeAudioService();
-    appStateRepo.audioHandler.addListener(() {
-      if(appStateRepo.audioHandler.value != null) {
-        widgetOptions.value = [
-          AllSongsPageWidget(setLoadingState: setLoadingState), const SortedArtistsPageWidget(), const SortedAlbumsPageWidget(), const PlaylistPageWidget()
-        ];
-      }
-    });
+    widgetOptions = [
+      AllSongsPageWidget(setLoadingState: setLoadingState), 
+      const SortedArtistsPageWidget(), 
+      const SortedAlbumsPageWidget(), 
+      const PlaylistPageWidget()
+    ];
   }
 
   void dispose(){
-    selectedIndexValue.dispose();
     pageController.dispose();
-    isLoaded.dispose();
-    loadType.dispose();
   }
 
   Future<void> initializeAudioService() async{
-    if(appStateRepo.audioHandler.value == null){
+    if(appStateRepo.audioHandler == null){
       MyAudioHandler audioHandler = await AudioService.init(
         builder: () => MyAudioHandler(),
         config: const AudioServiceConfig(
@@ -49,15 +46,13 @@ class MainPageController {
         ),
       );
       audioHandler.initializeController();
-      appStateRepo.audioHandler.value = audioHandler;
+      appStateRepo.audioHandler = audioHandler;
     }
   }
 
   void setLoadingState(bool state, LoadType loadingType){
-    if(mounted){
-      isLoaded.value = state;
-      loadType.value = loadingType;
-    }
+    isLoaded.value = state;
+    loadType.value = loadingType;
   }
 
   void onPageChanged(newIndex){

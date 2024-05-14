@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
 
 class MostPlayedSongsController {
   final BuildContext context;
-  ValueNotifier<List<AudioListenCountClass>> mostPlayedSongsData = ValueNotifier([]);
+  List<AudioListenCountModel> mostPlayedSongsData = List<AudioListenCountModel>.from([]).obs;
 
   MostPlayedSongsController(
     this.context
@@ -17,14 +18,12 @@ class MostPlayedSongsController {
 
   void fetchLocalSongs() async{
     if(mounted){
-      Map<String, AudioListenCountNotifier> listenCountHistory = appStateRepo.audioListenCount;
-      List<AudioListenCountNotifier> values = listenCountHistory.values.toList();
-      values.sort((a, b) => b.notifier.value.listenCount.compareTo(a.notifier.value.listenCount));
-      mostPlayedSongsData.value = [...values.map((e) => e.notifier.value).toList()];
+      Map<String, AudioListenCountModel> listenCountHistory = appStateRepo.audioListenCount;
+      List<AudioListenCountModel> values = listenCountHistory.values.toList();
+      values.sort((a, b) => b.listenCount.compareTo(a.listenCount));
+      mostPlayedSongsData.assignAll(values);
     }
   }
 
-  void dispose(){
-    mostPlayedSongsData.dispose();
-  }
+  void dispose() {}
 }
