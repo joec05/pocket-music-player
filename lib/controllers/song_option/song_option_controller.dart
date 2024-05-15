@@ -409,7 +409,9 @@ class SongOptionController {
       List<PlaylistSongsModel> playlistList = appStateRepo.playlistList;
       for(int i = 0; i < playlistList.length; i++){
         if(playlistList[i].playlistID == playlistID){
-          playlistList[i].songsList.insert(0, audioCompleteData.audioUrl);
+          List<String> songsList = List<String>.of(playlistList[i].songsList);
+          songsList.insert(0, audioCompleteData.audioUrl);
+          playlistList[i].songsList = songsList;
           isarController.putPlaylist(playlistList[i]);
         }
       }

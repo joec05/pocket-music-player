@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';

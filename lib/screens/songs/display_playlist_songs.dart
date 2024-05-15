@@ -27,7 +27,7 @@ class _DisplayPlaylistSongsWidgetState extends State<_DisplayPlaylistSongsWidget
   @override
   void initState(){
     super.initState();
-    controller = PlaylistSongsController(context, widget.playlistSongsData);
+    controller = PlaylistSongsController(context, widget.playlistSongsData.obs);
     controller.initializeController();
   }
 
@@ -45,18 +45,15 @@ class _DisplayPlaylistSongsWidgetState extends State<_DisplayPlaylistSongsWidget
         flexibleSpace: Container(
           decoration: defaultAppBarDecoration
         ),
-        title: Text(controller.playlistSongsData.playlistName), 
+        title: Text(controller.playlistSongsData.value.playlistName), 
         titleSpacing: defaultAppBarTitleSpacingWithBackBtn,
       ),
-      body: Center(
-        child: Obx(() {
-          PlaylistSongsModel playlistData = controller.playlistSongsDataValue.value;
-          if(playlistData.songsList.isEmpty) {
-            return noItemsWidget(FontAwesomeIcons.music, 'songs');
-          }
-          return ListView.builder(
+      body: Obx(() {
+        PlaylistSongsModel playlistData = controller.playlistSongsData.value;
+        return Center(
+          child: playlistData.songsList.isEmpty ? noItemsWidget(FontAwesomeIcons.music, 'songs') :
+          ListView.builder(
             shrinkWrap: false,
-            key: UniqueKey(),
             scrollDirection: Axis.vertical,
             primary: false,
             physics: const AlwaysScrollableScrollPhysics(),
@@ -77,9 +74,9 @@ class _DisplayPlaylistSongsWidgetState extends State<_DisplayPlaylistSongsWidget
                 );
               });
             }
-          );
-        })
-      ),
+          )
+        );
+      }),
       bottomNavigationBar: CustomCurrentlyPlayingBottomWidget(key: UniqueKey()),
     );
   }

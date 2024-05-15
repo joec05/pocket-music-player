@@ -43,7 +43,6 @@ class AllMusicPageWidgetState extends State<AllMusicPageWidgetStateful> with Aut
       body: Center(
         child: ListView(
           shrinkWrap: false,
-          key: UniqueKey(),
           scrollDirection: Axis.vertical,
           primary: false,
           physics: const AlwaysScrollableScrollPhysics(),
@@ -135,7 +134,6 @@ class AllMusicPageWidgetState extends State<AllMusicPageWidgetStateful> with Aut
               }
               return ListView.builder(
                 shrinkWrap: true,
-                key: UniqueKey(),
                 scrollDirection: Axis.vertical,
                 primary: false,
                 physics: const NeverScrollableScrollPhysics(),

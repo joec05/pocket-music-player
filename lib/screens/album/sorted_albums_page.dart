@@ -55,7 +55,6 @@ class _SortedAlbumsPageWidgetState extends State<_SortedAlbumsPageWidgetStateful
           
           return ListView.builder(
             shrinkWrap: false,
-            key: UniqueKey(),
             scrollDirection: Axis.vertical,
             primary: false,
             physics: const AlwaysScrollableScrollPhysics(),

@@ -7,4 +7,13 @@ class AlbumSongsClass{
   final List<String> songsList;
 
   AlbumSongsClass(this.albumName, this.artistName, this.albumProfilePic, this.songsList);
+
+  AlbumSongsClass copy() {
+    return AlbumSongsClass(
+      albumName, 
+      artistName, 
+      albumProfilePic, 
+      songsList
+    );
+  }
 }

@@ -55,7 +55,6 @@ class _DisplayFavouritesClassWidgetState extends State<_DisplayFavouritesClassWi
           }
           return ListView.builder(
             shrinkWrap: false,
-            key: UniqueKey(),
             scrollDirection: Axis.vertical,
             primary: false,
             physics: const AlwaysScrollableScrollPhysics(),

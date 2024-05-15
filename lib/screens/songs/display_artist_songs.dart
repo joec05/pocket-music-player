@@ -27,7 +27,7 @@ class _DisplayArtistSongsWidgetState extends State<_DisplayArtistSongsWidgetStat
   @override
   void initState(){
     super.initState();
-    controller = ArtistSongsController(context, widget.artistSongsData);
+    controller = ArtistSongsController(context, widget.artistSongsData.obs);
     controller.initializeController();
   }
 
@@ -45,42 +45,44 @@ class _DisplayArtistSongsWidgetState extends State<_DisplayArtistSongsWidgetStat
           decoration: defaultAppBarDecoration
         ),
         title: Text(
-          controller.artistSongsData.artistName ?? 'Unknown'
+          controller.artistSongsData.value.artistName ?? 'Unknown'
         ), 
         titleSpacing: defaultAppBarTitleSpacingWithBackBtn,
       ),
-      body: Center(
-        child: controller.artistSongsData.songsList.isEmpty ? noItemsWidget(FontAwesomeIcons.music, 'songs') : 
-        ListView.builder(
-          shrinkWrap: false,
-          key: UniqueKey(),
-          scrollDirection: Axis.vertical,
-          primary: false,
-          physics: const AlwaysScrollableScrollPhysics(),
-          itemCount: controller.artistSongsData.songsList.length,
-          itemBuilder: (context, index){
-            if(appStateRepo.allAudiosList[controller.artistSongsData.songsList[index]] == null){
-              return Container();
-            }
-
-            return Obx(() {
-              final audioNotifier = appStateRepo.allAudiosList[controller.artistSongsData.songsList[index]]!.notifier;
-              final AudioCompleteDataClass audioCompleteData = audioNotifier.value;
-              
-              if(audioCompleteData.audioMetadataInfo.artistName == controller.artistSongsData.artistName){
-                return CustomAudioPlayerWidget(
-                  audioCompleteData: audioCompleteData,
-                  key: UniqueKey(),
-                  directorySongsList: controller.artistSongsData.songsList,
-                  playlistSongsData: null
-                );
+      body: Obx(() {
+        ArtistSongsClass artistData = controller.artistSongsData.value;
+        return Center(
+          child: artistData.songsList.isEmpty ? noItemsWidget(FontAwesomeIcons.music, 'songs') : 
+          ListView.builder(
+            shrinkWrap: false,
+            scrollDirection: Axis.vertical,
+            primary: false,
+            physics: const AlwaysScrollableScrollPhysics(),
+            itemCount: artistData.songsList.length,
+            itemBuilder: (context, index){
+              if(appStateRepo.allAudiosList[artistData.songsList[index]] == null){
+                return Container();
               }
-              
-              return Container();
-            });
-          },
-        )
-      ),
+
+              return Obx(() {
+                final audioNotifier = appStateRepo.allAudiosList[artistData.songsList[index]]!.notifier;
+                final AudioCompleteDataClass audioCompleteData = audioNotifier.value;
+                
+                if(audioCompleteData.audioMetadataInfo.artistName == controller.artistSongsData.value.artistName) {
+                  return CustomAudioPlayerWidget(
+                    audioCompleteData: audioCompleteData,
+                    key: UniqueKey(),
+                    directorySongsList: artistData.songsList,
+                    playlistSongsData: null
+                  );
+                }
+                
+                return Container();
+              });
+            },
+          )
+        );
+      }),
       bottomNavigationBar: CustomCurrentlyPlayingBottomWidget(key: UniqueKey()),
     );
   }

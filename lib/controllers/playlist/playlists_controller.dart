@@ -24,12 +24,17 @@ class PlaylistsController {
         AudioCompleteDataClass audioData = data.audioData;
         List<PlaylistSongsModel> playlistsSongs = [...playlistsSongsList];
         for(int i = playlistsSongs.length - 1; i >= 0; i--){
-          playlistsSongs[i].songsList.remove(audioData.audioUrl);
+          List<String> songsList = playlistsSongs[i].songsList;
+          songsList.remove(audioData.audioUrl);
+          playlistsSongs[i].songsList = songsList;
+          isarController.putPlaylist(playlistsSongs[i]);
+
           if(playlistsSongs[i].songsList.isEmpty){
+            isarController.deletePlaylist(playlistsSongs[i]);
             playlistsSongs.removeAt(i);
-            playlistsSongsList.assignAll(playlistsSongs);
           }
         }
+        playlistsSongsList.assignAll([...playlistsSongs]);
       }
     });
     updatePlaylistStreamClassSubscription = UpdatePlaylistStreamClass().updatePlaylistStream.listen((UpdatePlaylistStreamControllerClass data) {

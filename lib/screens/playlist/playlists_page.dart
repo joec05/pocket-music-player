@@ -47,16 +47,17 @@ class _PlaylistPageWidgetState extends State<_PlaylistPageWidgetStateful> with A
           }
           return ListView.builder(
             shrinkWrap: false,
-            key: UniqueKey(),
             scrollDirection: Axis.vertical,
             primary: false,
             physics: const AlwaysScrollableScrollPhysics(),
             itemCount: playlistsSongsList.length,
             itemBuilder: (context, index){
-              return CustomPlaylistDisplayWidget(
-                playlistSongsData: playlistsSongsList[index], 
-                key: UniqueKey()
-              );
+              return Obx(() {
+                return CustomPlaylistDisplayWidget(
+                  playlistSongsData: playlistsSongsList[index], 
+                  key: UniqueKey()
+                );
+              });
             }
           );
         })
