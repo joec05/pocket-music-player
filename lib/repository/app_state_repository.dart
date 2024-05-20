@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:music_player_app/global_files.dart';
 
 class AppStateRepository {
@@ -7,6 +8,7 @@ class AppStateRepository {
   List<PlaylistSongsModel> playlistList = [];
   MyAudioHandler? audioHandler;
   ImageDataClass? audioImageData;
+  AnimationController? soundwaveAnimationController;
 
   void setFavouritesList(List<FavouriteSongModel> arg){
     favouritesList = arg;

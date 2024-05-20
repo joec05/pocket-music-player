@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:music_player_app/global_files.dart';
 
-const defaultCustomButtonColor = Color.fromARGB(255, 88, 85, 85);
+const defaultCustomButtonColor = Color.fromARGB(255, 99, 93, 93);
 
 class CustomButton extends StatefulWidget {
   final double width;

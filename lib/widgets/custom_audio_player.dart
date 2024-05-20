@@ -29,6 +29,16 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
       audioCompleteData, 
       widget.playlistSongsData
     );
+    controller.initialize();
+    appStateRepo.audioHandler?.audioPlayer.playingStream.listen((event) {
+      if(appStateRepo.audioHandler?.currentAudioUrl == audioCompleteData.audioUrl) {
+        if(!event) {
+          appStateRepo.soundwaveAnimationController?.stop();
+        } else {
+          appStateRepo.soundwaveAnimationController?.repeat();
+        }
+      }
+    });
   }
 
   void playAudio() async{
@@ -88,9 +98,7 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
                                 )
                               )
                             ),
-                            audioIsSelected ?
-                              const CustomAudioPlayingIndicator()
-                            : Container()
+                            audioIsSelected ? const Center(child: SoundwaveWidget()) : Container(),
                           ]
                         ),
                       ),

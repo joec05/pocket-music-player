@@ -18,6 +18,10 @@ class SongOptionController {
 
   bool get mounted => context.mounted;
 
+  void initialize() {
+    
+  }
+
   void displayOptionsBottomSheet(){
     if(mounted){
       showModalBottomSheet(
@@ -199,42 +203,44 @@ class SongOptionController {
                 topRight: Radius.circular(12.5)
               )
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  height: getScreenHeight() * 0.02
-                ),
-                const Text(
-                  'Select existing playlist',
-                  style: TextStyle(fontWeight: FontWeight.bold)
-                ),
-                SizedBox(
-                  height: getScreenHeight() * 0.02
-                ),
-                Container(
-                  width: double.infinity,
-                  color: Colors.grey,
-                  height: 1.5
-                ),
-                for(int i = 0; i < playlistList.length; i++)
-                  playlistList[i].songsList.contains(audioCompleteData.audioUrl) ?
-                    const Material(color: Colors.transparent)
-                  :
-                    CustomButton(
-                      onTapped: (){
-                        Navigator.of(bottomSheetContext).pop();
-                        runDelay(() => addToPlaylist(playlistList[i].playlistID), navigationDelayDuration);
-                      },
-                      text: playlistList[i].playlistName,
-                      width: double.infinity,
-                      height: getScreenHeight() * 0.08,
-                      color: Colors.transparent,
-                      setBorderRadius: false,
-                      prefix: null,
-                      loading: false
-                    )
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    height: getScreenHeight() * 0.02
+                  ),
+                  const Text(
+                    'Select existing playlist',
+                    style: TextStyle(fontWeight: FontWeight.bold)
+                  ),
+                  SizedBox(
+                    height: getScreenHeight() * 0.02
+                  ),
+                  Container(
+                    width: double.infinity,
+                    color: Colors.grey,
+                    height: 1.5
+                  ),
+                  for(int i = 0; i < playlistList.length; i++)
+                    playlistList[i].songsList.contains(audioCompleteData.audioUrl) ?
+                      const Material(color: Colors.transparent)
+                    :
+                      CustomButton(
+                        onTapped: (){
+                          Navigator.of(bottomSheetContext).pop();
+                          runDelay(() => addToPlaylist(playlistList[i].playlistID), navigationDelayDuration);
+                        },
+                        text: playlistList[i].playlistName,
+                        width: double.infinity,
+                        height: getScreenHeight() * 0.08,
+                        color: Colors.transparent,
+                        setBorderRadius: false,
+                        prefix: null,
+                        loading: false
+                      )
+                ],
+              ),
             )
           );
         }

@@ -55,6 +55,6 @@ class RecentlyAddedSongsController {
     recentlyAddedSongsData.sort((a, b) => b.modifiedDate.compareTo(a.modifiedDate));
     recentlyAddedSongsData.assignAll([...recentlyAddedSongsData.sublist(
       0, min(recentlyAddedSongsData.length, 15)
-    )]);; 
+    )]); 
   }
 }

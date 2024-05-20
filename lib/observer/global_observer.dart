@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:music_player_app/global_files.dart';
 
 class GlobalObserver extends WidgetsBindingObserver{
   @override

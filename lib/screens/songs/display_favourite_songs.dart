@@ -27,7 +27,6 @@ class _DisplayFavouritesClassWidgetState extends State<_DisplayFavouritesClassWi
     super.initState();
     controller = FavouriteSongsController(context);
     controller.initializeController();
-    print(controller.favouriteSongsData.length);
   }
 
   @override

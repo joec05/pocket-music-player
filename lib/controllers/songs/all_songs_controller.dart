@@ -18,7 +18,6 @@ class AllSongsController {
   bool get mounted => context.mounted;
 
   void initializeController() {
-    print('2');
     fetchLocalSongs(LoadType.initial);
   }
 
@@ -59,7 +58,7 @@ class AllSongsController {
               );
             }
           } catch (e) {
-            if(mounted) {
+            if(context.mounted) {
               handler.displaySnackbar(
                 context, 
                 SnackbarType.error, 
@@ -103,7 +102,7 @@ class AllSongsController {
         appStateRepo.setPlaylistList('', await isarController.fetchPlaylists());
       }   
     }else{
-      if(mounted) {
+      if(context.mounted) {
         handler.displaySnackbar(
           context,
           SnackbarType.warning,
@@ -111,7 +110,6 @@ class AllSongsController {
         );
       }
     }
-    print('3');
     setLoadingState(true, loadType);
   }
 

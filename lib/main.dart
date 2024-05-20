@@ -19,10 +19,16 @@ class MyApp extends StatefulWidget {
   MyAppState createState() => MyAppState();
 }
 
-class MyAppState extends State<MyApp> {
+class MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    appStateRepo.soundwaveAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(
+        milliseconds: 500,
+      )
+    );
   }
 
   // This widget is the root of your application.

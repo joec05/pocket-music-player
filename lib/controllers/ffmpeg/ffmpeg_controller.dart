@@ -66,12 +66,12 @@ class FFmpegController {
 
     if(mounted){
       String inputFilePath = await copyTemporaryAudioPath(audioCompleteData.audioUrl);
-      String outputFilePath = await createOutputAudioFile(inputFilePath);
+      String outputFilePath = await createOutputAudioFile();
       String ffmpegCommand = '';
       if(imageUrl.isEmpty){
         ffmpegCommand += '-map 0:0 -c copy ';
       }else{
-        ffmpegCommand += '-i $imageUrl -map 0:0 -map 1:0 -c copy -id3v2_version 3 ';
+        ffmpegCommand += '-i $imageUrl -map 0:0 -c copy ';
       }
       if(title != audioCompleteData.audioMetadataInfo.title){
         ffmpegCommand += '-metadata title="$title" ';
@@ -94,6 +94,7 @@ class FFmpegController {
       debugPrint(ffmpegCommand);
       if(ffmpegCommand.isNotEmpty){
         ffmpegCommand = '-y -i "$inputFilePath" $ffmpegCommand "$outputFilePath"';
+        ffmpegCommand = '-i "$inputFilePath" -metadata title="$title" -codec copy "$outputFilePath"';
         FFmpegKit.executeAsync(
           ffmpegCommand, 
           (session) async {
@@ -163,23 +164,26 @@ class FFmpegController {
                   }
                 }
               } else if (ReturnCode.isCancel(returnCode)) {
-                handler.displaySnackbar(
-                  context, 
-                  SnackbarType.error, 
-                  tErr.cancelled
-                );
+                if(context.mounted) {
+                  handler.displaySnackbar(
+                    context, 
+                    SnackbarType.error, 
+                    tErr.cancelled
+                  );
+                }
               } else {
-                handler.displaySnackbar(
-                  context, 
-                  SnackbarType.error, 
-                  tErr.unknown
-                );
+                if(context.mounted) {
+                  handler.displaySnackbar(
+                    context, 
+                    SnackbarType.error, 
+                    tErr.unknown
+                  );
+                }
               }
             }
           }, (Log log){},
           (Statistics statistics) {
             statsDuration = statistics.getTime().toInt();
-              
           }
         );
       }

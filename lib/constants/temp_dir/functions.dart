@@ -38,7 +38,7 @@ Future<String?> downloadTemporaryPath(String url, String fileName) async{
   return newFile.path;
 }
 
-Future<String> createOutputAudioFile(String url) async {
+Future<String> createOutputAudioFile() async {
   Directory temporaryDirectory = await getTemporaryDirectory();
   Directory directory = await Directory('${temporaryDirectory.path}/audio/output').create(recursive: true);
   String filePath = '${directory.path}/${const Uuid().v4()}.mp3';

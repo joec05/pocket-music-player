@@ -15,7 +15,7 @@ class AllSongsPageWidget extends StatelessWidget {
 
 class AllMusicPageWidgetStateful extends StatefulWidget {
   final Function(bool, LoadType) setLoadingState;
-  const AllMusicPageWidgetStateful({required this.setLoadingState});
+  const AllMusicPageWidgetStateful({super.key, required this.setLoadingState});
 
   @override
   State<AllMusicPageWidgetStateful> createState() => AllMusicPageWidgetState();

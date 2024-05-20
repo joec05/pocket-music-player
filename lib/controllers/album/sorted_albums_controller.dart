@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:music_player_app/constants/loading/enums.dart';
-import 'package:music_player_app/controllers/loading/loading_controller.dart';
 import 'package:music_player_app/global_files.dart';
 
 class SortedAlbumsController extends LoadingController {

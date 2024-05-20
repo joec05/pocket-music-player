@@ -107,7 +107,7 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
                 children: [
                   Container(
                     decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 77, 69, 69),
+                      color: Color.fromARGB(255, 107, 99, 99),
                       border: Border(top: BorderSide(width: 1, color: Colors.grey)),
                     ),
                     padding: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding / 2, vertical: defaultVerticalPadding / 2),
