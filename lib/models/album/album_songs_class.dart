@@ -4,7 +4,7 @@ class AlbumSongsClass{
   final String? albumName;
   final String? artistName;
   final ImageDataClass albumProfilePic;
-  final List<String> songsList;
+  List<String> songsList;
 
   AlbumSongsClass(this.albumName, this.artistName, this.albumProfilePic, this.songsList);
 

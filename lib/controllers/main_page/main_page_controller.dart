@@ -4,7 +4,6 @@ import 'package:music_player_app/global_files.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
-import 'package:audio_service/audio_service.dart';
 
 class MainPageController {
   final BuildContext context;
@@ -23,7 +22,6 @@ class MainPageController {
 
   void initializeController(){
     initializeDefaultStartingDisplayImage();
-    initializeAudioService();
     widgetOptions = [
       AllSongsPageWidget(setLoadingState: setLoadingState), 
       const SortedArtistsPageWidget(), 
@@ -34,20 +32,6 @@ class MainPageController {
 
   void dispose(){
     pageController.dispose();
-  }
-
-  Future<void> initializeAudioService() async{
-    if(appStateRepo.audioHandler == null){
-      MyAudioHandler audioHandler = await AudioService.init(
-        builder: () => MyAudioHandler(),
-        config: const AudioServiceConfig(
-          androidNotificationChannelId: 'com.example.music_player_app',
-          androidNotificationChannelName: 'Music playback',
-        ),
-      );
-      audioHandler.initializeController();
-      appStateRepo.audioHandler = audioHandler;
-    }
   }
 
   void setLoadingState(bool state, LoadType loadingType){

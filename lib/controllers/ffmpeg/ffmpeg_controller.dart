@@ -94,7 +94,6 @@ class FFmpegController {
       debugPrint(ffmpegCommand);
       if(ffmpegCommand.isNotEmpty){
         ffmpegCommand = '-y -i "$inputFilePath" $ffmpegCommand "$outputFilePath"';
-        ffmpegCommand = '-i "$inputFilePath" -metadata title="$title" -codec copy "$outputFilePath"';
         FFmpegKit.executeAsync(
           ffmpegCommand, 
           (session) async {
