@@ -65,7 +65,12 @@ int _playlistSongsModelEstimateSize(
 ) {
   var bytesCount = offsets.last;
   bytesCount += 3 + object.creationDate.length * 3;
-  bytesCount += 3 + object.imageBytes.length * 8;
+  {
+    final value = object.imageBytes;
+    if (value != null) {
+      bytesCount += 3 + value.length * 8;
+    }
+  }
   bytesCount += 3 + object.playlistID.length * 3;
   bytesCount += 3 + object.playlistName.length * 3;
   bytesCount += 3 + object.songsList.length * 3;
@@ -100,7 +105,7 @@ PlaylistSongsModel _playlistSongsModelDeserialize(
   final object = PlaylistSongsModel(
     reader.readString(offsets[2]),
     reader.readString(offsets[3]),
-    reader.readLongList(offsets[1]) ?? [],
+    reader.readLongList(offsets[1]),
     reader.readString(offsets[0]),
     reader.readStringList(offsets[4]) ?? [],
   );
@@ -118,7 +123,7 @@ P _playlistSongsModelDeserializeProp<P>(
     case 0:
       return (reader.readString(offset)) as P;
     case 1:
-      return (reader.readLongList(offset) ?? []) as P;
+      return (reader.readLongList(offset)) as P;
     case 2:
       return (reader.readString(offset)) as P;
     case 3:
@@ -414,6 +419,24 @@ extension PlaylistSongsModelQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<PlaylistSongsModel, PlaylistSongsModel, QAfterFilterCondition>
+      imageBytesIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'imageBytes',
+      ));
+    });
+  }
+
+  QueryBuilder<PlaylistSongsModel, PlaylistSongsModel, QAfterFilterCondition>
+      imageBytesIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'imageBytes',
       ));
     });
   }
@@ -1224,7 +1247,7 @@ extension PlaylistSongsModelQueryProperty
     });
   }
 
-  QueryBuilder<PlaylistSongsModel, List<int>, QQueryOperations>
+  QueryBuilder<PlaylistSongsModel, List<int>?, QQueryOperations>
       imageBytesProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'imageBytes');

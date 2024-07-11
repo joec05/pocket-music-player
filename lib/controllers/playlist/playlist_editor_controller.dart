@@ -19,13 +19,13 @@ class PlaylistEditorController {
 
   bool get mounted => context.mounted;
   Function get pickImage => imagePickerController.pickImage;
-  Uint8List get imageBytes => imagePickerController.imageBytes.value;
+  Uint8List? get imageBytes => imagePickerController.imageBytes.value;
 
   void initializeController(){
     if(mounted){
       imagePickerController = ImagePickerController(context);
       playlistNameController.text = playlistSongsData.playlistName;
-      imagePickerController.imageBytes.value = Uint8List.fromList(playlistSongsData.imageBytes);
+      imagePickerController.imageBytes.value = playlistSongsData.imageBytes != null ? Uint8List.fromList(playlistSongsData.imageBytes!) : null;
       verifyPlaylistName.value = playlistNameController.text.isNotEmpty;
       playlistNameController.addListener(() {
         verifyPlaylistName.value = playlistNameController.text.isNotEmpty;
@@ -48,7 +48,7 @@ class PlaylistEditorController {
           for(int i = 0; i < playlistList.length; i++){
             if(playlistList[i].playlistID == playlistSongsData.playlistID){
               playlistList[i].playlistName = playlistName;
-              playlistList[i].imageBytes = imageBytes.isNotEmpty ? imageBytes : Uint8List.fromList([]);
+              playlistList[i].imageBytes = imageBytes;
               isarController.putPlaylist(playlistList[i]);
               break;
             }

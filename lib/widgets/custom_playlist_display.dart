@@ -136,13 +136,13 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
                           borderRadius: BorderRadius.circular(100),
                           image: DecorationImage(
                             image: MemoryImage(
-                              playlistSongsData.imageBytes.isEmpty ?
-                                appStateRepo.audioImageData!.bytes
+                              playlistSongsData.imageBytes == null ?
+                                appStateRepo.audioImageData!
                               : 
-                                Uint8List.fromList(playlistSongsData.imageBytes)
+                                Uint8List.fromList(playlistSongsData.imageBytes!)
                             ), 
                             fit: BoxFit.fill,
-                            onError: (exception, stackTrace) => Image.memory(appStateRepo.audioImageData!.bytes),
+                            onError: (exception, stackTrace) => Image.memory(appStateRepo.audioImageData!),
                           )
                         ),
                       ),

@@ -88,13 +88,13 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
                                 borderRadius: BorderRadius.circular(100),
                                 image: DecorationImage(
                                   image: MemoryImage(
-                                    audioCompleteData.audioMetadataInfo.albumArt.bytes.isEmpty ?
-                                      appStateRepo.audioImageData!.bytes
+                                    audioCompleteData.audioMetadataInfo.albumArt == null ?
+                                      appStateRepo.audioImageData!
                                     : 
-                                      audioCompleteData.audioMetadataInfo.albumArt.bytes
+                                      audioCompleteData.audioMetadataInfo.albumArt!
                                   ), 
                                   fit: BoxFit.fill,
-                                  onError: (exception, stackTrace) => Image.memory(appStateRepo.audioImageData!.bytes),
+                                  onError: (exception, stackTrace) => Image.memory(appStateRepo.audioImageData!),
                                 )
                               )
                             ),
@@ -112,8 +112,7 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
                             children: [
                               Flexible(
                                 child: Text(
-                                  audioCompleteData.audioMetadataInfo.title ?? 
-                                  audioCompleteData.audioUrl.split('/').last.trim(),
+                                  audioCompleteData.audioMetadataInfo.title ?? audioCompleteData.audioMetadataInfo.fileName,
                                   style: const TextStyle(
                                     fontSize: 17), maxLines: 1, overflow: TextOverflow.ellipsis
                                   )

@@ -52,7 +52,7 @@ class _PlaylistEditorWidgetState extends State<_PlaylistEditorWidgetStateful> {
           child: Stack(
             children: [
               Obx(() {
-                Uint8List imageBytes = controller.imageBytes;
+                Uint8List? imageBytes = controller.imageBytes;
                 bool verifyPlaylistName = controller.verifyPlaylistName.value;
                 bool isLoading = controller.isLoading.value;
 
@@ -65,7 +65,7 @@ class _PlaylistEditorWidgetState extends State<_PlaylistEditorWidgetStateful> {
                           decoration: BoxDecoration(
                             border: Border.all(width: 1),
                             borderRadius: BorderRadius.circular(100),
-                            image: imageBytes.isNotEmpty ?
+                            image: imageBytes != null ?
                               DecorationImage(
                                 image: MemoryImage(
                                   imageBytes
@@ -75,11 +75,11 @@ class _PlaylistEditorWidgetState extends State<_PlaylistEditorWidgetStateful> {
                           ),
                           child: Center(
                             child: GestureDetector(
-                              onTap: mounted ? imageBytes.isNotEmpty ?
-                                () => controller.imagePickerController.imageBytes.value = Uint8List.fromList([]) : 
+                              onTap: mounted ? imageBytes != null ?
+                                () => controller.imagePickerController.imageBytes.value = null : 
                                 () => controller.pickImage(ImageSource.gallery, context: context) 
                               : null,
-                              child: Icon(imageBytes.isNotEmpty ? Icons.delete : Icons.add, size: 30)
+                              child: Icon(imageBytes != null ? Icons.delete : Icons.add, size: 30)
                             ),
                           )
                         ),

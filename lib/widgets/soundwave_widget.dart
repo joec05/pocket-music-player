@@ -3,8 +3,8 @@ import 'package:music_player_app/global_files.dart';
 
 class SoundwaveWidget extends StatefulWidget {
   const SoundwaveWidget({
-    Key? key
-  }) : super(key: key);
+    super.key
+  });
   @override
   State<SoundwaveWidget> createState() => _SoundwaveWidgetState();
 }

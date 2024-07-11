@@ -13,9 +13,8 @@ class TagEditorController {
   TextEditingController artistController = TextEditingController();
   TextEditingController albumController = TextEditingController();
   TextEditingController albumArtistController = TextEditingController();
-  RxBool verifyTitle = false.obs;
+  RxBool isModifyingTags = false.obs;
   String currentMessage = '';
-  RxBool isLoading = false.obs;
 
   TagEditorController(
     this.context,
@@ -24,7 +23,7 @@ class TagEditorController {
 
   bool get mounted => context.mounted;
   Function get pickImage => imagePickerController.pickImage;
-  Uint8List get imageBytes => imagePickerController.imageBytes.value;
+  Uint8List? get imageBytes => imagePickerController.imageBytes.value;
 
   void initializeController(){
     if(mounted){
@@ -33,11 +32,7 @@ class TagEditorController {
       artistController.text = audioCompleteData.audioMetadataInfo.artistName ?? '';
       albumController.text = audioCompleteData.audioMetadataInfo.albumName ?? '';
       albumArtistController.text = audioCompleteData.audioMetadataInfo.albumArtistName ?? '';
-      imagePickerController.imageBytes.value = audioCompleteData.audioMetadataInfo.albumArt.bytes;
-      verifyTitle.value = titleController.text.isNotEmpty;
-      titleController.addListener(() {
-        verifyTitle.value = titleController.text.isNotEmpty;
-      });
+      imagePickerController.imageBytes.value = audioCompleteData.audioMetadataInfo.albumArt;
     }
   }
 
@@ -51,19 +46,19 @@ class TagEditorController {
 
   void modifyTags() async{
     if(mounted){
-      if(!isLoading.value){
-        isLoading.value = true;
-        String imageUrl = imageBytes.isEmpty ? '' : await writeTemporaryImageBytes(imageBytes);
-        await ffmpegController.modifyTags(
+      if(!isModifyingTags.value){
+        isModifyingTags.value = true;
+        String? imageUrl = imageBytes != null ? await writeTemporaryImageBytes(imageBytes!) : null;
+        final _ = await metadataController.modifyTags(
           context, 
           audioCompleteData, 
           titleController.text.trim(), 
           artistController.text.trim(), 
           albumController.text.trim(), 
-          albumArtistController.text.trim(), 
+          albumArtistController.text.trim(),
           imageUrl
         );
-        isLoading.value = false;
+        isModifyingTags.value = false;
       }
     }
   }

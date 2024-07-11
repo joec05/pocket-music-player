@@ -20,33 +20,32 @@ class _MainPageWidgetStateful extends StatefulWidget {
 }
 
 class __MainPageWidgetStatefulState extends State<_MainPageWidgetStateful>{
-  late MainPageController controller;
 
   @override void initState(){
     super.initState();
-    controller = MainPageController(context);
-    controller.initializeController();
+    mainPageController.initializeController();
   }
 
   @override void dispose(){
     super.dispose();
-    controller.dispose();
+    mainPageController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Obx(() {
-        int selectedIndexValue = controller.selectedIndexValue.value;
-        List<Widget> widgetOptions = controller.widgetOptions;
-        bool isLoaded = controller.isLoaded.value;
-        return Stack(
+    return Obx(() {
+      int selectedIndexValue = mainPageController.selectedIndexValue.value;
+      List<Widget> widgetOptions = mainPageController.widgetOptions;
+      bool isLoaded = mainPageController.isLoaded.value;
+      return Scaffold(
+        appBar: mainPageController.setAppBar(selectedIndexValue),
+        body: Stack(
           children: [
             Scaffold(
-              key: controller.scaffoldKey,
+              key: mainPageController.scaffoldKey,
               body: PageView(
-                controller: controller.pageController,
-                onPageChanged: controller.onPageChanged,
+                controller: mainPageController.pageController,
+                onPageChanged: mainPageController.onPageChanged,
                 children: widgetOptions,
               ),
               bottomNavigationBar: Container(
@@ -85,8 +84,8 @@ class __MainPageWidgetStatefulState extends State<_MainPageWidgetStateful>{
                     currentIndex: selectedIndexValue,
                     onTap: ((index) {
                       if(mounted){
-                        if(controller.isLoaded.value){
-                          controller.pageController.jumpToPage(index);
+                        if(mainPageController.isLoaded.value){
+                          mainPageController.pageController.jumpToPage(index);
                         }
                       }
                     })
@@ -112,8 +111,8 @@ class __MainPageWidgetStatefulState extends State<_MainPageWidgetStateful>{
               )
             : Container()
           ]
-        );
-      }),
-    );
+        )
+      );
+    });
   }
 }

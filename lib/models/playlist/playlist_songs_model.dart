@@ -6,7 +6,7 @@ class PlaylistSongsModel{
   Id id = Isar.autoIncrement;
   final String playlistID;
   String playlistName;
-  List<int> imageBytes;
+  List<int>? imageBytes;
   final String creationDate;
   List<String> songsList;
 

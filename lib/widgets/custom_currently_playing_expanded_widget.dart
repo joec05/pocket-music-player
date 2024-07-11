@@ -38,11 +38,15 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
       }
     });
     appStateRepo.audioHandler!.audioPlayer.positionStream.listen((newPosition) {
+      if(appStateRepo.audioHandler!.audioPlayer.duration == null) {
+        return;
+      }
+      
       if(mounted){
-        if(audioCompleteData.value != null && !isDraggingSlider.value && newPosition.inMilliseconds <= audioCompleteData.value!.audioMetadataInfo.duration){
-          currentPosition.value = min((newPosition.inMilliseconds / audioCompleteData.value!.audioMetadataInfo.duration), 1);
+        if(audioCompleteData.value != null && !isDraggingSlider.value && newPosition.inMilliseconds <= appStateRepo.audioHandler!.audioPlayer.duration!.inMilliseconds){
+          currentPosition.value = min((newPosition.inMilliseconds / appStateRepo.audioHandler!.audioPlayer.duration!.inMilliseconds), 1);
           currentDurationStr.value = _formatDuration(newPosition);
-          timeRemaining.value = Duration(milliseconds: audioCompleteData.value!.audioMetadataInfo.duration) - newPosition;
+          timeRemaining.value = appStateRepo.audioHandler!.audioPlayer.duration! - newPosition;
         }
       }
     });
@@ -80,7 +84,12 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
 
   void initializeCurrentAudio(){
     if(mounted){
-      String currentAudioUrl = appStateRepo.audioHandler!.currentAudioUrl;
+      String? currentAudioUrl = appStateRepo.audioHandler!.currentAudioUrl;
+
+      if(currentAudioUrl == null) {
+        return;
+      }
+      
       audioCompleteData.value = appStateRepo.allAudiosList[currentAudioUrl] == null ? null : appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value;
       controller.value = SongOptionController(
         context, 
@@ -97,13 +106,17 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
   }
 
   void updateSliderPosition(){
+    if(appStateRepo.audioHandler!.audioPlayer.duration == null) {
+      return;
+    }
+    
     if(mounted){
       if(appStateRepo.audioHandler != null && audioCompleteData.value != null){
         Duration? currentDuration = appStateRepo.audioHandler!.audioPlayer.duration;
         if(currentDuration != null){
-          currentPosition.value = min((currentDuration.inMilliseconds / audioCompleteData.value!.audioMetadataInfo.duration), 1);
+          currentPosition.value = min((currentDuration.inMilliseconds / appStateRepo.audioHandler!.audioPlayer.duration!.inMilliseconds), 1);
           currentDurationStr.value = _formatDuration(currentDuration);
-          timeRemaining.value = Duration(milliseconds: audioCompleteData.value!.audioMetadataInfo.duration) - currentDuration;
+          timeRemaining.value = appStateRepo.audioHandler!.audioPlayer.duration! - currentDuration;
         }
       }
     }
@@ -133,17 +146,25 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
   }
 
   void onSliderChange(value){ 
+    if(appStateRepo.audioHandler!.audioPlayer.duration == null) {
+      return;
+    }
+
     if(mounted){
       isDraggingSlider.value = true;
       currentPosition.value = value;
-      var currentSecond = (value * audioCompleteData.value!.audioMetadataInfo.duration/ 1000).floor();
+      var currentSecond = (value * appStateRepo.audioHandler!.audioPlayer.duration!.inMilliseconds / 1000).floor();
       currentDurationStr.value = formatSeconds(currentSecond);
     }
   }
 
   void onSliderEnd(value) async{
+    if(appStateRepo.audioHandler!.audioPlayer.duration == null) {
+      return;
+    }
+    
     if(mounted){
-      var duration = ((value * audioCompleteData.value!.audioMetadataInfo.duration) ~/ 10) * 10;
+      var duration = ((value * appStateRepo.audioHandler!.audioPlayer.duration!.inMilliseconds) ~/ 10) * 10;
       currentPosition.value = value ;
       isDraggingSlider.value = false;
       await appStateRepo.audioHandler!.audioPlayer.seek(Duration(milliseconds: duration));
@@ -208,13 +229,13 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
                           borderRadius: BorderRadius.circular(150),
                           image: DecorationImage(
                             image: MemoryImage(
-                              audioCompleteData.value!.audioMetadataInfo.albumArt.bytes.isEmpty ?
-                                appStateRepo.audioImageData!.bytes
+                              audioCompleteData.value!.audioMetadataInfo.albumArt == null ?
+                                appStateRepo.audioImageData!
                               : 
-                                audioCompleteData.value!.audioMetadataInfo.albumArt.bytes
+                                audioCompleteData.value!.audioMetadataInfo.albumArt!
                             ), 
                             fit: BoxFit.fill,
-                            onError: (exception, stackTrace) => Image.memory(appStateRepo.audioImageData!.bytes),
+                            onError: (exception, stackTrace) => Image.memory(appStateRepo.audioImageData!),
                           )
                         ),
                       ),
@@ -224,8 +245,7 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
                         child: Padding(
                           padding: EdgeInsets.symmetric(vertical: getScreenHeight() * 0.02),
                           child: Text(
-                            audioCompleteDataValue.audioMetadataInfo.title ??
-                            audioCompleteDataValue.audioUrl.split('/').last.trim(), 
+                            audioCompleteDataValue.audioMetadataInfo.title ?? audioCompleteDataValue.audioMetadataInfo.fileName, 
                             style: const TextStyle(fontSize: 20), maxLines: 1
                           ),
                         ),
@@ -319,7 +339,7 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
                                 },
                                 child: displayType == DurationEndDisplay.totalDuration ?
                                   Text(
-                                    _formatDuration(Duration(milliseconds: audioCompleteDataValue.audioMetadataInfo.duration)),
+                                    _formatDuration(appStateRepo.audioHandler!.audioPlayer.duration ?? Duration.zero),
                                     style: const TextStyle(fontSize: 15)
                                   )
                                 : 

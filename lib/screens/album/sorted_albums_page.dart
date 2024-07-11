@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
 
 class SortedAlbumsPageWidget extends StatelessWidget {
@@ -40,13 +40,20 @@ class _SortedAlbumsPageWidgetState extends State<_SortedAlbumsPageWidgetStateful
     return Scaffold(
       body: Center(
         child: Obx(() {
+          final searchedText = mainPageController.searchedText.trim().toLowerCase();
+          List<AlbumSongsClass> albumsSongsList = controller.albumsSongsList.where((e) {
+            final String album = e.albumName?.toLowerCase() ?? '';
+            final String artist = e.artistName?.toLowerCase() ?? '';
+            if(album.contains(searchedText) || artist.contains(searchedText)) {
+              return true;
+            }
+            return false;
+          }).toList();
           LoadingStatus status = controller.status.value;
 
           if(status == LoadingStatus.loading) {
             return const CircularProgressIndicator();
           }
-
-          List<AlbumSongsClass> albumsSongsList = controller.albumsSongsList;
 
           if(albumsSongsList.isEmpty) {
             return noItemsWidget(FontAwesomeIcons.recordVinyl, 'albums');

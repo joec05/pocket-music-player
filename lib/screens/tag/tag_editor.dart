@@ -54,7 +54,7 @@ class _TagEditorWidgetState extends State<_TagEditorWidgetStateful> {
               ListView(
                 children: [
                   Obx(() {
-                    Uint8List imageBytes = controller.imageBytes;
+                    Uint8List? imageBytes = controller.imageBytes;
                     return Column(
                       children: [
                         Container(
@@ -62,7 +62,7 @@ class _TagEditorWidgetState extends State<_TagEditorWidgetStateful> {
                           decoration: BoxDecoration(
                             border: Border.all(width: 1),
                             borderRadius: BorderRadius.circular(100),
-                            image: imageBytes.isNotEmpty ?
+                            image: imageBytes != null ?
                               DecorationImage(
                                 image: MemoryImage(
                                   imageBytes
@@ -72,11 +72,11 @@ class _TagEditorWidgetState extends State<_TagEditorWidgetStateful> {
                           ),
                           child: Center(
                             child: GestureDetector(
-                              onTap: mounted ? imageBytes.isNotEmpty ? 
-                                () => controller.imagePickerController.imageBytes.value = Uint8List.fromList([]) : 
+                              onTap: mounted ? imageBytes != null ? 
+                                () => controller.imagePickerController.imageBytes.value = null : 
                                 () => controller.pickImage(ImageSource.gallery, context: context) 
                               : null,
-                              child: Icon(imageBytes.isNotEmpty ? Icons.delete : Icons.add, size: 30)
+                              child: Icon(imageBytes != null ? Icons.delete : Icons.add, size: 30)
                             ),
                           )
                         ),
@@ -103,23 +103,22 @@ class _TagEditorWidgetState extends State<_TagEditorWidgetStateful> {
                   ),
                   SizedBox(height: defaultTextFieldVerticalMargin),
                   TextField(
-                    decoration: generateFormTextFieldDecoration('album artist', FontAwesomeIcons.user),
                     controller: controller.albumArtistController,
+                    decoration: generateFormTextFieldDecoration('album artist name', FontAwesomeIcons.user),
                     maxLength: defaultTextFieldLimit,
                   ),
                   SizedBox(height: defaultTextFieldVerticalMargin),
                   Obx(() {
-                    bool isLoading = controller.isLoading.value;
-                    bool verifyTitle = controller.verifyTitle.value;
+                    bool isModifyingTags = controller.isModifyingTags.value;
                     return CustomButton(
                       width: double.infinity,
                       height: getScreenHeight() * 0.065,
-                      color: verifyTitle && !isLoading ? Colors.orange : Colors.grey.withOpacity(0.5),
-                      onTapped: verifyTitle && !isLoading ? () => controller.modifyTags() : (){},
+                      color: !isModifyingTags ? Colors.orange : Colors.grey.withOpacity(0.5),
+                      onTapped: !isModifyingTags ? () => controller.modifyTags() : (){},
                       text: 'Update metadata',
                       setBorderRadius: true,
                       prefix: null,
-                      loading: isLoading
+                      loading: isModifyingTags
                     );
                   })
                 ],

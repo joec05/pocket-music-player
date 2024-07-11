@@ -9,7 +9,7 @@ import 'package:image_picker/image_picker.dart';
 
 class ImagePickerController {
   final BuildContext context;
-  Rx<Uint8List> imageBytes = Uint8List.fromList([]).obs;
+  Rx<Uint8List?> imageBytes = Rx<Uint8List?>(null);
 
   ImagePickerController(
     this.context

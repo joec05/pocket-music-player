@@ -4,18 +4,16 @@ import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
 
 class AllSongsPageWidget extends StatelessWidget {
-  final Function(bool, LoadType) setLoadingState;
-  const AllSongsPageWidget({super.key, required this.setLoadingState});
+  const AllSongsPageWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return AllMusicPageWidgetStateful(setLoadingState: setLoadingState);
+    return const AllMusicPageWidgetStateful();
   }
 }
 
 class AllMusicPageWidgetStateful extends StatefulWidget {
-  final Function(bool, LoadType) setLoadingState;
-  const AllMusicPageWidgetStateful({super.key, required this.setLoadingState});
+  const AllMusicPageWidgetStateful({super.key});
 
   @override
   State<AllMusicPageWidgetStateful> createState() => AllMusicPageWidgetState();
@@ -27,7 +25,7 @@ class AllMusicPageWidgetState extends State<AllMusicPageWidgetStateful> with Aut
   @override
   void initState(){
     super.initState();
-    controller = AllSongsController(context, widget.setLoadingState);
+    controller = AllSongsController(context);
     controller.initializeController();
   }
 
@@ -127,7 +125,21 @@ class AllMusicPageWidgetState extends State<AllMusicPageWidgetStateful> with Aut
             const Divider(color: Colors.grey, height: 3.5),
             SizedBox(height: getScreenHeight() * 0.0075),
             Obx(() {
-              List<String> audioUrls = controller.audioUrls;
+              final searchedText = mainPageController.searchedText.trim().toLowerCase();
+              List<String> audioUrls = appStateRepo.allAudiosList.keys.where((e) {
+                if(appStateRepo.allAudiosList[e] == null) {
+                  return false;
+                }
+
+                final AudioCompleteDataClass data = appStateRepo.allAudiosList[e]!.notifier.value;
+                final AudioMetadataInfoClass metadata = data.audioMetadataInfo;
+                final String title = metadata.title?.toLowerCase() ?? '';
+                final String artist = metadata.artistName?.toLowerCase() ?? '';
+                if(title.contains(searchedText) || artist.contains(searchedText)) {
+                  return true;
+                }
+                return false;
+              }).toList();
               
               if(audioUrls.isEmpty) {
                 return noItemsWidget(FontAwesomeIcons.music, 'songs');

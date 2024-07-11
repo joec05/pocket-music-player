@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
+import 'package:music_player_app/controllers/songs/fetch_songs_controller.dart';
 import 'package:music_player_app/global_files.dart';
 import 'package:audio_service/audio_service.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
-void main() async{
-  WidgetsFlutterBinding.ensureInitialized();
-  await isarController.initialize();
-  await initializeAudioService();
+Future<void> main() async{
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   GlobalObserver globalObserver = GlobalObserver();
   WidgetsBinding.instance.addObserver(globalObserver);
-  runApp(
-    const MyApp()
-  );
+  await isarController.initialize();
+  await initializeAudioService();
+  await initializeDefaultStartingDisplayImage();
+  final controller = FetchSongsController();
+  await controller.fetchLocalSongs(LoadType.initial).then((_) {
+    runApp(
+      const MyApp()
+    );
+    FlutterNativeSplash.remove();
+  });
 }
+
+final talker = Talker();
 
 Future<void> initializeAudioService() async{
   if(appStateRepo.audioHandler == null){
@@ -26,6 +38,11 @@ Future<void> initializeAudioService() async{
     audioHandler.initializeController();
     appStateRepo.audioHandler = audioHandler;
   }
+}
+
+Future<void> initializeDefaultStartingDisplayImage() async{
+  ByteData byteData = await rootBundle.load('assets/images/music-icon.png');
+  appStateRepo.audioImageData = byteData.buffer.asUint8List();
 }
 
 class MyApp extends StatefulWidget {

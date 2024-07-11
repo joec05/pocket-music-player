@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -396,7 +395,7 @@ class SongOptionController {
       String playlistID = const Uuid().v4();
       List<PlaylistSongsModel> playlistList = appStateRepo.playlistList;
       PlaylistSongsModel playlistData = PlaylistSongsModel(
-        playlistID, playlistName, Uint8List.fromList([]), DateTime.now().toIso8601String(), 
+        playlistID, playlistName, null, DateTime.now().toIso8601String(), 
         [audioCompleteData.audioUrl]
       );
       playlistList.add(playlistData);

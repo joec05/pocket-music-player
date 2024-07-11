@@ -25,7 +25,7 @@ if (flutterVersionName == null) {
 android {
     namespace "com.example.music_player_app"
     compileSdkVersion 34
-    ndkVersion "25.2.9519653"
+    ndkVersion "27.0.11902837"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -51,7 +51,7 @@ android {
         applicationId "com.example.music_player_app"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

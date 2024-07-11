@@ -24,8 +24,8 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
     initializeCurrentAudio();
     appStateRepo.audioHandler?.audioPlayer.positionStream.listen((newPosition) {
       if(mounted){
-        if(audioCompleteData.value != null){
-          currentSlidingWidth.value = min((newPosition.inMilliseconds / audioCompleteData.value!.audioMetadataInfo.duration), 1) * getScreenWidth();
+        if(audioCompleteData.value != null && appStateRepo.audioHandler!.audioPlayer.duration != null){
+          currentSlidingWidth.value = min((newPosition.inMilliseconds / appStateRepo.audioHandler!.audioPlayer.duration!.inMilliseconds), 1) * getScreenWidth();
         }
       }
     });
@@ -49,7 +49,12 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
 
   void initializeCurrentAudio(){
     if(appStateRepo.audioHandler != null && mounted){
-      String currentAudioUrl = appStateRepo.audioHandler!.currentAudioUrl;
+      String? currentAudioUrl = appStateRepo.audioHandler!.currentAudioUrl;
+
+      if(currentAudioUrl == null) {
+        return;
+      }
+      
       audioCompleteData.value = appStateRepo.allAudiosList[currentAudioUrl] == null ? null : appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value;
       audioCompleteData.refresh();
     }
@@ -126,13 +131,13 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
                                   borderRadius: BorderRadius.circular(100),
                                   image: DecorationImage(
                                     image: MemoryImage(
-                                      audioCompleteData.value!.audioMetadataInfo.albumArt.bytes.isEmpty ?
-                                        appStateRepo.audioImageData!.bytes
+                                      audioCompleteData.value!.audioMetadataInfo.albumArt == null ?
+                                        appStateRepo.audioImageData!
                                       : 
-                                        audioCompleteData.value!.audioMetadataInfo.albumArt.bytes
+                                        audioCompleteData.value!.audioMetadataInfo.albumArt!
                                     ), 
                                     fit: BoxFit.fill,
-                                    onError: (exception, stackTrace) => Image.memory(appStateRepo.audioImageData!.bytes),
+                                    onError: (exception, stackTrace) => Image.memory(appStateRepo.audioImageData!),
                                   )
                                 ),
                               ),
@@ -145,8 +150,7 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
                                       children: [
                                         Flexible(
                                           child: Text(
-                                            audioCompleteDataValue.audioMetadataInfo.title ?? 
-                                            audioCompleteDataValue.audioUrl.split('/').last.trim(), 
+                                            audioCompleteDataValue.audioMetadataInfo.title ?? audioCompleteDataValue.audioMetadataInfo.fileName, 
                                             style: const TextStyle(fontSize: 17), 
                                             maxLines: 1, 
                                             overflow: TextOverflow.ellipsis

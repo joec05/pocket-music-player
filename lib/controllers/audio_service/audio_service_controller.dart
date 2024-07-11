@@ -7,7 +7,7 @@ import 'package:rxdart/rxdart.dart';
 class MyAudioHandler extends BaseAudioHandler with QueueHandler {
   final audioPlayer = AudioPlayer();
   final currentSong = BehaviorSubject<AudioCompleteDataClass>();
-  String currentAudioUrl = '';
+  String? currentAudioUrl;
   List<String> currentDirectoryAudioList = [];
   List<String> currentDirectoryAudioListShuffled = [];
   LoopStatus currentLoopStatus = LoopStatus.repeatCurrent;
@@ -30,20 +30,23 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
     });
   }
 
-  void updateListDirectory(List<String> directory, List<String> directoryShuffled){
+  void updateListDirectory(List<String> directory, List<String> directoryShuffled) async {
     currentDirectoryAudioList = directory.where((songID) => appStateRepo.allAudiosList[songID] != null).toList();
     currentDirectoryAudioListShuffled = directoryShuffled;
-    List<MediaItem> mediaItemList = currentDirectoryAudioList.map((songID){
-      AudioCompleteDataClass audioData = appStateRepo.allAudiosList[songID]!.notifier.value;
-      AudioMetadataInfoClass metadata = audioData.audioMetadataInfo;
-      return MediaItem(
-        id: audioData.audioUrl,
-        album: metadata.albumName,
-        artist: metadata.artistName,
-        title: metadata.title ?? audioData.audioUrl.split('/').last,
-        artUri: Uri.file(appStateRepo.audioImageData!.path)
-      );      
-    }).toList();
+    List<MediaItem> mediaItemList = await Future.wait(
+      currentDirectoryAudioList.map((songID) async {
+        AudioCompleteDataClass audioData = appStateRepo.allAudiosList[songID]!.notifier.value;
+        AudioMetadataInfoClass metadata = audioData.audioMetadataInfo;
+        final String artUri = await writeTemporaryAudioBytes(metadata.albumArt == null ? appStateRepo.audioImageData! : metadata.albumArt!);
+        return MediaItem(
+          id: audioData.audioUrl,
+          album: metadata.albumName,
+          artist: metadata.artistName,
+          title: metadata.title ?? metadata.fileName,
+          artUri: Uri.file(artUri)
+        );      
+      }).toList()
+    );
     queue.add(mediaItemList);
   }
   
@@ -59,6 +62,10 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
   }
 
   Future<void> startNextAfterFinishAudio() async {
+    if(currentAudioUrl == null) {
+      return;
+    }
+
     if (currentLoopStatus == LoopStatus.repeatCurrent) {
       await setNewAudioSession(appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value);
     }else if(currentLoopStatus == LoopStatus.repeatAll){
@@ -69,7 +76,7 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
       playerState = AudioPlayerState.completed;
       updateAudioPlayerState(playerState);
       await setCurrentSong(appStateRepo.allAudiosList[
-        currentDirectoryAudioListShuffled[(currentDirectoryAudioListShuffled.indexOf(currentAudioUrl) + 1) % currentDirectoryAudioListShuffled.length]
+        currentDirectoryAudioListShuffled[(currentDirectoryAudioListShuffled.indexOf(currentAudioUrl!) + 1) % currentDirectoryAudioListShuffled.length]
       ]!.notifier.value);
     }
   }
@@ -98,13 +105,14 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
       AudioMetadataInfoClass metadata = audioCompleteData.audioMetadataInfo;
       currentSong.add(audioCompleteData);
       currentAudioUrl = audioCompleteData.audioUrl;
+      final String artUri = await writeTemporaryAudioBytes(audioCompleteData.audioMetadataInfo.albumArt == null ? appStateRepo.audioImageData! : audioCompleteData.audioMetadataInfo.albumArt!);
       mediaItem.add(
         MediaItem(
           id: audioCompleteData.audioUrl,
           album: metadata.albumName,
           artist: metadata.artistName,
-          title: metadata.title ?? audioCompleteData.audioUrl.split('/').last,
-          artUri: Uri.file(appStateRepo.audioImageData!.path),
+          title: metadata.title ?? metadata.fileName,
+          artUri: Uri.file(artUri),
           extras: <String, dynamic>{
           },
         )
@@ -118,7 +126,11 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
   }
 
   void updateAudioPlayerState(AudioPlayerState newState){
-    if(currentAudioUrl.isNotEmpty && appStateRepo.allAudiosList[currentAudioUrl] != null){
+    if(currentAudioUrl == null) {
+      return;
+    }
+
+    if(appStateRepo.allAudiosList[currentAudioUrl] != null){
       AudioCompleteDataClass x = appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value;
       AudioCompleteDataClass y = AudioCompleteDataClass(
         x.audioUrl, x.audioMetadataInfo, newState, x.deleted
@@ -131,7 +143,11 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
   }
 
   void emitCurrentAudioStreamData(){
-    if(currentAudioUrl.isNotEmpty && appStateRepo.allAudiosList[currentAudioUrl] != null){
+    if(currentAudioUrl == null) {
+      return;
+    }
+
+    if(appStateRepo.allAudiosList[currentAudioUrl] != null){
       AudioCompleteDataClass x = appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value;
       AudioCompleteDataClass y = AudioCompleteDataClass(
         x.audioUrl, x.audioMetadataInfo, AudioPlayerState.playing, x.deleted
@@ -164,7 +180,7 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
     await audioPlayer.stop().then((value){
       playerState = AudioPlayerState.stopped;
       updateAudioPlayerState(playerState);
-      currentAudioUrl = '';
+      currentAudioUrl = null;
     });
   }
 

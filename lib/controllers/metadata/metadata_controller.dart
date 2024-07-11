@@ -1,22 +1,32 @@
 import 'dart:typed_data';
-import 'package:ffmpeg_kit_flutter_audio/ffmpeg_kit_config.dart';
-import 'package:ffmpeg_kit_flutter_audio/log.dart';
-import 'package:ffmpeg_kit_flutter_audio/return_code.dart';
-import 'package:ffmpeg_kit_flutter_audio/statistics.dart';
+import 'package:audiotags/audiotags.dart';
+import 'package:audiotags/audiotags.dart' as audiotags;
 import 'package:flutter/material.dart';
 import 'package:music_player_app/global_files.dart';
-import 'dart:convert';
 import 'dart:io';
-import 'package:ffmpeg_kit_flutter_audio/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter_audio/ffprobe_kit.dart';
-import 'package:ffmpeg_kit_flutter_audio/ffprobe_session.dart';
-import 'package:permission_handler/permission_handler.dart' as ph;
-import 'package:device_info_plus/device_info_plus.dart';
 
 /// Controller used for handling FFmpeg commands
-class FFmpegController {
+class MetadataController {
 
   Future<AudioMetadataInfoClass?> fetchAudioMetadata(String audioUrl) async{
+    Tag? tag = await AudioTags.read(audioUrl);
+
+    if(tag == null) {
+      return null;
+    }
+
+    return AudioMetadataInfoClass(
+      audioUrl.split('/').last, 
+      tag.title,
+      tag.trackArtist,
+      tag.album,
+      tag.albumArtist,
+      tag.pictures.isEmpty ? null : tag.pictures.first.bytes
+    );
+  }
+
+  /*
+  Future<AudioMetadataInfoClass?> fetchAudioMetadataFFmpeg(String audioUrl) async {
     FFprobeSession res = await FFprobeKit.execute('-v quiet -print_format json=compact=1 -show_format "$audioUrl"');
     String? output = await res.getOutput();
     if(output != null){
@@ -26,39 +36,97 @@ class FFmpegController {
         Map<String, dynamic> tags = format['tags'];
         String durationStr = format['duration'];
         double durationInMs = double.parse(durationStr) * 1000;
-        return AudioMetadataInfoClass(
-          format['filename'], 
-          durationInMs.round(), 
-          tags['title'], 
-          tags['artist'],
-          tags['album'], 
-          tags['album_artist'], 
-          await fetchAlbumArtData(audioUrl)
-        );
       }
     }
-    return null;
   }
-
-  Future<ImageDataClass> fetchAlbumArtData(String audioUrl) async{
+  
+  Future<Uint8List> fetchAlbumArtData(String audioUrl) async{
     String outputImageUrl = await createOutputImageFile();
     await FFmpegKit.execute(
       '-v quiet -i "$audioUrl" -an -vcodec copy "$outputImageUrl" -y',
     );
     if(await File(outputImageUrl).exists()){
-      return ImageDataClass(outputImageUrl, File(outputImageUrl).readAsBytesSync());
+      return File(outputImageUrl).readAsBytesSync();
     }else{
-      return ImageDataClass('', Uint8List.fromList([]));
+      return Uint8List.fromList([]);
     }
   }
-
+  */
+  
   Future<void> modifyTags(
     BuildContext context,
     AudioCompleteDataClass audioCompleteData,
     String title,
     String artist,
     String album,
-    String albumArtist,
+    String albumArtistName,
+    String? imageUrl
+  ) async{
+    try {
+      await AudioTags.write(audioCompleteData.audioUrl, Tag(
+        title: title.isEmpty ? null : title,
+        trackArtist: artist.isEmpty ? null : artist,
+        album: album.isEmpty ? null : album,
+        albumArtist: albumArtistName.isEmpty ? null : albumArtistName,
+        genre: null,
+        year: null,
+        trackNumber: null,
+        trackTotal: null,
+        discNumber: null,
+        discTotal: null,
+        pictures: [
+          if(imageUrl != null)
+          audiotags.Picture(
+            bytes: File(imageUrl).readAsBytesSync(),
+            mimeType: MimeType.png,
+            pictureType: audiotags.PictureType.coverFront
+          )
+        ]
+      )).then((_) {
+        Uint8List? imageData = imageUrl != null  ? File(imageUrl).readAsBytesSync() : null;
+        AudioMetadataInfoClass x = audioCompleteData.audioMetadataInfo;
+        AudioCompleteDataClass y = AudioCompleteDataClass(
+          audioCompleteData.audioUrl, AudioMetadataInfoClass(
+            x.fileName, title.isEmpty ? null : title,
+            artist.isEmpty ? null : artist, 
+            album.isEmpty ? null : album, 
+            albumArtistName.isEmpty ? null : albumArtistName, 
+            imageData
+          ), audioCompleteData.playerState, audioCompleteData.deleted
+        );
+        appStateRepo.allAudiosList[audioCompleteData.audioUrl]!.notifier.value = y;
+        EditAudioMetadataStreamClass().emitData(
+          EditAudioMetadataStreamControllerClass(
+            y, audioCompleteData
+          )
+        );
+        if(context.mounted) {
+          handler.displaySnackbar(
+            context, 
+            SnackbarType.successful, 
+            tSuccess.modifyTags
+          );
+        }
+      });
+    } catch(e) {
+      if(context.mounted) {
+        handler.displaySnackbar(
+          context, 
+          SnackbarType.error, 
+          //tErr.unknown
+          e.toString()
+        );
+      }
+    }
+  }
+
+  /*
+  Future<void> modifyTagsFFmpeg(
+    BuildContext context,
+    AudioCompleteDataClass audioCompleteData,
+    String title,
+    String artist,
+    String album,
     String imageUrl
   ) async{
     bool mounted = context.mounted;
@@ -69,9 +137,9 @@ class FFmpegController {
       String outputFilePath = await createOutputAudioFile();
       String ffmpegCommand = '';
       if(imageUrl.isEmpty){
-        ffmpegCommand += '-map 0:0 -c copy ';
+        ffmpegCommand += '-map 0:0 -acodec copy ';
       }else{
-        ffmpegCommand += '-i $imageUrl -map 0:0 -c copy ';
+        ffmpegCommand += '-i $imageUrl -map 0:0 -acodec copy ';
       }
       if(title != audioCompleteData.audioMetadataInfo.title){
         ffmpegCommand += '-metadata title="$title" ';
@@ -86,14 +154,9 @@ class FFmpegController {
       }else{
         ffmpegCommand += '-metadata album="$album" ';
       }
-      if(albumArtist.isEmpty){
-        ffmpegCommand += '-metadata album_artist= ';
-      }else{
-        ffmpegCommand += '-metadata album_artist="$albumArtist" ';
-      }
       debugPrint(ffmpegCommand);
       if(ffmpegCommand.isNotEmpty){
-        ffmpegCommand = '-y -i "$inputFilePath" $ffmpegCommand "$outputFilePath"';
+        ffmpegCommand = '-y -i "$inputFilePath" $ffmpegCommand -c:a libmp3lame "$outputFilePath"';
         FFmpegKit.executeAsync(
           ffmpegCommand, 
           (session) async {
@@ -117,32 +180,9 @@ class FFmpegController {
                   permissionIsGranted = true;
                 }
                 if(permissionIsGranted){
-                  ImageDataClass imageData = imageUrl.isNotEmpty ? ImageDataClass(imageUrl, File(imageUrl).readAsBytesSync()) : ImageDataClass('', Uint8List.fromList([]));
+                  Uint8List imageData = imageUrl.isNotEmpty ? File(imageUrl).readAsBytesSync() : Uint8List.fromList([]);
                   if(await File(outputFilePath).exists()){
                     await File(outputFilePath).copy(audioCompleteData.audioUrl).then((_) {
-                      AudioMetadataInfoClass x = audioCompleteData.audioMetadataInfo;
-                      AudioCompleteDataClass y = AudioCompleteDataClass(
-                        audioCompleteData.audioUrl, AudioMetadataInfoClass(
-                          x.fileName, x.duration, title,
-                          artist.isEmpty ? null : artist, 
-                          album.isEmpty ? null : album, 
-                          albumArtist.isEmpty ? null : albumArtist, 
-                          imageData
-                        ), audioCompleteData.playerState, audioCompleteData.deleted
-                      );
-                      appStateRepo.allAudiosList[audioCompleteData.audioUrl]!.notifier.value = y;
-                      EditAudioMetadataStreamClass().emitData(
-                        EditAudioMetadataStreamControllerClass(
-                          y, audioCompleteData
-                        )
-                      );
-                      if(context.mounted) {
-                        handler.displaySnackbar(
-                          context, 
-                          SnackbarType.successful, 
-                          tSuccess.modifyTags
-                        );
-                      }
                     });
                   } else {
                     if(context.mounted) {
@@ -188,7 +228,8 @@ class FFmpegController {
       }
     }
   }
+  */
 
 }
 
-final ffmpegController = FFmpegController();
+final metadataController = MetadataController();

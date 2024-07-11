@@ -50,13 +50,13 @@ class _CustomAlbumDisplayWidgetState extends State<CustomAlbumDisplayWidget>{
                           borderRadius: BorderRadius.circular(100),
                           image: DecorationImage(
                             image: MemoryImage(
-                              albumSongsData.albumProfilePic.bytes.isEmpty ?
-                                appStateRepo.audioImageData!.bytes
+                              albumSongsData.albumProfilePic == null ?
+                                appStateRepo.audioImageData!
                               : 
-                                albumSongsData.albumProfilePic.bytes
+                                albumSongsData.albumProfilePic!
                             ), 
                             fit: BoxFit.fill,
-                            onError: (exception, stackTrace) => Image.memory(appStateRepo.audioImageData!.bytes),
+                            onError: (exception, stackTrace) => Image.memory(appStateRepo.audioImageData!),
                           )
                         ),
                       ),

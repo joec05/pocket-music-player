@@ -1,33 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
-import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
 
 class MainPageController {
-  final BuildContext context;
   RxInt selectedIndexValue = 0.obs;
   final PageController pageController = PageController(initialPage: 0, keepPage: true);
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   RxBool isLoaded = false.obs;
-  List<Widget> widgetOptions = List<Widget>.from([]).obs;
   Rx<LoadType> loadType = LoadType.initial.obs;
+  Rx<bool> isSearching = false.obs;
+  List<Widget> widgetOptions = List<Widget>.from([]).obs;
+  Rx<String> searchedText = ''.obs;
+  TextEditingController searchController = TextEditingController();
 
-  MainPageController(
-    this.context
-  );
+  MainPageController();
 
-  bool get mounted => context.mounted;
-
-  void initializeController(){
-    initializeDefaultStartingDisplayImage();
+  void initializeController() async {
     widgetOptions = [
-      AllSongsPageWidget(setLoadingState: setLoadingState), 
+      const AllSongsPageWidget(), 
       const SortedArtistsPageWidget(), 
       const SortedAlbumsPageWidget(), 
       const PlaylistPageWidget()
     ];
+    searchController.addListener(() {
+      searchedText.value = searchController.text;
+    });
   }
 
   void dispose(){
@@ -40,57 +38,84 @@ class MainPageController {
   }
 
   void onPageChanged(newIndex){
-    if(mounted){
-      if(isLoaded.value){
-        selectedIndexValue.value = newIndex;
-      }
-    }
-  }
-
-  Future<void> initializeDefaultStartingDisplayImage() async{
-    ByteData byteData = await rootBundle.load('assets/images/music-icon.png');
-    final tempFile = File('${(await getTemporaryDirectory()).path}/music-icon.png');
-    final file = await tempFile.writeAsBytes(
-      byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes)
-    );
-    final ImageDataClass audioImageDataClass = ImageDataClass(
-      file.path, byteData.buffer.asUint8List()
-    );
-    if(mounted){
-      appStateRepo.audioImageData = audioImageDataClass;
+    if(isLoaded.value){
+      selectedIndexValue.value = newIndex;
     }
   }
 
   PreferredSizeWidget setAppBar(index){
+    String text = '';
     if(index == 0){
-      return AppBar(
-        flexibleSpace: Container(
-          decoration: defaultAppBarDecoration
-        ),
-        title: const Text('All Music'), titleSpacing: defaultAppBarTitleSpacingWithoutBackBtn,
-      );
+      text = 'All Music';
     }else if(index == 1){
-      return AppBar(
-        flexibleSpace: Container(
-          decoration: defaultAppBarDecoration
-        ),
-        title: const Text('Artists'), titleSpacing: defaultAppBarTitleSpacingWithoutBackBtn,
-      );
+      text = 'Artists';
     }else if(index == 2){
-      return AppBar(
-        flexibleSpace: Container(
-          decoration: defaultAppBarDecoration
-        ),
-        title: const Text('Albums'), titleSpacing: defaultAppBarTitleSpacingWithoutBackBtn,
-      );
+      text = 'Albums';
     }else if(index == 3){
-      return AppBar(
-        flexibleSpace: Container(
-          decoration: defaultAppBarDecoration
-        ),
-        title: const Text('Playlists'), titleSpacing: defaultAppBarTitleSpacingWithoutBackBtn,
-      );
+      text = 'Playlists';
     }
-    return AppBar();
+
+    return AppBar(
+      flexibleSpace: Container(
+        decoration: defaultAppBarDecoration
+      ),
+      title: Obx(() {
+        if(isSearching.value) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              InkWell(
+                onTap: () {
+                  isSearching.value = false;
+                  searchController.text = '';
+                },
+                child: const Icon(Icons.arrow_back, size: 20)
+              ),
+              TextField(
+                controller: searchController,
+                decoration: InputDecoration(
+                  counterText: "",
+                  contentPadding: EdgeInsets.symmetric(horizontal: getScreenWidth() * 0.025),
+                  fillColor: Colors.transparent,
+                  filled: true,
+                  hintText: 'Search anything',
+                  constraints: BoxConstraints(
+                    maxWidth: getScreenWidth() * 0.75,
+                    maxHeight: getScreenHeight() * 0.07,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(width: 2, color: Colors.transparent),
+                    borderRadius: BorderRadius.circular(12.5),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(width: 2, color: Colors.transparent),
+                    borderRadius: BorderRadius.circular(12.5),
+                  ),
+                )
+              )
+            ],
+          );
+        }
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(text),
+            InkWell(
+              onTap: () {
+                isSearching.value = true;
+              },
+              child: const Padding(
+                padding: EdgeInsets.all(5.0),
+                child: Icon(FontAwesomeIcons.magnifyingGlass, size: 20),
+              )
+            )
+          ],
+        );
+      }),
+      titleSpacing: defaultAppBarTitleSpacingWithoutBackBtn,
+    );
   }
 }
+
+final mainPageController = MainPageController();

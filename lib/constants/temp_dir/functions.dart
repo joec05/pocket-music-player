@@ -13,6 +13,14 @@ Future<String> copyTemporaryAudioPath(String url) async{
   return newFile.path;
 }
 
+Future<String> writeTemporaryAudioBytes(Uint8List list) async {
+  Directory temporaryDirectory = await getTemporaryDirectory();
+  Directory directory = await Directory('${temporaryDirectory.path}/audio').create(recursive: true);
+  String filePath = '${directory.path}/${const Uuid().v4()}.mp3';
+  File(filePath).writeAsBytesSync(list);
+  return filePath;
+}
+
 Future<String> copyTemporaryImagePath(String url) async{
   Directory temporaryDirectory = await getTemporaryDirectory();
   Directory directory = await Directory('${temporaryDirectory.path}/image').create(recursive: true);

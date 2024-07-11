@@ -40,7 +40,14 @@ class _PlaylistPageWidgetState extends State<_PlaylistPageWidgetStateful> with A
     return Scaffold(
       body: Center(
         child: Obx (() {
-          List<PlaylistSongsModel> playlistsSongsList = controller.playlistsSongsList;
+          final searchedText = mainPageController.searchedText.trim().toLowerCase();
+          List<PlaylistSongsModel> playlistsSongsList = controller.playlistsSongsList.where((e) {
+            final String playlist = e.playlistName.toLowerCase();
+            if(playlist.contains(searchedText)) {
+              return true;
+            }
+            return false;
+          }).toList();
 
           if(playlistsSongsList.isEmpty) {
             return noItemsWidget(FontAwesomeIcons.list, 'playlists');
@@ -52,12 +59,10 @@ class _PlaylistPageWidgetState extends State<_PlaylistPageWidgetStateful> with A
             physics: const AlwaysScrollableScrollPhysics(),
             itemCount: playlistsSongsList.length,
             itemBuilder: (context, index){
-              return Obx(() {
-                return CustomPlaylistDisplayWidget(
-                  playlistSongsData: playlistsSongsList[index], 
-                  key: UniqueKey()
-                );
-              });
+              return CustomPlaylistDisplayWidget(
+                playlistSongsData: playlistsSongsList[index], 
+                key: UniqueKey()
+              );
             }
           );
         })

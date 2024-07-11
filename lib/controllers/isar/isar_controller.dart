@@ -2,7 +2,7 @@ import 'package:isar/isar.dart';
 import 'package:music_player_app/global_files.dart';
 import 'package:path_provider/path_provider.dart';
 
-class IsarController {  
+class IsarController {
   Isar? isar;
 
   Future<void> initialize() async {
