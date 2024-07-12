@@ -141,31 +141,32 @@ class AllMusicPageWidgetState extends State<AllMusicPageWidgetStateful> with Aut
                 return false;
               }).toList();
               
-              if(audioUrls.isEmpty) {
-                return noItemsWidget(FontAwesomeIcons.music, 'songs');
-              }
-              return ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                primary: false,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: audioUrls.length,
-                itemBuilder: (context, index){
-                  if(appStateRepo.allAudiosList[audioUrls[index]] == null){
-                    return Container();
+              return Center(
+                child: audioUrls.isEmpty ? SizedBox(height: getScreenHeight() * 0.55, child: noItemsWidget(FontAwesomeIcons.music, 'songs'))
+              :
+                ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  primary: false,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: audioUrls.length,
+                  itemBuilder: (context, index){
+                    if(appStateRepo.allAudiosList[audioUrls[index]] == null){
+                      return Container();
+                    }
+
+                    return Obx(() {
+                      final audioNotifier = appStateRepo.allAudiosList[audioUrls[index]];
+
+                      return CustomAudioPlayerWidget(
+                        audioCompleteData: audioNotifier!.notifier.value,
+                        key: UniqueKey(),
+                        directorySongsList: audioUrls,
+                        playlistSongsData: null
+                      );
+                    });
                   }
-
-                  return Obx(() {
-                    final audioNotifier = appStateRepo.allAudiosList[audioUrls[index]];
-
-                    return CustomAudioPlayerWidget(
-                      audioCompleteData: audioNotifier!.notifier.value,
-                      key: UniqueKey(),
-                      directorySongsList: audioUrls,
-                      playlistSongsData: null
-                    );
-                  });
-                }
+                )
               );
             })
           ],

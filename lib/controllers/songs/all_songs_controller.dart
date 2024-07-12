@@ -20,7 +20,6 @@ class AllSongsController {
 
   void scan() async{
     await appStateRepo.audioHandler!.stop().then((value){
-      mainPageController.setLoadingState(false, LoadType.scan);
       runDelay(() => fetchSongsController.fetchLocalSongs(LoadType.scan), actionDelayDuration);
     });
   }

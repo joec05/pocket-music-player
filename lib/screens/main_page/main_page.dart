@@ -99,13 +99,24 @@ class __MainPageWidgetStatefulState extends State<_MainPageWidgetStateful>{
                 width: double.infinity,
                 height: double.infinity,
                 color: Colors.transparent,
-                child: const Column(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 15),
-                    Text('Scanning')
+                    Container(
+                      padding: const EdgeInsets.all(25),
+                      decoration: BoxDecoration(
+                        color: Colors.teal,
+                        borderRadius: BorderRadius.circular(10)
+                      ),
+                      child: const Column(
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(height: 15),
+                          Text('Scanning'),
+                        ],
+                      ),
+                    )
                   ],
                 ),
               )

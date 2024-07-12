@@ -13,6 +13,9 @@ InputDecoration generateFormTextFieldDecoration(content, prefixIcon){
     hintText: 'Enter $content',
     prefixIcon: Icon(prefixIcon, size: 18),
     prefixIconColor: Colors.blueGrey,
+    focusedBorder: const OutlineInputBorder(
+      borderSide: BorderSide(width: 1, color: Colors.transparent),
+    ),
   );
 }
 
@@ -33,7 +36,7 @@ InputDecoration generatePlaylistNameTextFieldDecoration(content, prefixIcon){
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(0),
-      borderSide: const BorderSide(width: 1, color: Colors.teal),
+      borderSide: const BorderSide(width: 1, color: Colors.transparent),
     ),
   );
 }

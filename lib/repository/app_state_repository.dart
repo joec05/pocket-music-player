@@ -1,10 +1,11 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
 
 class AppStateRepository {
-  Map<String, AudioCompleteDataNotifier> allAudiosList = {};
+  RxMap<String, AudioCompleteDataNotifier> allAudiosList = <String, AudioCompleteDataNotifier>{}.obs;
   Map<String, AudioListenCountModel> audioListenCount = {};
   List<FavouriteSongModel> favouritesList = [];
   List<PlaylistSongsModel> playlistList = [];

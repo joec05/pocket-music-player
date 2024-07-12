@@ -296,7 +296,7 @@ class SongOptionController {
                     ),
                     CustomButton(
                       width: double.infinity, height: getScreenHeight() * 0.065, 
-                      color: verifyInput ? const Color.fromARGB(255, 143, 58, 52) : Colors.grey.withOpacity(0.5), 
+                      color: verifyInput ? Colors.orange.withOpacity(0.85) : Colors.grey.withOpacity(0.5), 
                       text: 'Create playlist and add song', 
                       onTapped: (){
                         if(mounted){

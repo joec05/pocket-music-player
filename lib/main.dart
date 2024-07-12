@@ -7,6 +7,8 @@ import 'package:music_player_app/global_files.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
+final controller = FetchSongsController();
+
 Future<void> main() async{
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -15,7 +17,6 @@ Future<void> main() async{
   await isarController.initialize();
   await initializeAudioService();
   await initializeDefaultStartingDisplayImage();
-  final controller = FetchSongsController();
   await controller.fetchLocalSongs(LoadType.initial).then((_) {
     runApp(
       const MyApp()
@@ -62,6 +63,14 @@ class MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
         milliseconds: 500,
       )
     );
+    verifyUserPermission();
+  }
+
+  void verifyUserPermission() async {
+    if(!controller.permissionIsGranted) {
+      final _ = await controller.requestPermission();
+      await controller.fetchLocalSongs(LoadType.initial);
+    }
   }
 
   // This widget is the root of your application.

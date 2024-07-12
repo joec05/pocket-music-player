@@ -10,11 +10,10 @@ class MetadataController {
 
   Future<AudioMetadataInfoClass?> fetchAudioMetadata(String audioUrl) async{
     Tag? tag = await AudioTags.read(audioUrl);
-
     if(tag == null) {
       return null;
     }
-
+    
     return AudioMetadataInfoClass(
       audioUrl.split('/').last, 
       tag.title,

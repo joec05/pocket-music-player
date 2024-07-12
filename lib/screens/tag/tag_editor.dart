@@ -113,7 +113,7 @@ class _TagEditorWidgetState extends State<_TagEditorWidgetStateful> {
                     return CustomButton(
                       width: double.infinity,
                       height: getScreenHeight() * 0.065,
-                      color: !isModifyingTags ? Colors.orange : Colors.grey.withOpacity(0.5),
+                      color: !isModifyingTags ? Colors.orange.withOpacity(0.85) : Colors.grey.withOpacity(0.5),
                       onTapped: !isModifyingTags ? () => controller.modifyTags() : (){},
                       text: 'Update metadata',
                       setBorderRadius: true,

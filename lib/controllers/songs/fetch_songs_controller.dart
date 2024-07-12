@@ -5,13 +5,13 @@ import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:device_info_plus/device_info_plus.dart';
 
 class FetchSongsController {
-  //TODO: Updated state does not get updated in UI/UX but data is updated, needs to do hot reload first
-  //TODO: Retest if permissions cause the splash screen to turn black. If it does, open up issue in Github
-  //TODO: Fix UI/UX in editor pages and dialog widgets
+  //TODO: Fix UI/UX in add playlist dialog widgets
+  //TODO: Bug where some mp3 files get error when extracting metadata
 
-  Future<void> fetchLocalSongs(LoadType loadType) async {
-    bool permissionIsGranted = false;
-    ph.Permission? permission;
+  bool permissionIsGranted = false;
+  ph.Permission? permission;
+
+  Future<bool> checkPermissionGranted() async {
     if(Platform.isAndroid){
       final androidInfo = await DeviceInfoPlugin().androidInfo;
       if(androidInfo.version.sdkInt <= 32) {
@@ -23,10 +23,20 @@ class FetchSongsController {
       permission = ph.Permission.audio;
     }
     permissionIsGranted = await permission!.isGranted;
+    return permissionIsGranted;
+  }
+
+  Future<bool> requestPermission() async {
+    permissionIsGranted = await permission!.isGranted;
     if(!permissionIsGranted){
-      permissionIsGranted = (await permission.request()).isGranted;
+      permissionIsGranted = (await permission!.request()).isGranted;
     }
-    if(permissionIsGranted){
+    return permissionIsGranted;
+  }
+
+  Future<void> fetchLocalSongs(LoadType loadType) async {
+    mainPageController.setLoadingState(false, loadType);
+    if(await checkPermissionGranted()){
       Directory dir = Directory(defaultDirectory);
       List<FileSystemEntity> directoryList = await dir.list().toList();
       directoryList.removeWhere((e) => e.path == restrictedDirectory);
@@ -72,16 +82,22 @@ class FetchSongsController {
                 getListenCountData[path] = AudioListenCountModel(path, 0);
               }
             }
-          } catch(_) {
-
+          } catch(e) {
+            talker.debug("${path.split('/').last} $e");
           }
         }
       }
-      appStateRepo.allAudiosList = filesCompleteDataList;
+      appStateRepo.allAudiosList.value = filesCompleteDataList;
       appStateRepo.audioListenCount = getListenCountData;
       appStateRepo.setFavouritesList(await isarController.fetchFavourites());
       appStateRepo.setPlaylistList('', await isarController.fetchPlaylists());
     } else{
+      if(loadType == LoadType.scan) {
+        final _ = await requestPermission();
+        if(permissionIsGranted) {
+          await fetchLocalSongs(loadType);
+        }
+      }
       /*
       if(context.mounted) {
         handler.displaySnackbar(
