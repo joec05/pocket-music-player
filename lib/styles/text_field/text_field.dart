@@ -51,14 +51,16 @@ InputDecoration generatePlaylistNameTextFieldDecorationNoFocus(content, prefixIc
     prefixIcon: Icon(prefixIcon, size: 18),
     prefixIconColor: Colors.blueGrey,
     border: OutlineInputBorder(
+      borderSide: const BorderSide(width: 0, color: Colors.transparent),
       borderRadius: BorderRadius.circular(0),
     ),
     enabledBorder: OutlineInputBorder(
+      borderSide: const BorderSide(width: 0, color: Colors.transparent),
       borderRadius: BorderRadius.circular(0),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(0),
-      borderSide: const BorderSide(width: 0),
+      borderSide: const BorderSide(width: 0, color: Colors.transparent),
     ),
   );
 }

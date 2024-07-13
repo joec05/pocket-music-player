@@ -5,9 +5,6 @@ import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:device_info_plus/device_info_plus.dart';
 
 class FetchSongsController {
-  //TODO: Fix UI/UX in add playlist dialog widgets
-  //TODO: Bug where some mp3 files get error when extracting metadata
-
   bool permissionIsGranted = false;
   ph.Permission? permission;
 

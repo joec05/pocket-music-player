@@ -133,9 +133,10 @@ class AllMusicPageWidgetState extends State<AllMusicPageWidgetStateful> with Aut
 
                 final AudioCompleteDataClass data = appStateRepo.allAudiosList[e]!.notifier.value;
                 final AudioMetadataInfoClass metadata = data.audioMetadataInfo;
+                final String fileName = metadata.fileName.toLowerCase();
                 final String title = metadata.title?.toLowerCase() ?? '';
                 final String artist = metadata.artistName?.toLowerCase() ?? '';
-                if(title.contains(searchedText) || artist.contains(searchedText)) {
+                if(fileName.contains(searchedText) || title.contains(searchedText) || artist.contains(searchedText)) {
                   return true;
                 }
                 return false;

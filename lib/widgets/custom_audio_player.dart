@@ -41,7 +41,7 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
     });
   }
 
-  void playAudio() async{
+  void playAudio() async {
     List<String> directorySongsList = [...widget.directorySongsList];
     List<String> directorySongsListShuffled = [...widget.directorySongsList];
     directorySongsListShuffled.shuffle();

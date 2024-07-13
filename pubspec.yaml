@@ -40,7 +40,7 @@ dependencies:
   talker_flutter: ^4.3.2
   talker_logger: ^4.3.2
   audiotags: ^1.4.0
-  
+  audio_metadata_reader: ^0.0.6
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_player_app/global_files.dart';
 import 'package:rxdart/rxdart.dart';
@@ -82,13 +83,31 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
   }
 
   Future<void> setCurrentSong(AudioCompleteDataClass audioCompleteData) async{
-    if(File(audioCompleteData.audioUrl).existsSync()) {
-      if(audioCompleteData.audioUrl != currentAudioUrl){
-        updateAudioPlayerState(AudioPlayerState.completed);
-      }
-      await setNewAudioSession(audioCompleteData);
-      playerState = AudioPlayerState.playing;  
-    }  
+    try {
+      if(File(audioCompleteData.audioUrl).existsSync()) {
+        if(audioCompleteData.audioUrl != currentAudioUrl){
+          updateAudioPlayerState(AudioPlayerState.completed);
+        }
+        await setNewAudioSession(audioCompleteData);
+        playerState = AudioPlayerState.playing;  
+      }  
+    } on PlayerException catch (e) {
+      rootScaffoldMessengerKey.currentState?.showSnackBar(
+        SnackBar(content: Text(e.message ?? 'Failed to play audio file'))
+      );
+      debugPrint("Error code: ${e.code}");
+      debugPrint("Error message: ${e.message}");
+    } on PlayerInterruptedException catch (e) {
+      rootScaffoldMessengerKey.currentState?.showSnackBar(
+        SnackBar(content: Text(e.message ?? 'Failed to play audio file'))
+      );
+      debugPrint("Connection aborted: ${e.message}");
+    } catch (e) {
+      rootScaffoldMessengerKey.currentState?.showSnackBar(
+        SnackBar(content: Text(e.toString()))
+      );
+      debugPrint(e.toString());
+    }
   }
 
   void addAudioListenCount(AudioCompleteDataClass audioCompleteData) async{

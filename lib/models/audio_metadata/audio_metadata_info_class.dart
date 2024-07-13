@@ -5,7 +5,7 @@ class AudioMetadataInfoClass{
   String? title;
   String? artistName;
   String? albumName;
-  String? albumArtistName;
+  ///String? albumArtistName;
   Uint8List? albumArt;
 
   AudioMetadataInfoClass(
@@ -13,7 +13,7 @@ class AudioMetadataInfoClass{
     this.title, 
     this.artistName, 
     this.albumName,
-    this.albumArtistName,
+    ///this.albumArtistName,
     this.albumArt
   );
 }

@@ -50,7 +50,8 @@ class SortedAlbumsController extends LoadingController {
       if(await File(songData.audioID).exists()){
         AudioMetadataInfoClass metadataInfo = songData.notifier.value.audioMetadataInfo;
         int albumIndex = albumsSongsListFetched.indexWhere((element){
-          return element.albumName == metadataInfo.albumName && element.artistName == metadataInfo.albumArtistName;
+          /// return element.albumName == metadataInfo.albumName && element.artistName == metadataInfo.albumArtistName;
+          return element.albumName == metadataInfo.albumName && element.artistName == metadataInfo.artistName;
         });
         if(albumIndex > -1){
           albumsSongsListFetched[albumIndex].songsList.add(
@@ -59,7 +60,7 @@ class SortedAlbumsController extends LoadingController {
         }else{
           albumsSongsListFetched.add(
             AlbumSongsClass(
-              metadataInfo.albumName, metadataInfo.albumArtistName,
+              metadataInfo.albumName, metadataInfo.artistName, ///metadataInfo.albumArtistName,
               metadataInfo.albumArt, [songData.audioID]
             )
           );

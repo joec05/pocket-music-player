@@ -12,7 +12,7 @@ class TagEditorController {
   TextEditingController titleController = TextEditingController();
   TextEditingController artistController = TextEditingController();
   TextEditingController albumController = TextEditingController();
-  TextEditingController albumArtistController = TextEditingController();
+  ///TextEditingController albumArtistController = TextEditingController();
   RxBool isModifyingTags = false.obs;
   String currentMessage = '';
 
@@ -31,7 +31,7 @@ class TagEditorController {
       titleController.text = audioCompleteData.audioMetadataInfo.title ?? '';
       artistController.text = audioCompleteData.audioMetadataInfo.artistName ?? '';
       albumController.text = audioCompleteData.audioMetadataInfo.albumName ?? '';
-      albumArtistController.text = audioCompleteData.audioMetadataInfo.albumArtistName ?? '';
+      ///albumArtistController.text = audioCompleteData.audioMetadataInfo.albumArtistName ?? '';
       imagePickerController.imageBytes.value = audioCompleteData.audioMetadataInfo.albumArt;
     }
   }
@@ -41,7 +41,7 @@ class TagEditorController {
     titleController.dispose();
     artistController.dispose();
     albumController.dispose();
-    albumArtistController.dispose();
+    ///albumArtistController.dispose();
   }
 
   void modifyTags() async{
@@ -55,7 +55,7 @@ class TagEditorController {
           titleController.text.trim(), 
           artistController.text.trim(), 
           albumController.text.trim(), 
-          albumArtistController.text.trim(),
+          ///albumArtistController.text.trim(),
           imageUrl
         );
         isModifyingTags.value = false;

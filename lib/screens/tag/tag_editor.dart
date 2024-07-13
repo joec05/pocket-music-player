@@ -102,12 +102,12 @@ class _TagEditorWidgetState extends State<_TagEditorWidgetStateful> {
                     maxLength: defaultTextFieldLimit,
                   ),
                   SizedBox(height: defaultTextFieldVerticalMargin),
-                  TextField(
-                    controller: controller.albumArtistController,
-                    decoration: generateFormTextFieldDecoration('album artist name', FontAwesomeIcons.user),
-                    maxLength: defaultTextFieldLimit,
-                  ),
-                  SizedBox(height: defaultTextFieldVerticalMargin),
+                  ///TextField(
+                  ///  controller: controller.albumArtistController,
+                  ///  decoration: generateFormTextFieldDecoration('album artist name', FontAwesomeIcons.user),
+                  ///  maxLength: defaultTextFieldLimit,
+                  ///),
+                  ///SizedBox(height: defaultTextFieldVerticalMargin),
                   Obx(() {
                     bool isModifyingTags = controller.isModifyingTags.value;
                     return CustomButton(

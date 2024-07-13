@@ -140,21 +140,6 @@ class SongOptionController {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(
-                  height: getScreenHeight() * 0.02
-                ),
-                const Text(
-                  'Add to playlist',
-                  style: TextStyle(fontWeight: FontWeight.bold)
-                ),
-                SizedBox(
-                  height: getScreenHeight() * 0.02
-                ),
-                Container(
-                  width: double.infinity,
-                  color: Colors.grey,
-                  height: 1.5
-                ),
                 CustomButton(
                   onTapped: (){
                     Navigator.of(bottomSheetContext).pop();
@@ -167,6 +152,11 @@ class SongOptionController {
                   setBorderRadius: false,
                   prefix: null,
                   loading: false
+                ),
+                Container(
+                  width: double.infinity,
+                  color: Colors.grey,
+                  height: 1.5
                 ),
                 CustomButton(
                   onTapped: (){
@@ -206,38 +196,41 @@ class SongOptionController {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(
-                    height: getScreenHeight() * 0.02
-                  ),
-                  const Text(
-                    'Select existing playlist',
-                    style: TextStyle(fontWeight: FontWeight.bold)
-                  ),
-                  SizedBox(
-                    height: getScreenHeight() * 0.02
-                  ),
-                  Container(
-                    width: double.infinity,
-                    color: Colors.grey,
-                    height: 1.5
-                  ),
-                  for(int i = 0; i < playlistList.length; i++)
-                    playlistList[i].songsList.contains(audioCompleteData.audioUrl) ?
-                      const Material(color: Colors.transparent)
-                    :
-                      CustomButton(
-                        onTapped: (){
-                          Navigator.of(bottomSheetContext).pop();
-                          runDelay(() => addToPlaylist(playlistList[i].playlistID), navigationDelayDuration);
-                        },
-                        text: playlistList[i].playlistName,
-                        width: double.infinity,
-                        height: getScreenHeight() * 0.08,
-                        color: Colors.transparent,
-                        setBorderRadius: false,
-                        prefix: null,
-                        loading: false
+                  playlistList.where((e) => !e.songsList.contains(audioCompleteData.audioUrl)).isEmpty ? 
+                    SizedBox(
+                      height: getScreenHeight() * 0.16,
+                      child: const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text('No playlists found.')
+                          ],
+                        )
                       )
+                    )
+                  : 
+                    Column(
+                      children: [
+                        for(int i = 0; i < playlistList.length; i++)
+                          playlistList[i].songsList.contains(audioCompleteData.audioUrl) ?
+                            const Material(color: Colors.transparent)
+                          :
+                            CustomButton(
+                              onTapped: (){
+                                Navigator.of(bottomSheetContext).pop();
+                                runDelay(() => addToPlaylist(playlistList[i].playlistID), navigationDelayDuration);
+                              },
+                              text: playlistList[i].playlistName,
+                              width: double.infinity,
+                              height: getScreenHeight() * 0.08,
+                              color: Colors.transparent,
+                              setBorderRadius: false,
+                              prefix: null,
+                              loading: false
+                            )
+                      ]
+                    )
                 ],
               ),
             )
@@ -267,21 +260,6 @@ class SongOptionController {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     SizedBox(
-                      height: getScreenHeight() * 0.02
-                    ),
-                    const Text(
-                      'Create new playlist',
-                      style: TextStyle(fontWeight: FontWeight.bold)
-                    ),
-                    SizedBox(
-                      height: getScreenHeight() * 0.02
-                    ),
-                    Container(
-                      width: double.infinity,
-                      color: Colors.grey,
-                      height: 1.5
-                    ),
-                    SizedBox(
                       height: getScreenHeight() * 0.08,
                       child: TextField(
                         maxLength: defaultTextFieldLimit,
@@ -296,7 +274,7 @@ class SongOptionController {
                     ),
                     CustomButton(
                       width: double.infinity, height: getScreenHeight() * 0.065, 
-                      color: verifyInput ? Colors.orange.withOpacity(0.85) : Colors.grey.withOpacity(0.5), 
+                      color: verifyInput ? Colors.orange.withOpacity(0.8) : Colors.grey.withOpacity(0.5), 
                       text: 'Create playlist and add song', 
                       onTapped: (){
                         if(mounted){

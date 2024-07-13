@@ -8,6 +8,8 @@ import 'package:audio_service/audio_service.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 final controller = FetchSongsController();
+final talker = Talker();
+final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
 Future<void> main() async{
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -24,8 +26,6 @@ Future<void> main() async{
     FlutterNativeSplash.remove();
   });
 }
-
-final talker = Talker();
 
 Future<void> initializeAudioService() async{
   if(appStateRepo.audioHandler == null){
@@ -77,6 +77,7 @@ class MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      scaffoldMessengerKey: rootScaffoldMessengerKey,
       initialRoute: '/',
       onGenerateRoute: (settings) {
         switch (settings.name) {

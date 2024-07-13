@@ -69,7 +69,10 @@ class MainPageController {
                   isSearching.value = false;
                   searchController.text = '';
                 },
-                child: const Icon(Icons.arrow_back, size: 20)
+                child: const Padding(
+                  padding: EdgeInsets.all(7.0),
+                  child: Icon(Icons.arrow_back, size: 25),
+                )
               ),
               TextField(
                 controller: searchController,

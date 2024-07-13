@@ -69,7 +69,8 @@ class _DisplayAlbumSongsWidgetState extends State<_DisplayAlbumSongsWidgetStatef
                 final AudioCompleteDataClass audioCompleteData = audioNotifier.value;
 
                 if(audioCompleteData.audioMetadataInfo.albumName == controller.albumSongsData.value.albumName &&
-                  audioCompleteData.audioMetadataInfo.albumArtistName == controller.albumSongsData.value.artistName){
+                  ///audioCompleteData.audioMetadataInfo.albumArtistName == controller.albumSongsData.value.artistName){
+                  audioCompleteData.audioMetadataInfo.artistName == controller.albumSongsData.value.artistName){
                   return CustomAudioPlayerWidget(
                     audioCompleteData: audioCompleteData,
                     key: UniqueKey(),

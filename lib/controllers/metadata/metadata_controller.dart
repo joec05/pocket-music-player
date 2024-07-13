@@ -2,24 +2,24 @@ import 'dart:typed_data';
 import 'package:audiotags/audiotags.dart';
 import 'package:audiotags/audiotags.dart' as audiotags;
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:music_player_app/global_files.dart';
 import 'dart:io';
+import 'package:audio_metadata_reader/audio_metadata_reader.dart';
 
 /// Controller used for handling FFmpeg commands
 class MetadataController {
-
+  final AudioPlayer audioPlayer = AudioPlayer();
+  
   Future<AudioMetadataInfoClass?> fetchAudioMetadata(String audioUrl) async{
-    Tag? tag = await AudioTags.read(audioUrl);
-    if(tag == null) {
-      return null;
-    }
+    final tag = await readMetadata(File(audioUrl), getImage: true);
     
     return AudioMetadataInfoClass(
       audioUrl.split('/').last, 
       tag.title,
-      tag.trackArtist,
+      tag.artist,
       tag.album,
-      tag.albumArtist,
+      ///tag.artist,
       tag.pictures.isEmpty ? null : tag.pictures.first.bytes
     );
   }
@@ -58,7 +58,7 @@ class MetadataController {
     String title,
     String artist,
     String album,
-    String albumArtistName,
+    ///String albumArtistName,
     String? imageUrl
   ) async{
     try {
@@ -66,13 +66,7 @@ class MetadataController {
         title: title.isEmpty ? null : title,
         trackArtist: artist.isEmpty ? null : artist,
         album: album.isEmpty ? null : album,
-        albumArtist: albumArtistName.isEmpty ? null : albumArtistName,
-        genre: null,
-        year: null,
-        trackNumber: null,
-        trackTotal: null,
-        discNumber: null,
-        discTotal: null,
+        ///albumArtist: albumArtistName.isEmpty ? null : albumArtistName
         pictures: [
           if(imageUrl != null)
           audiotags.Picture(
@@ -89,7 +83,7 @@ class MetadataController {
             x.fileName, title.isEmpty ? null : title,
             artist.isEmpty ? null : artist, 
             album.isEmpty ? null : album, 
-            albumArtistName.isEmpty ? null : albumArtistName, 
+            ///albumArtistName.isEmpty ? null : albumArtistName, 
             imageData
           ), audioCompleteData.playerState, audioCompleteData.deleted
         );
@@ -228,7 +222,6 @@ class MetadataController {
     }
   }
   */
-
 }
 
 final metadataController = MetadataController();
