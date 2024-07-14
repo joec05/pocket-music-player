@@ -115,7 +115,7 @@ class __MainPageWidgetStatefulState extends State<_MainPageWidgetStateful>{
                       Container(
                         padding: const EdgeInsets.all(25),
                         decoration: BoxDecoration(
-                          color: Colors.teal.withOpacity(0.95),
+                          color: Colors.transparent.withOpacity(0.75),
                           borderRadius: BorderRadius.circular(10)
                         ),
                         child: const Column(

@@ -60,7 +60,6 @@ class _TagEditorWidgetState extends State<_TagEditorWidgetStateful> {
                         Container(
                           width: getScreenWidth() * 0.35, height: getScreenWidth() * 0.35,
                           decoration: BoxDecoration(
-                            border: Border.all(width: 1),
                             borderRadius: BorderRadius.circular(100),
                             image: imageBytes != null ?
                               DecorationImage(

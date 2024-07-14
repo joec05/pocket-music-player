@@ -125,6 +125,11 @@ class AllMusicPageWidgetState extends State<AllMusicPageWidgetStateful> with Aut
             const Divider(color: Colors.grey, height: 3.5),
             SizedBox(height: getScreenHeight() * 0.0075),
             Obx(() {
+              bool isLoading = mainPageController.isLoaded.isFalse;
+              if(isLoading) {
+                return Container();
+              }
+
               final searchedText = mainPageController.searchedText.trim().toLowerCase();
               List<String> audioUrls = appStateRepo.allAudiosList.keys.where((e) {
                 if(appStateRepo.allAudiosList[e] == null) {

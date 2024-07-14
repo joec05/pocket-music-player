@@ -225,7 +225,6 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
                       Container(
                         width: getScreenWidth() * 0.7, height: getScreenWidth() * 0.7,
                         decoration: BoxDecoration(
-                          border: Border.all(width: 1),
                           borderRadius: BorderRadius.circular(150),
                           image: DecorationImage(
                             image: MemoryImage(

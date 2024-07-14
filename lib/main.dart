@@ -5,7 +5,9 @@ import 'package:get/get.dart';
 import 'package:music_player_app/controllers/songs/fetch_songs_controller.dart';
 import 'package:music_player_app/global_files.dart';
 import 'package:audio_service/audio_service.dart';
+import 'package:music_player_app/models/theme/theme_model.dart';
 import 'package:talker_flutter/talker_flutter.dart';
+import 'package:music_player_app/controllers/shared_preferences/shared_preferences_controller.dart';
 
 final controller = FetchSongsController();
 final talker = Talker();
@@ -17,6 +19,7 @@ Future<void> main() async{
   GlobalObserver globalObserver = GlobalObserver();
   WidgetsBinding.instance.addObserver(globalObserver);
   await isarController.initialize();
+  await sharedPreferencesController.initialize();
   await initializeAudioService();
   await initializeDefaultStartingDisplayImage();
   await controller.fetchLocalSongs(LoadType.initial).then((_) {
@@ -76,22 +79,27 @@ class MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      scaffoldMessengerKey: rootScaffoldMessengerKey,
-      initialRoute: '/',
-      onGenerateRoute: (settings) {
-        switch (settings.name) {
-          case '/':
-            return MaterialPageRoute(builder: (context) =>
-              const MainPageWidget()
-            );
-          default:
-            assert(false, 'Page ${settings.name} not found');
-            return null;
-        }
-      },
-      theme: globalTheme.dark,
-      initialBinding: StoreBinding()
+    return ValueListenableBuilder(
+      valueListenable: themeModel.mode,
+      builder: (context, mode, child) => GetMaterialApp(
+        scaffoldMessengerKey: rootScaffoldMessengerKey,
+        initialRoute: '/',
+        onGenerateRoute: (settings) {
+          switch (settings.name) {
+            case '/':
+              return MaterialPageRoute(builder: (context) =>
+                const MainPageWidget()
+              );
+            default:
+              assert(false, 'Page ${settings.name} not found');
+              return null;
+          }
+        },
+        theme: globalTheme.light,
+        darkTheme: globalTheme.dark,
+        themeMode: mode,
+        initialBinding: StoreBinding()
+      )
     );
   }
 }

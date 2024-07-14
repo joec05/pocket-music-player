@@ -132,10 +132,7 @@ class SongOptionController {
         builder: (bottomSheetContext) {
           return Dialog(
             shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(12.5),
-                topRight: Radius.circular(12.5)
-              )
+              borderRadius: BorderRadius.zero
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -187,10 +184,7 @@ class SongOptionController {
         builder: (bottomSheetContext) {
           return Dialog(
             shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(12.5),
-                topRight: Radius.circular(12.5)
-              )
+              borderRadius: BorderRadius.zero
             ),
             child: SingleChildScrollView(
               child: Column(
@@ -251,10 +245,7 @@ class SongOptionController {
             builder: (context, setState) {
               return Dialog(
                 shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12.5),
-                    topRight: Radius.circular(12.5)
-                  )
+                  borderRadius: BorderRadius.zero
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -307,10 +298,7 @@ class SongOptionController {
         builder: (bottomSheetContext) {
           return Dialog(
             shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(12.5),
-                topRight: Radius.circular(12.5)
-              )
+              borderRadius: BorderRadius.zero
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,

@@ -41,7 +41,6 @@ class _SoundwaveWidgetState extends State<SoundwaveWidget> with TickerProviderSt
               height: i == current ? maxHeight : minHeight,
               width: 5,
               decoration: BoxDecoration(
-                color: Colors.black,
                 borderRadius: BorderRadius.circular(9999),
               ),
             ),

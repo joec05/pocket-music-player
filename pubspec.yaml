@@ -41,6 +41,8 @@ dependencies:
   talker_logger: ^4.3.2
   audiotags: ^1.4.0
   audio_metadata_reader: ^0.0.6
+  url_launcher: ^6.3.0
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:

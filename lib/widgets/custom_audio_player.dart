@@ -84,7 +84,6 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
                           children: [
                             Container(
                               decoration: BoxDecoration(
-                                border: Border.all(width: 1),
                                 borderRadius: BorderRadius.circular(100),
                                 image: DecorationImage(
                                   image: MemoryImage(

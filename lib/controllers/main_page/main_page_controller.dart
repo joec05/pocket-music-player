@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:music_player_app/global_files.dart';
+import 'package:music_player_app/screens/settings/settings_page.dart';
 
 class MainPageController {
   RxInt selectedIndexValue = 0.obs;
@@ -9,9 +10,9 @@ class MainPageController {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   RxBool isLoaded = false.obs;
   Rx<LoadType> loadType = LoadType.initial.obs;
-  Rx<bool> isSearching = false.obs;
+  RxBool isSearching = false.obs;
   List<Widget> widgetOptions = List<Widget>.from([]).obs;
-  Rx<String> searchedText = ''.obs;
+  RxString searchedText = ''.obs;
   TextEditingController searchController = TextEditingController();
 
   MainPageController();
@@ -44,16 +45,7 @@ class MainPageController {
   }
 
   PreferredSizeWidget setAppBar(index){
-    String text = '';
-    if(index == 0){
-      text = 'All Music';
-    }else if(index == 1){
-      text = 'Artists';
-    }else if(index == 2){
-      text = 'Albums';
-    }else if(index == 3){
-      text = 'Playlists';
-    }
+    String text = 'Pocket Music Player';
 
     return AppBar(
       flexibleSpace: Container(
@@ -104,14 +96,26 @@ class MainPageController {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(text),
-            InkWell(
-              onTap: () {
-                isSearching.value = true;
-              },
-              child: const Padding(
-                padding: EdgeInsets.all(5.0),
-                child: Icon(FontAwesomeIcons.magnifyingGlass, size: 20),
-              )
+            Row(
+              children: [
+                InkWell(
+                  onTap: () {
+                    isSearching.value = true;
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.all(7.0),
+                    child: Icon(FontAwesomeIcons.magnifyingGlass, size: 20),
+                  )
+                ),
+                const SizedBox(width: 20),
+                InkWell(
+                  onTap: () => Get.to(const SettingsPage()),
+                  child: const Padding(
+                    padding: EdgeInsets.all(7.0),
+                    child: Icon(FontAwesomeIcons.gear, size: 20),
+                  )
+                ),
+              ],
             )
           ],
         );
