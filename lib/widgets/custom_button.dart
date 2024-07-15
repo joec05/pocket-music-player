@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:music_player_app/global_files.dart';
 
-const defaultCustomButtonColor = Color.fromARGB(255, 99, 93, 93);
+Color defaultCustomButtonColor = const Color.fromARGB(255, 129, 123, 123);
 
 class CustomButton extends StatefulWidget {
   final double width;
@@ -41,7 +41,7 @@ class CustomButtonState extends State<CustomButton> {
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: widget.onTapped == null ? Colors.grey.withOpacity(0.5) : widget.color,
+          color: widget.onTapped == null ? const Color.fromARGB(255, 112, 104, 104).withOpacity(0.5) : widget.color,
           borderRadius: widget.setBorderRadius ? const BorderRadius.all(Radius.circular(5)) : BorderRadius.zero
         ),
         child: Material(

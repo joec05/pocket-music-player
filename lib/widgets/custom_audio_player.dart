@@ -119,7 +119,7 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
                             ],
                           ),
                           SizedBox(height: getScreenHeight() * 0.005),
-                          Text(audioCompleteData.audioMetadataInfo.artistName ?? 'Unknown', style: const TextStyle(color: Colors.grey, fontSize: 14),),
+                          Text(audioCompleteData.audioMetadataInfo.artistName ?? 'Unknown', style: const TextStyle(fontSize: 14),),
                         ]
                       ),
                     ),

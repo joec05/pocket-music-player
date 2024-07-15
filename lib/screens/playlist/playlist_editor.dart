@@ -64,6 +64,7 @@ class _PlaylistEditorWidgetState extends State<_PlaylistEditorWidgetStateful> {
                           width: getScreenWidth() * 0.35, height: getScreenWidth() * 0.35,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
+                            border: Border.all(width: 1),
                             image: imageBytes != null ?
                               DecorationImage(
                                 image: MemoryImage(
@@ -94,7 +95,7 @@ class _PlaylistEditorWidgetState extends State<_PlaylistEditorWidgetStateful> {
                     CustomButton(
                       width: double.infinity,
                       height: getScreenHeight() * 0.065,
-                      color: verifyPlaylistName && !isLoading ? Colors.orange : Colors.grey.withOpacity(0.5),
+                      color: verifyPlaylistName && !isLoading ? Colors.orange.withOpacity(0.75) : Colors.grey.withOpacity(0.5),
                       onTapped: verifyPlaylistName && !isLoading ? () => controller.modifyPlaylist() : (){},
                       text: 'Update playlist data',
                       setBorderRadius: true,

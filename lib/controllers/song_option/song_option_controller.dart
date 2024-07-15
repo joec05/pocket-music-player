@@ -24,14 +24,13 @@ class SongOptionController {
   void displayOptionsBottomSheet(){
     if(mounted){
       showModalBottomSheet(
-        backgroundColor: Colors.transparent,
         context: context,
         builder: (BuildContext bottomSheetContext) {
           return SingleChildScrollView(
             child: Container(
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 56, 54, 54),
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                color: Theme.of(context).bottomSheetTheme.backgroundColor,
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(10.0),
                   topRight: Radius.circular(10.0)
                 )
@@ -255,7 +254,7 @@ class SongOptionController {
                       child: TextField(
                         maxLength: defaultTextFieldLimit,
                         controller: inputController,
-                        decoration: generatePlaylistNameTextFieldDecorationNoFocus('playlist name', FontAwesomeIcons.list),
+                        decoration: generatePlaylistNameTextFieldDecoration('playlist name', FontAwesomeIcons.list),
                         onChanged: (text){
                           setState((){
                             verifyInput = text.isNotEmpty;
@@ -265,7 +264,7 @@ class SongOptionController {
                     ),
                     CustomButton(
                       width: double.infinity, height: getScreenHeight() * 0.065, 
-                      color: verifyInput ? Colors.orange.withOpacity(0.8) : Colors.grey.withOpacity(0.5), 
+                      color: verifyInput ? Colors.orange.withOpacity(0.7) : Colors.grey.withOpacity(0.5), 
                       text: 'Create playlist and add song', 
                       onTapped: (){
                         if(mounted){

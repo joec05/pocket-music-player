@@ -167,7 +167,7 @@ class AllMusicPageWidgetState extends State<AllMusicPageWidgetStateful> with Aut
                       return CustomAudioPlayerWidget(
                         audioCompleteData: audioNotifier!.notifier.value,
                         key: UniqueKey(),
-                        directorySongsList: audioUrls,
+                        directorySongsList: appStateRepo.allAudiosList.keys.toList(),
                         playlistSongsData: null
                       );
                     });

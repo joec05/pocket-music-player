@@ -60,7 +60,7 @@ class _CustomArtistDisplayWidgetState extends State<CustomArtistDisplayWidget>{
                                   ],
                                 ),
                                 SizedBox(height: getScreenHeight() * 0.005),
-                                Text(artistSongsData.songsList.length == 1 ? '1 song' : '${artistSongsData.songsList.length} songs', style: const TextStyle(color: Colors.grey, fontSize: 14),)
+                                Text(artistSongsData.songsList.length == 1 ? '1 song' : '${artistSongsData.songsList.length} songs', style: const TextStyle(fontSize: 14),)
                               ]
                             ),
                           ),

@@ -20,6 +20,7 @@ Future<void> main() async{
   WidgetsBinding.instance.addObserver(globalObserver);
   await isarController.initialize();
   await sharedPreferencesController.initialize();
+  themeModel.mode.value = await sharedPreferencesController.getThemeModeData();
   await initializeAudioService();
   await initializeDefaultStartingDisplayImage();
   await controller.fetchLocalSongs(LoadType.initial).then((_) {

@@ -58,9 +58,9 @@ class __MainPageWidgetStatefulState extends State<_MainPageWidgetStateful>{
                   children: widgetOptions,
                 ),
                 bottomNavigationBar: Container(
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     boxShadow: [                                                               
-                      BoxShadow(spreadRadius: 0, blurRadius: 10),
+                      BoxShadow(color: Colors.grey.withOpacity(0.5), spreadRadius: 0, blurRadius: 10),
                     ],
                   ),
                   child: SizedBox(

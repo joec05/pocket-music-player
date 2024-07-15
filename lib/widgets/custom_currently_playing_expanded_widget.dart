@@ -249,7 +249,7 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
                           ),
                         ),
                       ),
-                      Text(audioCompleteDataValue.audioMetadataInfo.artistName ?? 'Unknown', style: const TextStyle(color: Colors.grey, fontSize: 16.5),),
+                      Text(audioCompleteDataValue.audioMetadataInfo.artistName ?? 'Unknown', style: const TextStyle(fontSize: 16.5),),
                       SizedBox(height: getScreenHeight() * 0.04),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -282,9 +282,9 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: const BorderRadius.all(Radius.circular(50)),
-                              border: Border.all(width: 6.5, color: defaultCustomButtonColor),
-                              color: defaultCustomButtonColor
+                              color: Colors.grey.withOpacity(0.35)
                             ),
+                            padding: const EdgeInsets.all(5),
                             child: GestureDetector(
                               onTap: (){
                                 if(audioCompleteDataValue.playerState == AudioPlayerState.paused){
@@ -353,13 +353,13 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
                         SizedBox(
                           height: 15,
                           child: SliderTheme(
-                            data: const SliderThemeData(
+                            data: SliderThemeData(
                               trackHeight: 3.0,
-                              thumbColor: Colors.cyan,
-                              thumbShape: RoundSliderThumbShape(enabledThumbRadius: 5.0),
-                              overlayShape: RoundSliderOverlayShape(overlayRadius: 0.0),
-                              activeTrackColor: Colors.blueGrey,
-                              inactiveTrackColor: Colors.grey
+                              thumbColor: Colors.red,
+                              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5.0),
+                              overlayShape: const RoundSliderOverlayShape(overlayRadius: 0.0),
+                              activeTrackColor: Colors.red,
+                              inactiveTrackColor: Colors.grey.withOpacity(0.7)
                             ),
                             child: Slider(
                               min: 0.0,

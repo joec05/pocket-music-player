@@ -61,6 +61,7 @@ class _TagEditorWidgetState extends State<_TagEditorWidgetStateful> {
                           width: getScreenWidth() * 0.35, height: getScreenWidth() * 0.35,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
+                            border: Border.all(width: 1),
                             image: imageBytes != null ?
                               DecorationImage(
                                 image: MemoryImage(
@@ -112,7 +113,7 @@ class _TagEditorWidgetState extends State<_TagEditorWidgetStateful> {
                     return CustomButton(
                       width: double.infinity,
                       height: getScreenHeight() * 0.065,
-                      color: !isModifyingTags ? Colors.orange.withOpacity(0.85) : Colors.grey.withOpacity(0.5),
+                      color: !isModifyingTags ? Colors.orange.withOpacity(0.75) : Colors.grey.withOpacity(0.5),
                       onTapped: !isModifyingTags ? () => controller.modifyTags() : (){},
                       text: 'Update metadata',
                       setBorderRadius: true,

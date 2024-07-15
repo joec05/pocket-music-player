@@ -38,14 +38,13 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
   void displayOptionsBottomSheet(){
     if(mounted){
       showModalBottomSheet(
-        backgroundColor: Colors.transparent,
         context: context,
         builder: (BuildContext bottomSheetContext) {
           return SingleChildScrollView(
             child: Container(
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 56, 54, 54),
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                color: Theme.of(context).bottomSheetTheme.backgroundColor,
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(10.0),
                   topRight: Radius.circular(10.0)
                 )
@@ -156,7 +155,7 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
                               ],
                             ),
                             SizedBox(height: getScreenHeight() * 0.005),
-                            Text(playlistSongsData.songsList.length == 1 ? '1 song' : '${playlistSongsData.songsList.length} songs', style: const TextStyle(color: Colors.grey, fontSize: 14),)
+                            Text(playlistSongsData.songsList.length == 1 ? '1 song' : '${playlistSongsData.songsList.length} songs', style: const TextStyle(fontSize: 14),)
                           ]
                         ),
                       ),

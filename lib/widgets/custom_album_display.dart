@@ -70,9 +70,9 @@ class _CustomAlbumDisplayWidgetState extends State<CustomAlbumDisplayWidget>{
                               ],
                             ),
                             SizedBox(height: getScreenHeight() * 0.005),
-                            Text(albumSongsData.artistName ?? 'Unknown', style: const TextStyle(color: Colors.grey, fontSize: 14),),
+                            Text(albumSongsData.artistName ?? 'Unknown', style: const TextStyle(fontSize: 14),),
                             SizedBox(height: getScreenHeight() * 0.005),
-                            Text(albumSongsData.songsList.length == 1 ? '1 song' : '${albumSongsData.songsList.length} songs', style: const TextStyle(color: Colors.grey, fontSize: 14),)
+                            Text(albumSongsData.songsList.length == 1 ? '1 song' : '${albumSongsData.songsList.length} songs', style: const TextStyle(fontSize: 14),)
                           ]
                         ),
                       ),

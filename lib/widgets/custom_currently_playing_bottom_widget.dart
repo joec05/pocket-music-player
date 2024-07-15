@@ -112,7 +112,7 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
                 children: [
                   Container(
                     decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 107, 99, 99),
+                      color: Colors.transparent,
                       border: Border(top: BorderSide(width: 1, color: Colors.grey)),
                     ),
                     padding: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding / 2, vertical: defaultVerticalPadding / 2),
@@ -158,7 +158,7 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
                                       ],
                                     ),
                                     SizedBox(height: getScreenHeight() * 0.005),
-                                    Text(audioCompleteDataValue.audioMetadataInfo.artistName ?? 'Unknown', style: const TextStyle(color: Colors.grey, fontSize: 14),),
+                                    Text(audioCompleteDataValue.audioMetadataInfo.artistName ?? 'Unknown', style: const TextStyle(fontSize: 14),),
                                   ]
                                 ),
                               ),
@@ -187,6 +187,11 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
                         color: Colors.red,
                         height: 2.5,
                         width: currentSlidingWidth.value
+                      ),
+                      Container(
+                        color: Colors.grey.withOpacity(0.8),
+                        height: 2.5,
+                        width: getScreenWidth() - currentSlidingWidth.value
                       ),
                     ],
                   )
