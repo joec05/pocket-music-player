@@ -1,4 +1,4 @@
-name: music_player_app
+name: pocket_music_player
 description: A new Flutter project.
 
 version: 1.0.0+0
@@ -43,6 +43,8 @@ dependencies:
   audio_metadata_reader: ^0.0.6
   url_launcher: ^6.3.0
   shared_preferences: ^2.2.3
+  rename: ^3.0.2
+  rename_app: ^1.6.1
 
 dev_dependencies:
   flutter_test:

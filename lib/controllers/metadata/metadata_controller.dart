@@ -3,7 +3,7 @@ import 'package:audiotags/audiotags.dart';
 import 'package:audiotags/audiotags.dart' as audiotags;
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:music_player_app/global_files.dart';
+import 'package:pocket_music_player/global_files.dart';
 import 'dart:io';
 import 'package:audio_metadata_reader/audio_metadata_reader.dart';
 

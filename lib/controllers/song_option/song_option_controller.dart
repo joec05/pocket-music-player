@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:music_player_app/global_files.dart';
+import 'package:pocket_music_player/global_files.dart';
 import 'package:uuid/uuid.dart';
 
 class SongOptionController {

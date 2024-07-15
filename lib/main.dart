@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
-import 'package:music_player_app/controllers/songs/fetch_songs_controller.dart';
-import 'package:music_player_app/global_files.dart';
+import 'package:pocket_music_player/controllers/songs/fetch_songs_controller.dart';
+import 'package:pocket_music_player/global_files.dart';
 import 'package:audio_service/audio_service.dart';
-import 'package:music_player_app/models/theme/theme_model.dart';
+import 'package:pocket_music_player/models/theme/theme_model.dart';
 import 'package:talker_flutter/talker_flutter.dart';
-import 'package:music_player_app/controllers/shared_preferences/shared_preferences_controller.dart';
+import 'package:pocket_music_player/controllers/shared_preferences/shared_preferences_controller.dart';
 
 final controller = FetchSongsController();
 final talker = Talker();
@@ -36,7 +36,7 @@ Future<void> initializeAudioService() async{
     MyAudioHandler audioHandler = await AudioService.init(
       builder: () => MyAudioHandler(),
       config: const AudioServiceConfig(
-        androidNotificationChannelId: 'com.example.music_player_app',
+        androidNotificationChannelId: 'com.pocket_music_player.music_player_app',
         androidNotificationChannelName: 'Music playback',
       ),
     );

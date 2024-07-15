@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:music_player_app/controllers/songs/fetch_songs_controller.dart';
-import 'package:music_player_app/global_files.dart';
+import 'package:pocket_music_player/controllers/songs/fetch_songs_controller.dart';
+import 'package:pocket_music_player/global_files.dart';
 
 class AllSongsController {
 

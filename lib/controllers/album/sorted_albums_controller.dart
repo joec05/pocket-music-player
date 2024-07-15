@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:music_player_app/global_files.dart';
+import 'package:pocket_music_player/global_files.dart';
 
 class SortedAlbumsController extends LoadingController {
   BuildContext context;

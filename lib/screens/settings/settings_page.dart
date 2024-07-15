@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:music_player_app/models/theme/theme_model.dart';
+import 'package:pocket_music_player/models/theme/theme_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:get/get.dart';
 

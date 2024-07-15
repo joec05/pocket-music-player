@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:music_player_app/global_files.dart';
+import 'package:pocket_music_player/global_files.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart';

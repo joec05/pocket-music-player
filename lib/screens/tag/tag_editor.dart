@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:music_player_app/global_files.dart';
+import 'package:pocket_music_player/global_files.dart';
 import 'package:flutter/material.dart';
 
 class TagEditorWidget extends StatelessWidget {

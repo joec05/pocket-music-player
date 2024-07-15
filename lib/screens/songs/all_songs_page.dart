@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:music_player_app/global_files.dart';
+import 'package:pocket_music_player/global_files.dart';
 
 class AllSongsPageWidget extends StatelessWidget {
   const AllSongsPageWidget({super.key});
@@ -125,8 +125,7 @@ class AllMusicPageWidgetState extends State<AllMusicPageWidgetStateful> with Aut
             const Divider(color: Colors.grey, height: 3.5),
             SizedBox(height: getScreenHeight() * 0.0075),
             Obx(() {
-              bool isLoading = mainPageController.isLoaded.isFalse;
-              if(isLoading) {
+              if(mainPageController.isLoaded.isFalse && mainPageController.loadType.value == LoadType.initial) {
                 return Container();
               }
 
