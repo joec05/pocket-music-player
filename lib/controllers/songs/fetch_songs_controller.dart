@@ -1,39 +1,12 @@
 import 'dart:io';
 import 'package:get/get.dart';
+import 'package:pocket_music_player/controllers/permission/permission_controller.dart';
 import 'package:pocket_music_player/global_files.dart';
-import 'package:permission_handler/permission_handler.dart' as ph;
-import 'package:device_info_plus/device_info_plus.dart';
 
 class FetchSongsController {
-  bool permissionIsGranted = false;
-  ph.Permission? permission;
-
-  Future<bool> checkPermissionGranted() async {
-    if(Platform.isAndroid){
-      final androidInfo = await DeviceInfoPlugin().androidInfo;
-      if(androidInfo.version.sdkInt <= 32) {
-        permission = ph.Permission.storage;
-      } else {
-        permission = ph.Permission.audio;
-      }
-    } else if (Platform.isIOS) {
-      permission = ph.Permission.audio;
-    }
-    permissionIsGranted = await permission!.isGranted;
-    return permissionIsGranted;
-  }
-
-  Future<bool> requestPermission() async {
-    permissionIsGranted = await permission!.isGranted;
-    if(!permissionIsGranted){
-      permissionIsGranted = (await permission!.request()).isGranted;
-    }
-    return permissionIsGranted;
-  }
-
   Future<void> fetchLocalSongs(LoadType loadType) async {
     mainPageController.setLoadingState(false, loadType);
-    if(await checkPermissionGranted()){
+    if(await permission.checkAudioGranted()) {
       Directory dir = Directory(defaultDirectory);
       List<FileSystemEntity> directoryList = await dir.list().toList();
       directoryList.removeWhere((e) => e.path == restrictedDirectory);
@@ -90,8 +63,8 @@ class FetchSongsController {
       appStateRepo.setPlaylistList('', await isarController.fetchPlaylists());
     } else{
       if(loadType == LoadType.scan) {
-        final _ = await requestPermission();
-        if(permissionIsGranted) {
+        final _ = await permission.requestAudio();
+        if(permission.audioIsGranted) {
           await fetchLocalSongs(loadType);
         }
       }

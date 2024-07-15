@@ -8,6 +8,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:pocket_music_player/models/theme/theme_model.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:pocket_music_player/controllers/shared_preferences/shared_preferences_controller.dart';
+import 'package:pocket_music_player/controllers/permission/permission_controller.dart';
 
 final controller = FetchSongsController();
 final talker = Talker();
@@ -71,8 +72,8 @@ class MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   }
 
   void verifyUserPermission() async {
-    if(!controller.permissionIsGranted) {
-      final _ = await controller.requestPermission();
+    if(!permission.audioIsGranted) {
+      final _ = await permission.requestAudio();
       await controller.fetchLocalSongs(LoadType.initial);
     }
   }
