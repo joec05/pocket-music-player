@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:math';
+import 'package:cached_memory_image/cached_memory_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pocket_music_player/global_files.dart';
@@ -222,21 +223,20 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        width: getScreenWidth() * 0.7, height: getScreenWidth() * 0.7,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(150),
-                          image: DecorationImage(
-                            image: MemoryImage(
-                              audioCompleteData.value!.audioMetadataInfo.albumArt == null ?
-                                appStateRepo.audioImageData!
-                              : 
-                                audioCompleteData.value!.audioMetadataInfo.albumArt!
-                            ), 
-                            fit: BoxFit.fill,
-                            onError: (exception, stackTrace) => Image.memory(appStateRepo.audioImageData!),
-                          )
-                        ),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(5.0),
+                        child: CachedMemoryImage(
+                          width: getScreenWidth() * 0.7, 
+                          height: getScreenWidth() * 0.7,
+                          bytes: audioCompleteData.value!.audioMetadataInfo.albumArt == null ?
+                            appStateRepo.audioImageData!
+                          : 
+                            audioCompleteData.value!.audioMetadataInfo.albumArt!,
+                          uniqueKey: audioCompleteData.value?.audioUrl ?? '',
+                          errorBuilder: (context, exception, stackTrace) => Image.memory(appStateRepo.audioImageData!),
+                          errorWidget: Image.memory(appStateRepo.audioImageData!),
+                          fit: BoxFit.cover
+                        )
                       ),
                       SizedBox(height: getScreenHeight() * 0.02),
                       SingleChildScrollView(

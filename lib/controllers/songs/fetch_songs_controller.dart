@@ -43,7 +43,7 @@ class FetchSongsController {
               filesCompleteDataList[path] = AudioCompleteDataNotifier(
                 path, 
                 AudioCompleteDataClass(
-                  path, metadata, AudioPlayerState.stopped, false
+                  path, metadata, AudioPlayerState.stopped.obs, false
                 ).obs
               );
               if(localListenCountData[path] != null){

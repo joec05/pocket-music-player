@@ -1,3 +1,4 @@
+import 'package:cached_memory_image/cached_memory_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pocket_music_player/global_files.dart';
@@ -43,21 +44,20 @@ class _CustomAlbumDisplayWidgetState extends State<CustomAlbumDisplayWidget>{
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        width: getScreenWidth() * 0.125, height: getScreenWidth() * 0.125,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          image: DecorationImage(
-                            image: MemoryImage(
-                              albumSongsData.albumProfilePic == null ?
-                                appStateRepo.audioImageData!
-                              : 
-                                albumSongsData.albumProfilePic!
-                            ), 
-                            fit: BoxFit.fill,
-                            onError: (exception, stackTrace) => Image.memory(appStateRepo.audioImageData!),
-                          )
-                        ),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(5.0),
+                        child: CachedMemoryImage(
+                          width: getScreenWidth() * 0.125, 
+                          height: getScreenWidth() * 0.125,
+                          bytes: albumSongsData.albumProfilePic == null ?
+                              appStateRepo.audioImageData!
+                            : 
+                              albumSongsData.albumProfilePic!,
+                          uniqueKey: albumSongsData.songsList.first,
+                          errorBuilder: (context, exception, stackTrace) => Image.memory(appStateRepo.audioImageData!),
+                          errorWidget: Image.memory(appStateRepo.audioImageData!),
+                          fit: BoxFit.cover
+                        )
                       ),
                       SizedBox(width: getScreenWidth() * 0.035),
                       Flexible(

@@ -1,9 +1,14 @@
 import 'dart:io';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:pocket_music_player/global_files.dart';
 import 'package:rxdart/rxdart.dart';
+
+class AudioController extends GetxController {
+  
+}
 
 class MyAudioHandler extends BaseAudioHandler with QueueHandler {
   final audioPlayer = AudioPlayer();
@@ -150,13 +155,9 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
     }
 
     if(appStateRepo.allAudiosList[currentAudioUrl] != null){
-      AudioCompleteDataClass x = appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value;
-      AudioCompleteDataClass y = AudioCompleteDataClass(
-        x.audioUrl, x.audioMetadataInfo, newState, x.deleted
-      );
-      appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value = y;
+      appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value.playerState.value = newState;
       CurrentAudioStreamClass().emitData(
-        CurrentAudioStreamControllerClass(y)
+        CurrentAudioStreamControllerClass(appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value)
       );
     }
   }
@@ -167,14 +168,10 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
     }
 
     if(appStateRepo.allAudiosList[currentAudioUrl] != null){
-      AudioCompleteDataClass x = appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value;
-      AudioCompleteDataClass y = AudioCompleteDataClass(
-        x.audioUrl, x.audioMetadataInfo, AudioPlayerState.playing, x.deleted
-      );
-      appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value = y;
+      appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value.playerState.value = AudioPlayerState.playing;
       CurrentAudioStreamClass().emitData(
         CurrentAudioStreamControllerClass(
-          y
+          appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value
         )
       );
     }

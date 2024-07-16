@@ -1,3 +1,4 @@
+import 'package:cached_memory_image/cached_memory_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pocket_music_player/global_files.dart';
 
@@ -54,7 +55,7 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
   
   @override
   Widget build(BuildContext context){
-    bool audioIsSelected = audioCompleteData.playerState == AudioPlayerState.playing || audioCompleteData.playerState == AudioPlayerState.paused;
+    bool audioIsSelected = audioCompleteData.playerState.value == AudioPlayerState.playing || audioCompleteData.playerState.value == AudioPlayerState.paused;
     if(audioCompleteData.deleted){
       return Container();
     }
@@ -78,23 +79,24 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(
-                      width: getScreenWidth() * 0.125, height: getScreenWidth() * 0.125,
+                      width: getScreenWidth() * 0.125, 
+                      height: getScreenWidth() * 0.125,
                       child: Center(
                         child: Stack(
                           children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100),
-                                image: DecorationImage(
-                                  image: MemoryImage(
-                                    audioCompleteData.audioMetadataInfo.albumArt == null ?
-                                      appStateRepo.audioImageData!
-                                    : 
-                                      audioCompleteData.audioMetadataInfo.albumArt!
-                                  ), 
-                                  fit: BoxFit.fill,
-                                  onError: (exception, stackTrace) => Image.memory(appStateRepo.audioImageData!),
-                                )
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(5.0),
+                              child: CachedMemoryImage(
+                                width: getScreenWidth() * 0.125, 
+                                height: getScreenWidth() * 0.125,
+                                bytes: audioCompleteData.audioMetadataInfo.albumArt == null ?
+                                  appStateRepo.audioImageData!
+                                : 
+                                  audioCompleteData.audioMetadataInfo.albumArt!,
+                                uniqueKey: audioCompleteData.audioUrl,
+                                errorBuilder: (context, exception, stackTrace) => Image.memory(appStateRepo.audioImageData!),
+                                errorWidget: Image.memory(appStateRepo.audioImageData!),
+                                fit: BoxFit.cover
                               )
                             ),
                             audioIsSelected ? const Center(child: SoundwaveWidget()) : Container(),

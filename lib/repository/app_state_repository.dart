@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pocket_music_player/global_files.dart';
 
-class AppStateRepository {
+class AppStateRepository extends GetxController {
   RxMap<String, AudioCompleteDataNotifier> allAudiosList = <String, AudioCompleteDataNotifier>{}.obs;
   Map<String, AudioListenCountModel> audioListenCount = {};
   List<FavouriteSongModel> favouritesList = [];

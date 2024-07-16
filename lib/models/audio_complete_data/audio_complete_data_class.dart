@@ -1,9 +1,10 @@
+import 'package:get/get.dart';
 import 'package:pocket_music_player/global_files.dart';
 
-class AudioCompleteDataClass{
+class AudioCompleteDataClass extends GetxController {
   final String audioUrl;
   final AudioMetadataInfoClass audioMetadataInfo;
-  AudioPlayerState playerState;  
+  Rx<AudioPlayerState> playerState;  
   bool deleted;
 
   AudioCompleteDataClass(

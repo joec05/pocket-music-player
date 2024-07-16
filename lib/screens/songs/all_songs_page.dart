@@ -145,7 +145,6 @@ class AllMusicPageWidgetState extends State<AllMusicPageWidgetStateful> with Aut
                 }
                 return false;
               }).toList();
-              
               return Center(
                 child: audioUrls.isEmpty ? SizedBox(height: getScreenHeight() * 0.55, child: noItemsWidget(FontAwesomeIcons.music, 'songs'))
               :
@@ -159,7 +158,7 @@ class AllMusicPageWidgetState extends State<AllMusicPageWidgetStateful> with Aut
                     if(appStateRepo.allAudiosList[audioUrls[index]] == null){
                       return Container();
                     }
-
+                    
                     return Obx(() {
                       final audioNotifier = appStateRepo.allAudiosList[audioUrls[index]];
 

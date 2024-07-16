@@ -1,1 +1,1 @@
-int defaultTextFieldLimit = 30;
+int defaultTextFieldLimit = 60;

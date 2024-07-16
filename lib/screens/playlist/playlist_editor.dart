@@ -61,15 +61,17 @@ class _PlaylistEditorWidgetState extends State<_PlaylistEditorWidgetStateful> {
                     Column(
                       children: [
                         Container(
-                          width: getScreenWidth() * 0.35, height: getScreenWidth() * 0.35,
+                          width: getScreenWidth() * 0.35, 
+                          height: getScreenWidth() * 0.35,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            border: Border.all(width: 1),
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(width: 1, color: Theme.of(context).primaryColor),
                             image: imageBytes != null ?
                               DecorationImage(
                                 image: MemoryImage(
                                   imageBytes
-                                ), fit: BoxFit.fill
+                                ),
+                                fit: BoxFit.cover
                               )
                             : null
                           ),
