@@ -2,7 +2,6 @@
 
 import 'dart:async';
 import 'dart:math';
-import 'package:cached_memory_image/cached_memory_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pocket_music_player/global_files.dart';
@@ -23,12 +22,11 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
   RxString currentDurationStr = '00:00'.obs; 
   Rx<DurationEndDisplay> displayCurrentDurationType = DurationEndDisplay.totalDuration.obs;
   Rx<LoopStatus> currentLoopStatus = LoopStatus.repeatCurrent.obs;
-  late StreamSubscription currentAudioStreamClassSubscription;
   late StreamSubscription editAudioMetadataStreamClassSubscription;
 
   @override initState(){
     super.initState();
-    initializeCurrentAudio();
+    initializeAudio(appStateRepo.audioHandler!.audioStateController.currentAudioUrl.value);
     currentLoopStatus.value = appStateRepo.audioHandler!.currentLoopStatus;
     updateSliderPosition();
     isDraggingSlider.listen((data) {
@@ -51,24 +49,13 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
         }
       }
     });
-    currentAudioStreamClassSubscription = CurrentAudioStreamClass().currentAudioStream.listen((CurrentAudioStreamControllerClass data) {
-      if(mounted){
-        if(data.audioCompleteData.playerState == AudioPlayerState.stopped){
-          Navigator.pop(context);
-        }else{
-          audioCompleteData.value = data.audioCompleteData;
-          controller.value = SongOptionController(
-            context, 
-            audioCompleteData.value!, 
-            null
-          );
-        }
-      }
+    appStateRepo.audioHandler?.audioStateController.currentAudioUrl.listen((audioUrl) {
+      initializeAudio(audioUrl);
     });
     editAudioMetadataStreamClassSubscription = EditAudioMetadataStreamClass().editAudioMetadataStream.listen((EditAudioMetadataStreamControllerClass data) {
       if(mounted){
         if(audioCompleteData.value != null){
-          if(appStateRepo.audioHandler!.currentAudioUrl == data.newAudioData.audioUrl){
+          if(appStateRepo.audioHandler!.audioStateController.currentAudioUrl.value == data.newAudioData.audioUrl){
             audioCompleteData.value = data.newAudioData;
             controller = Rx<SongOptionController>(
               SongOptionController(
@@ -83,15 +70,17 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
     });
   }
 
-  void initializeCurrentAudio(){
+  void initializeAudio(String? currentAudioUrl) {
     if(mounted){
-      String? currentAudioUrl = appStateRepo.audioHandler!.currentAudioUrl;
-
       if(currentAudioUrl == null) {
+        Navigator.of(context).pop();
+        audioCompleteData.value = null;
         return;
       }
-      
-      audioCompleteData.value = appStateRepo.allAudiosList[currentAudioUrl] == null ? null : appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value;
+      audioCompleteData.value = appStateRepo.allAudiosList[currentAudioUrl]?.notifier.value;
+      if(audioCompleteData.value == null) {
+        return;
+      }
       controller.value = SongOptionController(
         context, 
         audioCompleteData.value!, 
@@ -102,7 +91,6 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
 
   @override void dispose(){
     super.dispose();
-    currentAudioStreamClassSubscription.cancel();
     editAudioMetadataStreamClassSubscription.cancel();
   }
 
@@ -213,6 +201,7 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
           if(audioCompleteDataValue == null){
             return Container(key: UniqueKey());
           }
+
           return Container(
             padding: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding, vertical: defaultVerticalPadding * 2.5),
             child: Material(
@@ -223,20 +212,20 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(5.0),
-                        child: CachedMemoryImage(
-                          width: getScreenWidth() * 0.7, 
-                          height: getScreenWidth() * 0.7,
-                          bytes: audioCompleteData.value!.audioMetadataInfo.albumArt == null ?
-                            appStateRepo.audioImageData!
-                          : 
-                            audioCompleteData.value!.audioMetadataInfo.albumArt!,
-                          uniqueKey: audioCompleteData.value?.audioUrl ?? '',
-                          errorBuilder: (context, exception, stackTrace) => Image.memory(appStateRepo.audioImageData!),
-                          errorWidget: Image.memory(appStateRepo.audioImageData!),
-                          fit: BoxFit.cover
-                        )
+                      SizedBox(
+                        width: getScreenWidth() * 0.7, 
+                        height: getScreenWidth() * 0.7,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(5.0),
+                          child: Image.memory(
+                            audioCompleteData.value!.audioMetadataInfo.albumArt == null ?
+                              appStateRepo.audioImageData!
+                            : 
+                              audioCompleteData.value!.audioMetadataInfo.albumArt!,
+                            errorBuilder: (context, exception, stackTrace) => Image.memory(appStateRepo.audioImageData!),
+                            fit: BoxFit.cover
+                          )
+                        ),
                       ),
                       SizedBox(height: getScreenHeight() * 0.02),
                       SingleChildScrollView(
@@ -279,24 +268,30 @@ class _CustomCurrentlyPlayingExpandedWidgetState extends State<CustomCurrentlyPl
                             child: const Icon(Icons.skip_previous, size: 30)
                           ),
                           SizedBox(width: getScreenWidth() * 0.07,),
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(Radius.circular(50)),
-                              color: Colors.grey.withOpacity(0.35)
-                            ),
-                            padding: const EdgeInsets.all(5),
-                            child: GestureDetector(
-                              onTap: (){
-                                if(audioCompleteDataValue.playerState == AudioPlayerState.paused){
-                                  resumeAudio();
-                                }else if(audioCompleteDataValue.playerState == AudioPlayerState.playing){
-                                  pauseAudio();
-                                }
-                              },
-                              child: audioCompleteDataValue.playerState == AudioPlayerState.paused ?
-                                const Icon(Icons.play_arrow, size: 35)
-                              : const Icon(Icons.pause, size: 35)
-                            ),
+                          GetBuilder<AudioStateController>( 
+                            id: 'playerState',
+                            builder: (controller) {
+                              final AudioPlayerState playerState = controller.playerState.value;
+                              return Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(Radius.circular(50)),
+                                  color: Colors.grey.withOpacity(0.35)
+                                ),
+                                padding: const EdgeInsets.all(5),
+                                child: GestureDetector(
+                                  onTap: (){
+                                    if(playerState == AudioPlayerState.paused){
+                                      resumeAudio();
+                                    }else if(playerState == AudioPlayerState.playing){
+                                      pauseAudio();
+                                    }
+                                  },
+                                  child: playerState == AudioPlayerState.paused ?
+                                    const Icon(Icons.play_arrow, size: 35)
+                                  : const Icon(Icons.pause, size: 35)
+                                ),
+                              );
+                            }
                           ),
                           SizedBox(width: getScreenWidth() * 0.07,),
                           GestureDetector(

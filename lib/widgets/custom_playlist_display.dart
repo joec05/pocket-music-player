@@ -1,7 +1,5 @@
 import 'dart:typed_data';
-import 'package:cached_memory_image/cached_memory_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:pocket_music_player/global_files.dart';
 
 class CustomPlaylistDisplayWidget extends StatefulWidget{
@@ -70,7 +68,7 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
                       }
                       runDelay(() async{
                         if(mounted){
-                          var updatedPlaylist = await Get.to(PlaylistEditorWidget(playlistSongsData: playlistSongsData));
+                          var updatedPlaylist = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => PlaylistEditorWidget(playlistSongsData: playlistSongsData)));
                           if(updatedPlaylist != null){
                             appStateRepo.setPlaylistList(playlistSongsData.playlistID, updatedPlaylist);
                           }
@@ -117,7 +115,7 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => Get.to(DisplayPlaylistSongsWidget(playlistSongsData: playlistSongsData)),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => DisplayPlaylistSongsWidget(playlistSongsData: playlistSongsData))),
           splashFactory: InkRipple.splashFactory,
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding / 2, vertical: defaultVerticalPadding / 2),
@@ -129,20 +127,20 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(5.0),
-                        child: CachedMemoryImage(
-                          width: getScreenWidth() * 0.125, 
-                          height: getScreenWidth() * 0.125,
-                          bytes: playlistSongsData.imageBytes == null ?
-                            appStateRepo.audioImageData!
-                          : 
-                            Uint8List.fromList(playlistSongsData.imageBytes!),
-                          uniqueKey: playlistSongsData.playlistID,
-                          errorBuilder: (context, exception, stackTrace) => Image.memory(appStateRepo.audioImageData!),
-                          errorWidget: Image.memory(appStateRepo.audioImageData!),
-                          fit: BoxFit.cover
-                        )
+                      SizedBox(
+                        width: getScreenWidth() * 0.125, 
+                        height: getScreenWidth() * 0.125,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(5.0),
+                          child: Image.memory(
+                            playlistSongsData.imageBytes == null ?
+                              appStateRepo.audioImageData!
+                            : 
+                              Uint8List.fromList(playlistSongsData.imageBytes!),
+                            errorBuilder: (context, exception, stackTrace) => Image.memory(appStateRepo.audioImageData!),
+                            fit: BoxFit.cover
+                          )
+                        ),
                       ),
                       SizedBox(width: getScreenWidth() * 0.035),
                       Flexible(

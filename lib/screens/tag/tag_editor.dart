@@ -87,20 +87,20 @@ class _TagEditorWidgetState extends State<_TagEditorWidgetStateful> {
                   }),
                   SizedBox(height: defaultTextFieldVerticalMargin),
                   TextField(
-                    decoration: generateFormTextFieldDecoration('title', FontAwesomeIcons.music),
+                    decoration: generateFormTextFieldDecoration(context, 'title', FontAwesomeIcons.music),
                     controller: controller.titleController,
                     maxLength: defaultTextFieldLimit,
                   ),
                   SizedBox(height: defaultTextFieldVerticalMargin),
                   TextField(
-                    decoration: generateFormTextFieldDecoration('artist', FontAwesomeIcons.user),
+                    decoration: generateFormTextFieldDecoration(context, 'artist', FontAwesomeIcons.user),
                     controller: controller.artistController,
                     maxLength: defaultTextFieldLimit,
                   ),
                   SizedBox(height: defaultTextFieldVerticalMargin),
                   TextField(
                     controller: controller.albumController,
-                    decoration: generateFormTextFieldDecoration('album name', FontAwesomeIcons.recordVinyl),
+                    decoration: generateFormTextFieldDecoration(context, 'album name', FontAwesomeIcons.recordVinyl),
                     maxLength: defaultTextFieldLimit,
                   ),
                   SizedBox(height: defaultTextFieldVerticalMargin),

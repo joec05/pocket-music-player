@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:pocket_music_player/global_files.dart';
 
 /// Controller used for handling a song file
@@ -8,19 +7,16 @@ class SongFileController {
 
   void deleteSong(BuildContext context, AudioCompleteDataClass audioData) async{
     try{
-      AudioCompleteDataClass x = AudioCompleteDataClass(
-        audioData.audioUrl, audioData.audioMetadataInfo, AudioPlayerState.stopped.obs, true
-      );
-      appStateRepo.allAudiosList[audioData.audioUrl]!.notifier.value = x;
+      appStateRepo.allAudiosList[audioData.audioUrl]!.notifier.value.deleted = true;
       DeleteAudioDataStreamClass().emitData(
-        DeleteAudioDataStreamControllerClass(x)
+        DeleteAudioDataStreamControllerClass(appStateRepo.allAudiosList[audioData.audioUrl]!.notifier.value)
       );
-      if(appStateRepo.audioHandler!.currentAudioUrl == audioData.audioUrl){
+      if(appStateRepo.audioHandler!.audioStateController.currentAudioUrl.value == audioData.audioUrl){
         appStateRepo.audioHandler!.stop();
       }
       File selectedFile = File(audioData.audioUrl);
-      if(await selectedFile.exists()){
-        await selectedFile.delete();
+      if(selectedFile.existsSync()){
+        selectedFile.deleteSync();
       }
       if(context.mounted) {
         handler.displaySnackbar(
@@ -34,7 +30,7 @@ class SongFileController {
         handler.displaySnackbar(
           context,
           SnackbarType.error, 
-          tErr.unknown
+          e.toString()
         );
       }
     }

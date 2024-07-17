@@ -1,6 +1,4 @@
-import 'package:cached_memory_image/cached_memory_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:pocket_music_player/global_files.dart';
 
 class CustomAlbumDisplayWidget extends StatefulWidget{
@@ -32,7 +30,7 @@ class _CustomAlbumDisplayWidgetState extends State<CustomAlbumDisplayWidget>{
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => Get.to(DisplayAlbumSongsWidget(albumSongsData: albumSongsData)),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => DisplayAlbumSongsWidget(albumSongsData: albumSongsData))),
           splashFactory: InkRipple.splashFactory,
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding / 2, vertical: defaultVerticalPadding / 2),
@@ -44,20 +42,20 @@ class _CustomAlbumDisplayWidgetState extends State<CustomAlbumDisplayWidget>{
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(5.0),
-                        child: CachedMemoryImage(
-                          width: getScreenWidth() * 0.125, 
-                          height: getScreenWidth() * 0.125,
-                          bytes: albumSongsData.albumProfilePic == null ?
+                      SizedBox(
+                        width: getScreenWidth() * 0.125, 
+                        height: getScreenWidth() * 0.125,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(5.0),
+                          child: Image.memory(
+                            albumSongsData.albumProfilePic == null ?
                               appStateRepo.audioImageData!
                             : 
                               albumSongsData.albumProfilePic!,
-                          uniqueKey: albumSongsData.songsList.first,
-                          errorBuilder: (context, exception, stackTrace) => Image.memory(appStateRepo.audioImageData!),
-                          errorWidget: Image.memory(appStateRepo.audioImageData!),
-                          fit: BoxFit.cover
-                        )
+                            errorBuilder: (context, exception, stackTrace) => Image.memory(appStateRepo.audioImageData!),
+                            fit: BoxFit.cover
+                          )
+                        ),
                       ),
                       SizedBox(width: getScreenWidth() * 0.035),
                       Flexible(

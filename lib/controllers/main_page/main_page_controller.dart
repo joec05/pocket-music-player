@@ -57,6 +57,7 @@ class MainPageController {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               InkWell(
+                borderRadius: BorderRadius.circular(25),
                 onTap: () {
                   isSearching.value = false;
                   searchController.text = '';
@@ -99,19 +100,21 @@ class MainPageController {
             Row(
               children: [
                 InkWell(
+                  borderRadius: BorderRadius.circular(25),
                   onTap: () {
                     isSearching.value = true;
                   },
                   child: const Padding(
-                    padding: EdgeInsets.all(7.0),
+                    padding: EdgeInsets.all(9.0),
                     child: Icon(FontAwesomeIcons.magnifyingGlass, size: 20),
                   )
                 ),
-                const SizedBox(width: 20),
+                const SizedBox(width: 15),
                 InkWell(
+                  borderRadius: BorderRadius.circular(25),
                   onTap: () => Get.to(const SettingsPage()),
                   child: const Padding(
-                    padding: EdgeInsets.all(7.0),
+                    padding: EdgeInsets.all(9.0),
                     child: Icon(FontAwesomeIcons.gear, size: 20),
                   )
                 ),

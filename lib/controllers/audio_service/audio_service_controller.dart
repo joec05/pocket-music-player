@@ -2,22 +2,33 @@ import 'dart:io';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get.dart' as getx;
 import 'package:just_audio/just_audio.dart';
 import 'package:pocket_music_player/global_files.dart';
 import 'package:rxdart/rxdart.dart';
 
-class AudioController extends GetxController {
-  
+class AudioStateController extends GetxController {
+  getx.Rx<AudioPlayerState> playerState = getx.Rx(AudioPlayerState.stopped);
+  getx.Rx<String?> currentAudioUrl = getx.Rx<String?>(null);
+
+  void updatePlayerState(AudioPlayerState state) {
+    playerState.value = state;
+    update(['playerState']);
+  }
+
+  void updateAudioUrl(String? url) {
+    currentAudioUrl.value = url;
+    update(['currentAudioUrl']);
+  }
 }
 
 class MyAudioHandler extends BaseAudioHandler with QueueHandler {
   final audioPlayer = AudioPlayer();
   final currentSong = BehaviorSubject<AudioCompleteDataClass>();
-  String? currentAudioUrl;
+  final audioStateController = Get.put(AudioStateController());
   List<String> currentDirectoryAudioList = [];
   List<String> currentDirectoryAudioListShuffled = [];
   LoopStatus currentLoopStatus = LoopStatus.repeatCurrent;
-  AudioPlayerState playerState = AudioPlayerState.stopped;
 
   void initializeController() {
     audioPlayer.playbackEventStream.listen(_broadcastState);
@@ -26,11 +37,9 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
         startNextAfterFinishAudio();
       }else if(event.processingState == ProcessingState.ready){
         if(!event.playing){
-          playerState = AudioPlayerState.paused;
-          updateAudioPlayerState(playerState);
+          audioStateController.updatePlayerState(AudioPlayerState.paused);
         }else{
-          playerState = AudioPlayerState.playing;
-          updateAudioPlayerState(playerState);
+          audioStateController.updatePlayerState(AudioPlayerState.playing);
         }
       }
     });
@@ -68,21 +77,19 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
   }
 
   Future<void> startNextAfterFinishAudio() async {
-    if(currentAudioUrl == null) {
+    if(audioStateController.currentAudioUrl.value == null) {
       return;
     }
 
     if (currentLoopStatus == LoopStatus.repeatCurrent) {
-      await setNewAudioSession(appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value);
+      await setNewAudioSession(appStateRepo.allAudiosList[audioStateController.currentAudioUrl.value]!.notifier.value);
     }else if(currentLoopStatus == LoopStatus.repeatAll){
-      playerState = AudioPlayerState.completed;
-      updateAudioPlayerState(playerState);
+      audioStateController.updatePlayerState(AudioPlayerState.completed);
       await skipToNext();
     }else{
-      playerState = AudioPlayerState.completed;
-      updateAudioPlayerState(playerState);
+      audioStateController.updatePlayerState(AudioPlayerState.completed);
       await setCurrentSong(appStateRepo.allAudiosList[
-        currentDirectoryAudioListShuffled[(currentDirectoryAudioListShuffled.indexOf(currentAudioUrl!) + 1) % currentDirectoryAudioListShuffled.length]
+        currentDirectoryAudioListShuffled[(currentDirectoryAudioListShuffled.indexOf(audioStateController.currentAudioUrl.value!) + 1) % currentDirectoryAudioListShuffled.length]
       ]!.notifier.value);
     }
   }
@@ -90,11 +97,8 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
   Future<void> setCurrentSong(AudioCompleteDataClass audioCompleteData) async{
     try {
       if(File(audioCompleteData.audioUrl).existsSync()) {
-        if(audioCompleteData.audioUrl != currentAudioUrl){
-          updateAudioPlayerState(AudioPlayerState.completed);
-        }
         await setNewAudioSession(audioCompleteData);
-        playerState = AudioPlayerState.playing;  
+        audioStateController.updatePlayerState(AudioPlayerState.playing);  
       }  
     } on PlayerException catch (e) {
       rootScaffoldMessengerKey.currentState?.showSnackBar(
@@ -128,7 +132,9 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
     if(File(audioCompleteData.audioUrl).existsSync()) {
       AudioMetadataInfoClass metadata = audioCompleteData.audioMetadataInfo;
       currentSong.add(audioCompleteData);
-      currentAudioUrl = audioCompleteData.audioUrl;
+      final Duration? duration = await audioPlayer.setAudioSource(
+        ProgressiveAudioSource(Uri.parse(audioCompleteData.audioUrl)),
+      );
       final String artUri = await writeTemporaryAudioBytes(audioCompleteData.audioMetadataInfo.albumArt == null ? appStateRepo.audioImageData! : audioCompleteData.audioMetadataInfo.albumArt!);
       mediaItem.add(
         MediaItem(
@@ -137,43 +143,14 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
           artist: metadata.artistName,
           title: metadata.title ?? metadata.fileName,
           artUri: Uri.file(artUri),
+          duration: duration,
           extras: <String, dynamic>{
           },
         )
       );
       addAudioListenCount(audioCompleteData);
-      await audioPlayer.setAudioSource(
-        ProgressiveAudioSource(Uri.parse(audioCompleteData.audioUrl)),
-      );
-      emitCurrentAudioStreamData();
-    }
-  }
-
-  void updateAudioPlayerState(AudioPlayerState newState){
-    if(currentAudioUrl == null) {
-      return;
-    }
-
-    if(appStateRepo.allAudiosList[currentAudioUrl] != null){
-      appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value.playerState.value = newState;
-      CurrentAudioStreamClass().emitData(
-        CurrentAudioStreamControllerClass(appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value)
-      );
-    }
-  }
-
-  void emitCurrentAudioStreamData(){
-    if(currentAudioUrl == null) {
-      return;
-    }
-
-    if(appStateRepo.allAudiosList[currentAudioUrl] != null){
-      appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value.playerState.value = AudioPlayerState.playing;
-      CurrentAudioStreamClass().emitData(
-        CurrentAudioStreamControllerClass(
-          appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value
-        )
-      );
+      audioStateController.updateAudioUrl(audioCompleteData.audioUrl);
+      
     }
   }
 
@@ -190,13 +167,15 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
       await audioPlayer.pause();
     } catch (_) {}
   }
+
+  @override
+  Future<void> seek(Duration position) async => await audioPlayer.seek(position);
   
   @override
   Future<void> stop() async {
-    await audioPlayer.stop().then((value){
-      playerState = AudioPlayerState.stopped;
-      updateAudioPlayerState(playerState);
-      currentAudioUrl = null;
+    await audioPlayer.stop().then((_) {
+      audioStateController.updatePlayerState(AudioPlayerState.stopped);
+      audioStateController.updateAudioUrl(null);
     });
   }
 
@@ -213,7 +192,6 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
         controls: [
           MediaControl.skipToPrevious,
           isPlaying ? MediaControl.pause : MediaControl.play ,
-          MediaControl.stop,
           MediaControl.skipToNext,
         ],
         processingState: const {
@@ -228,9 +206,12 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
           MediaAction.seekForward,
           MediaAction.seekBackward,
         },
-        androidCompactActionIndices: const [0, 1, 3],
+        androidCompactActionIndices: const [0, 1, 2],
         playing: isPlaying,
         queueIndex: queueIndex,
+        bufferedPosition: audioPlayer.bufferedPosition,
+        speed: audioPlayer.speed,
+        updatePosition: audioPlayer.position
       ));
     }
 

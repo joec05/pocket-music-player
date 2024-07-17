@@ -80,20 +80,19 @@ class MetadataController {
           ]
         )).then((_) {
           Uint8List? imageData = imageUrl != null  ? File(imageUrl).readAsBytesSync() : null;
-          AudioMetadataInfoClass x = audioCompleteData.audioMetadataInfo;
-          AudioCompleteDataClass y = AudioCompleteDataClass(
-            audioCompleteData.audioUrl, AudioMetadataInfoClass(
-              x.fileName, title.isEmpty ? null : title,
-              artist.isEmpty ? null : artist, 
-              album.isEmpty ? null : album, 
-              ///albumArtistName.isEmpty ? null : albumArtistName, 
-              imageData
-            ), audioCompleteData.playerState, audioCompleteData.deleted
+          AudioCompleteDataClass newData = audioCompleteData.copy();
+          newData.audioMetadataInfo = AudioMetadataInfoClass(
+            newData.audioMetadataInfo.fileName, 
+            title.isEmpty ? null : title,
+            artist.isEmpty ? null : artist, 
+            album.isEmpty ? null : album, 
+            ///albumArtistName.isEmpty ? null : albumArtistName, 
+            imageData
           );
-          appStateRepo.allAudiosList[audioCompleteData.audioUrl]!.notifier.value = y;
+          appStateRepo.allAudiosList[audioCompleteData.audioUrl]!.notifier.value = newData.copy();
           EditAudioMetadataStreamClass().emitData(
             EditAudioMetadataStreamControllerClass(
-              y, audioCompleteData
+              appStateRepo.allAudiosList[audioCompleteData.audioUrl]!.notifier.value, audioCompleteData
             )
           );
           if(context.mounted) {

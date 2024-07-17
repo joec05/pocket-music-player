@@ -2,7 +2,6 @@
 
 import 'dart:async';
 import 'dart:math';
-import 'package:cached_memory_image/cached_memory_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pocket_music_player/global_files.dart';
@@ -12,11 +11,9 @@ class PlayingBottomController extends GetxController {
   RxDouble currentSlidingWidth = 0.toDouble().obs;
 
   void updateAudioCompleteData(AudioCompleteDataClass? newAudioData) {
-    if(audioCompleteData.value?.audioUrl != newAudioData?.audioUrl) {
-      audioCompleteData.value = newAudioData;
-      audioCompleteData.refresh();
-      update(['audioCompleteData']);
-    }
+    audioCompleteData.value = newAudioData;
+    audioCompleteData.refresh();
+    update(['audioCompleteData']);
   }
 
   void updateNewPosition(Duration newPosition) {
@@ -33,13 +30,11 @@ class CustomCurrentlyPlayingBottomWidget extends StatefulWidget{
 }
 
 class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlayingBottomWidget> {
-  final PlayingBottomController controller = Get.put(PlayingBottomController(), permanent: true);
-  late StreamSubscription currentAudioStreamClassSubscription;
+  final PlayingBottomController controller = Get.put(PlayingBottomController());
   late StreamSubscription editAudioMetadataStreamClassSubscription;
 
   @override initState(){
     super.initState();
-    initializeCurrentAudio();
     appStateRepo.audioHandler?.audioPlayer.positionStream.listen((newPosition) {
       if(mounted){
         if(controller.audioCompleteData.value != null && appStateRepo.audioHandler!.audioPlayer.duration != null){
@@ -47,15 +42,17 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
         }
       }
     });
-    currentAudioStreamClassSubscription = CurrentAudioStreamClass().currentAudioStream.listen((CurrentAudioStreamControllerClass data) {
-      if(mounted){
-        controller.updateAudioCompleteData(data.audioCompleteData);
+    appStateRepo.audioHandler?.audioStateController.currentAudioUrl.listen((audioUrl) {
+      if(audioUrl == null) {
+        controller.updateAudioCompleteData(null);
+      } else {
+        controller.updateAudioCompleteData(appStateRepo.allAudiosList[audioUrl]?.notifier.value);
       }
     });
     editAudioMetadataStreamClassSubscription = EditAudioMetadataStreamClass().editAudioMetadataStream.listen((EditAudioMetadataStreamControllerClass data) {
       if(mounted){
         if(controller.audioCompleteData.value != null){
-          if(appStateRepo.audioHandler!.currentAudioUrl == data.newAudioData.audioUrl){
+          if(appStateRepo.audioHandler!.audioStateController.currentAudioUrl.value == data.newAudioData.audioUrl){
             controller.updateAudioCompleteData(data.newAudioData);
           }
         }
@@ -63,21 +60,8 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
     });
   }
 
-  void initializeCurrentAudio(){
-    if(appStateRepo.audioHandler != null && mounted){
-      String? currentAudioUrl = appStateRepo.audioHandler!.currentAudioUrl;
-
-      if(currentAudioUrl == null) {
-        return;
-      }
-
-      controller.updateAudioCompleteData(appStateRepo.allAudiosList[currentAudioUrl] == null ? null : appStateRepo.allAudiosList[currentAudioUrl]!.notifier.value);
-    }
-  }
-
   @override void dispose(){
     super.dispose();
-    currentAudioStreamClassSubscription.cancel();
     editAudioMetadataStreamClassSubscription.cancel();
   }
 
@@ -114,7 +98,7 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
               return Container();
             }
 
-            if(audioCompleteDataValue.playerState == AudioPlayerState.stopped || audioCompleteDataValue.deleted){
+            if(audioCompleteDataValue.deleted) {
               return Container();
             }
             
@@ -144,20 +128,20 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(5.0),
-                                  child: CachedMemoryImage(
-                                    width: getScreenWidth() * 0.125, 
-                                    height: getScreenWidth() * 0.125,
-                                    bytes: audioCompleteDataValue.audioMetadataInfo.albumArt == null ?
-                                      appStateRepo.audioImageData!
-                                    : 
-                                      audioCompleteDataValue.audioMetadataInfo.albumArt!,
-                                    uniqueKey: audioCompleteDataValue.audioUrl,
-                                    errorBuilder: (context, exception, stackTrace) => Image.memory(appStateRepo.audioImageData!),
-                                    errorWidget: Image.memory(appStateRepo.audioImageData!),
-                                    fit: BoxFit.cover
-                                  )
+                                SizedBox(
+                                  width: getScreenWidth() * 0.125, 
+                                  height: getScreenWidth() * 0.125,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    child: Image.memory(
+                                      audioCompleteDataValue.audioMetadataInfo.albumArt == null ?
+                                        appStateRepo.audioImageData!
+                                      : 
+                                        audioCompleteDataValue.audioMetadataInfo.albumArt!,
+                                      errorBuilder: (context, exception, stackTrace) => Image.memory(appStateRepo.audioImageData!),
+                                      fit: BoxFit.cover
+                                    )
+                                  ),
                                 ),
                                 SizedBox(width: getScreenWidth() * 0.035),
                                 Flexible(
@@ -184,17 +168,23 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
                               ],
                             ),
                           ),
-                          GestureDetector(
-                            onTap: (){
-                              if(audioCompleteDataValue.playerState == AudioPlayerState.paused){
-                                resumeAudio();
-                              }else if(audioCompleteDataValue.playerState == AudioPlayerState.playing){
-                                pauseAudio();
-                              }
-                            },
-                            child: audioCompleteDataValue.playerState == AudioPlayerState.paused ?
-                              const Icon(Icons.play_arrow, size: 35)
-                            : const Icon(Icons.pause, size: 35)
+                          GetBuilder<AudioStateController>( 
+                            id: 'playerState',
+                            builder: (controller) {
+                              final AudioPlayerState playerState = controller.playerState.value;
+                              return GestureDetector(
+                                onTap: (){
+                                  if(playerState == AudioPlayerState.paused){
+                                    resumeAudio();
+                                  }else if(playerState == AudioPlayerState.playing){
+                                    pauseAudio();
+                                  }
+                                },
+                                child: playerState == AudioPlayerState.paused ?
+                                  const Icon(Icons.play_arrow, size: 35)
+                                : const Icon(Icons.pause, size: 35)
+                              );
+                            }
                           )
                         ],
                       )

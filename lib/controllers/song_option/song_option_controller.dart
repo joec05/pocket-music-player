@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 import 'package:pocket_music_player/global_files.dart';
 import 'package:uuid/uuid.dart';
 
@@ -51,7 +50,7 @@ class SongOptionController {
                   CustomButton(
                     onTapped: (){
                       Navigator.of(bottomSheetContext).pop();
-                      Get.to(TagEditorWidget(audioCompleteData: audioCompleteData));
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => TagEditorWidget(audioCompleteData: audioCompleteData)));
                     },
                     text: 'Edit tags',
                     width: double.infinity,
@@ -254,7 +253,7 @@ class SongOptionController {
                       child: TextField(
                         maxLength: defaultTextFieldLimit,
                         controller: inputController,
-                        decoration: generatePlaylistNameTextFieldDecoration('playlist name', FontAwesomeIcons.list),
+                        decoration: generatePlaylistNameTextFieldDecoration(context, 'playlist name', FontAwesomeIcons.list),
                         onChanged: (text){
                           setState((){
                             verifyInput = text.isNotEmpty;

@@ -8,7 +8,7 @@ class FetchSongsController {
     mainPageController.setLoadingState(false, loadType);
     if(await permission.checkAudioGranted()) {
       Directory dir = Directory(defaultDirectory);
-      List<FileSystemEntity> directoryList = await dir.list().toList();
+      List<FileSystemEntity> directoryList = dir.listSync().toList();
       directoryList.removeWhere((e) => e.path == restrictedDirectory);
       List<FileSystemEntity> songsList = [];
       List<String> audioFormats = [
@@ -19,7 +19,7 @@ class FetchSongsController {
           try {
             for(int i = 0; i < audioFormats.length; i++) {
               songsList.addAll(
-                await dir.list(recursive: true).where((e) => e.path.endsWith(audioFormats[i])).toList()
+                dir.listSync(recursive: true).where((e) => e.path.endsWith(audioFormats[i])).toList()
               );
             }
           } catch (_) {
@@ -43,7 +43,7 @@ class FetchSongsController {
               filesCompleteDataList[path] = AudioCompleteDataNotifier(
                 path, 
                 AudioCompleteDataClass(
-                  path, metadata, AudioPlayerState.stopped.obs, false
+                  path, metadata, false
                 ).obs
               );
               if(localListenCountData[path] != null){

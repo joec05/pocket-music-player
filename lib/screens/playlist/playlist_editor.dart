@@ -89,7 +89,7 @@ class _PlaylistEditorWidgetState extends State<_PlaylistEditorWidgetStateful> {
                     ),
                     SizedBox(height: defaultTextFieldVerticalMargin),
                     TextField(
-                      decoration: generateFormTextFieldDecoration('playlist name', FontAwesomeIcons.list),
+                      decoration: generateFormTextFieldDecoration(context, 'playlist name', FontAwesomeIcons.list),
                       controller: controller.playlistNameController,
                       maxLength: defaultTextFieldLimit,
                     ),

@@ -79,7 +79,7 @@ class AllMusicPageWidgetState extends State<AllMusicPageWidgetStateful> with Aut
                             height: getScreenHeight() * 0.075, 
                             color: defaultCustomButtonColor, 
                             text: 'Favourites', 
-                            onTapped: () => Get.to(const DisplayFavouritesClassWidget()), 
+                            onTapped: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DisplayFavouritesClassWidget())), 
                             setBorderRadius: true,
                             prefix: null,
                             loading: false
@@ -96,7 +96,7 @@ class AllMusicPageWidgetState extends State<AllMusicPageWidgetStateful> with Aut
                             height: getScreenHeight() * 0.075, 
                             color: defaultCustomButtonColor, 
                             text: 'Most played', 
-                            onTapped: () => Get.to(const DisplayMostPlayedClassWidget()),
+                            onTapped: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DisplayMostPlayedClassWidget())),
                             setBorderRadius: true,
                             prefix: null,
                             loading: false
@@ -109,7 +109,7 @@ class AllMusicPageWidgetState extends State<AllMusicPageWidgetStateful> with Aut
                             height: getScreenHeight() * 0.075, 
                             color: defaultCustomButtonColor, 
                             text: 'Recently added', 
-                            onTapped: () => Get.to(const DisplayRecentlyAddedClassWidget()),
+                            onTapped: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DisplayRecentlyAddedClassWidget())),
                             setBorderRadius: true,
                             prefix: null,
                             loading: false

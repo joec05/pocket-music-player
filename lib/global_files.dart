@@ -63,7 +63,6 @@ export 'screens/songs/display_favourite_songs.dart';
 export 'screens/songs/display_most_played_songs.dart';
 export 'screens/songs/display_playlist_songs.dart';
 export 'screens/songs/display_recently_added_songs.dart';
-export 'streams/current_audio_stream_class.dart';
 export 'streams/delete_audio_data_stream_class.dart';
 export 'streams/edit_audio_metadata_stream_class.dart';
 export 'streams/update_favourite_stream_class.dart';
