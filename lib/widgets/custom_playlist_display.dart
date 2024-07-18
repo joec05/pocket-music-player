@@ -109,6 +109,13 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
 
   @override
   Widget build(BuildContext context){
+    List<String> filteredPlaylists = playlistSongsData.songsList.where((e) {
+      if(appStateRepo.allAudiosList[e] == null) {
+        return false;
+      }
+      return !appStateRepo.allAudiosList[e]!.notifier.value.deleted;
+    }).toList();
+    
     return Card(
       color: defaultCustomButtonColor,
       margin: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding / 2, vertical: defaultVerticalPadding / 2),
@@ -153,7 +160,7 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
                               ],
                             ),
                             SizedBox(height: getScreenHeight() * 0.005),
-                            Text(playlistSongsData.songsList.length == 1 ? '1 song' : '${playlistSongsData.songsList.length} songs', style: const TextStyle(fontSize: 14),)
+                            Text(filteredPlaylists.length == 1 ? '1 song' : '${filteredPlaylists.length} songs', style: const TextStyle(fontSize: 14),)
                           ]
                         ),
                       ),

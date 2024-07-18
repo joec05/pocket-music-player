@@ -9,7 +9,6 @@ import 'package:pocket_music_player/models/theme/theme_model.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:pocket_music_player/controllers/shared_preferences/shared_preferences_controller.dart';
 import 'package:pocket_music_player/controllers/permission/permission_controller.dart';
-
 final controller = FetchSongsController();
 final talker = Talker();
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();

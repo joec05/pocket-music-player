@@ -45,7 +45,6 @@ dependencies:
   shared_preferences: ^2.2.3
   rename: ^3.0.2
   rename_app: ^1.6.1
-  cached_memory_image: ^1.5.0
 
 dev_dependencies:
   flutter_test:

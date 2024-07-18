@@ -61,6 +61,14 @@ class FetchSongsController {
       appStateRepo.audioListenCount = getListenCountData;
       appStateRepo.setFavouritesList(await isarController.fetchFavourites());
       appStateRepo.setPlaylistList('', await isarController.fetchPlaylists());
+
+      mainPageController.setLoadingState(true, loadType);
+      
+      if(loadType == LoadType.scan) {
+        sortedAlbumsController.initializeController();
+        sortedArtistsController.initializeController();
+        playlistsController.initializeController();
+      }
     } else{
       if(loadType == LoadType.scan) {
         final _ = await permission.requestAudio();
@@ -68,6 +76,7 @@ class FetchSongsController {
           await fetchLocalSongs(loadType);
         }
       }
+      mainPageController.setLoadingState(true, loadType);
       /*
       if(context.mounted) {
         handler.displaySnackbar(
@@ -78,7 +87,6 @@ class FetchSongsController {
       }
       */
     }
-    mainPageController.setLoadingState(true, loadType);
     return;
   }
 }

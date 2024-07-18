@@ -20,18 +20,16 @@ class _SortedAlbumsPageWidgetStateful extends StatefulWidget {
 }
 
 class _SortedAlbumsPageWidgetState extends State<_SortedAlbumsPageWidgetStateful> with AutomaticKeepAliveClientMixin{
-  late SortedAlbumsController controller;
   
   @override
   void initState(){
     super.initState();
-    controller = SortedAlbumsController(context);
-    controller.initializeController();
+    sortedAlbumsController.initializeController();
   }
 
   @override void dispose() {
     super.dispose();
-    controller.dispose();
+    sortedAlbumsController.dispose();
   }
 
   @override
@@ -41,7 +39,7 @@ class _SortedAlbumsPageWidgetState extends State<_SortedAlbumsPageWidgetStateful
       body: Center(
         child: Obx(() {
           final searchedText = mainPageController.searchedText.trim().toLowerCase();
-          List<AlbumSongsClass> albumsSongsList = controller.albumsSongsList.where((e) {
+          List<AlbumSongsClass> albumsSongsList = sortedAlbumsController.albumsSongsList.where((e) {
             final String album = e.albumName?.toLowerCase() ?? '';
             final String artist = e.artistName?.toLowerCase() ?? '';
             if(album.contains(searchedText) || artist.contains(searchedText)) {
@@ -49,7 +47,7 @@ class _SortedAlbumsPageWidgetState extends State<_SortedAlbumsPageWidgetStateful
             }
             return false;
           }).toList();
-          LoadingStatus status = controller.status.value;
+          LoadingStatus status = sortedAlbumsController.status.value;
 
           if(status == LoadingStatus.loading) {
             return const CircularProgressIndicator();

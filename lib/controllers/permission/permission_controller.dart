@@ -4,9 +4,9 @@ import 'package:device_info_plus/device_info_plus.dart';
 
 class PermissionController {
   bool audioIsGranted = false;
-  bool manageStorageIsGranted = false;
+  bool storageIsGranted = false;
   ph.Permission? audioPermission;
-  ph.Permission manageStoragePermission = ph.Permission.manageExternalStorage;
+  ph.Permission storagePermission = ph.Permission.manageExternalStorage;
 
   Future<bool> checkAudioGranted() async {
     if(Platform.isAndroid){
@@ -31,12 +31,12 @@ class PermissionController {
     return audioIsGranted;
   }
 
-  Future<bool> requestManageStorage() async {
-    manageStorageIsGranted = await manageStoragePermission.isGranted;
-    if(!manageStorageIsGranted){
-      manageStorageIsGranted = (await manageStoragePermission.request()).isGranted;
+  Future<bool> requestStorage() async {
+    storageIsGranted = await storagePermission.isGranted;
+    if(!storageIsGranted){
+      storageIsGranted = (await storagePermission.request()).isGranted;
     }
-    return manageStorageIsGranted;
+    return storageIsGranted;
   }
 }
 

@@ -11,19 +11,19 @@ class MainPageController {
   RxBool isLoaded = false.obs;
   Rx<LoadType> loadType = LoadType.initial.obs;
   RxBool isSearching = false.obs;
-  List<Widget> widgetOptions = List<Widget>.from([]).obs;
+  RxList<Widget> widgetOptions = RxList<Widget>([]);
   RxString searchedText = ''.obs;
   TextEditingController searchController = TextEditingController();
 
   MainPageController();
 
   void initializeController() async {
-    widgetOptions = [
+    widgetOptions.assignAll([
       const AllSongsPageWidget(), 
       const SortedArtistsPageWidget(), 
       const SortedAlbumsPageWidget(), 
       const PlaylistPageWidget()
-    ];
+    ]);
     searchController.addListener(() {
       searchedText.value = searchController.text;
     });

@@ -63,7 +63,7 @@ class MetadataController {
     String? imageUrl
   ) async{
     try {
-      bool isGranted = await permission.requestManageStorage();
+      final bool isGranted = await permission.requestStorage();
       if(isGranted) {
         await AudioTags.write(audioCompleteData.audioUrl, Tag(
           title: title.isEmpty ? null : title,
@@ -78,7 +78,7 @@ class MetadataController {
               pictureType: audiotags.PictureType.coverFront
             )
           ]
-        )).then((_) {
+        )).then((_) async {
           Uint8List? imageData = imageUrl != null  ? File(imageUrl).readAsBytesSync() : null;
           AudioCompleteDataClass newData = audioCompleteData.copy();
           newData.audioMetadataInfo = AudioMetadataInfoClass(
@@ -103,22 +103,13 @@ class MetadataController {
             );
           }
         });
-      } else {
-        if(context.mounted) {
-          handler.displaySnackbar(
-            context, 
-            SnackbarType.error, 
-            'Unable to modify tags'
-          );
-        }
       }
     } catch(e) {
       if(context.mounted) {
         handler.displaySnackbar(
           context, 
           SnackbarType.error, 
-          //tErr.unknown
-          e.toString()
+          tErr.unknown
         );
       }
     }

@@ -7,23 +7,33 @@ class SongFileController {
 
   void deleteSong(BuildContext context, AudioCompleteDataClass audioData) async{
     try{
-      appStateRepo.allAudiosList[audioData.audioUrl]!.notifier.value.deleted = true;
-      DeleteAudioDataStreamClass().emitData(
-        DeleteAudioDataStreamControllerClass(appStateRepo.allAudiosList[audioData.audioUrl]!.notifier.value)
-      );
-      if(appStateRepo.audioHandler!.audioStateController.currentAudioUrl.value == audioData.audioUrl){
-        appStateRepo.audioHandler!.stop();
-      }
       File selectedFile = File(audioData.audioUrl);
       if(selectedFile.existsSync()){
-        selectedFile.deleteSync();
-      }
-      if(context.mounted) {
-        handler.displaySnackbar(
-          context, 
-          SnackbarType.successful, 
-          tSuccess.deleteSong
+        final _ = await selectedFile.delete();
+        final AudioCompleteDataClass newAudioData = appStateRepo.allAudiosList[audioData.audioUrl]!.notifier.value.copy();
+        newAudioData.deleted = true;
+        appStateRepo.allAudiosList[audioData.audioUrl]!.notifier.value = newAudioData;
+        DeleteAudioDataStreamClass().emitData(
+          DeleteAudioDataStreamControllerClass(appStateRepo.allAudiosList[audioData.audioUrl]!.notifier.value)
         );
+        if(appStateRepo.audioHandler!.audioStateController.currentAudioUrl.value == audioData.audioUrl){
+          appStateRepo.audioHandler!.stop();
+        }
+        if(context.mounted) {
+          handler.displaySnackbar(
+            context, 
+            SnackbarType.successful, 
+            tSuccess.deleteSong
+          );
+        }
+      } else {
+        if(context.mounted) {
+          handler.displaySnackbar(
+            context,
+            SnackbarType.error, 
+            'File does not exist.'
+          );
+        }
       }
     } catch (e) {
       if(context.mounted) {

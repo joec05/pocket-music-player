@@ -13,7 +13,6 @@ class AllSongsController {
   bool get mounted => context.mounted;
 
   Future<void> initializeController() async {
-    //fetchSongsController.fetchLocalSongs(LoadType.initial);
   }
 
   void dispose(){}

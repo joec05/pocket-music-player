@@ -20,18 +20,16 @@ class _PlaylistPageWidgetStateful extends StatefulWidget {
 }
 
 class _PlaylistPageWidgetState extends State<_PlaylistPageWidgetStateful> with AutomaticKeepAliveClientMixin{
-  late PlaylistsController controller;
 
   @override
   void initState(){
     super.initState();
-    controller = PlaylistsController(context);
-    controller.initializeController();
+    playlistsController.initializeController();
   }
 
   @override void dispose(){
     super.dispose();
-    controller.dispose();
+    playlistsController.dispose();
   }
 
   @override
@@ -41,7 +39,7 @@ class _PlaylistPageWidgetState extends State<_PlaylistPageWidgetStateful> with A
       body: Center(
         child: Obx (() {
           final searchedText = mainPageController.searchedText.trim().toLowerCase();
-          List<PlaylistSongsModel> playlistsSongsList = controller.playlistsSongsList.where((e) {
+          List<PlaylistSongsModel> playlistsSongsList = playlistsController.playlistsSongsList.where((e) {
             final String playlist = e.playlistName.toLowerCase();
             if(playlist.contains(searchedText)) {
               return true;
