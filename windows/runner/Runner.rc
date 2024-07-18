@@ -92,7 +92,7 @@ BEGIN
             VALUE "CompanyName", "com.example" "\0"
             VALUE "FileDescription", "pocket_music_player" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "com.pocket_music_player.music_player_app" "\0"
+            VALUE "InternalName", "com.joec05.pocket_music_player" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
             VALUE "OriginalFilename", "pocket_music_player.exe" "\0"
             VALUE "ProductName", "pocket_music_player" "\0"

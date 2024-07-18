@@ -36,7 +36,7 @@ Future<void> initializeAudioService() async{
     MyAudioHandler audioHandler = await AudioService.init(
       builder: () => MyAudioHandler(),
       config: const AudioServiceConfig(
-        androidNotificationChannelId: 'com.pocket_music_player.music_player_app',
+        androidNotificationChannelId: 'com.joec05.pocket_music_player',
         androidNotificationChannelName: 'Music playback',
       ),
     );
