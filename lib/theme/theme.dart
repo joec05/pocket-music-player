@@ -8,7 +8,8 @@ class AppTheme {
     inputDecorationTheme: TextFieldTheme.lightInputDecorationTheme,
     dividerColor: Colors.black,
     cardColor: Colors.grey.withOpacity(0.5),
-    primaryColor: Colors.black
+    primaryColor: Colors.black,
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(backgroundColor: Color.fromARGB(255, 214, 219, 224))
   );
 
   ThemeData dark = ThemeData(
@@ -17,7 +18,8 @@ class AppTheme {
     inputDecorationTheme: TextFieldTheme.darkInputDecorationTheme,
     dividerColor: Colors.white,
     cardColor: Colors.grey.withOpacity(0.5),
-    primaryColor: Colors.white
+    primaryColor: Colors.white,
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(backgroundColor: Color.fromARGB(255, 57, 63, 63))
   );
 }
 

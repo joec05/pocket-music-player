@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:pocket_music_player/global_files.dart';
+import 'package:bottom_bar/bottom_bar.dart';
 
 class MainPageWidget extends StatelessWidget {
   const MainPageWidget({super.key});
@@ -64,33 +65,32 @@ class __MainPageWidgetStatefulState extends State<_MainPageWidgetStateful>{
                     ],
                   ),
                   child: SizedBox(
-                    child: BottomNavigationBar(
-                      type: BottomNavigationBarType.fixed,
-                      selectedFontSize: 13,
-                      unselectedFontSize: 13,
-                      showUnselectedLabels: true,
-                      selectedItemColor: Colors.red,
-                      unselectedItemColor: const Color.fromARGB(255, 110, 102, 102),
+                    child: BottomBar(
+                      backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
                       key: UniqueKey(),
-                      items: const [
-                        BottomNavigationBarItem(
-                          icon: Icon(FontAwesomeIcons.music, size: 25),
-                          label: 'All Music',
+                      items: [
+                        BottomBarItem(
+                          icon: const Icon(FontAwesomeIcons.music, size: 25),
+                          title: const Text('All Music'),
+                          activeColor: Colors.teal.withOpacity(0.7)
                         ),
-                        BottomNavigationBarItem(
-                          icon: Icon(FontAwesomeIcons.user, size: 25),
-                          label: 'Artists',
+                        BottomBarItem(
+                          icon: const Icon(FontAwesomeIcons.user, size: 25),
+                          title: const Text('Artists'),
+                          activeColor: Colors.teal.withOpacity(0.7)
                         ),
-                        BottomNavigationBarItem(
-                          icon: Icon(FontAwesomeIcons.recordVinyl, size: 25),
-                          label: 'Albums',
+                        BottomBarItem(
+                          icon: const Icon(FontAwesomeIcons.recordVinyl, size: 25),
+                          title: const Text('Albums'),
+                          activeColor: Colors.teal.withOpacity(0.7)
                         ),
-                        BottomNavigationBarItem(
-                          icon: Icon(FontAwesomeIcons.list, size: 25),
-                          label: 'Playlists',
+                        BottomBarItem(
+                          icon: const Icon(FontAwesomeIcons.list, size: 25),
+                          title: const Text('Playlists'),
+                          activeColor: Colors.teal.withOpacity(0.7)
                         ),
                       ],
-                      currentIndex: selectedIndexValue,
+                      selectedIndex: selectedIndexValue,
                       onTap: ((index) {
                         if(mounted){
                           if(mainPageController.isLoaded.value){

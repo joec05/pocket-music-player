@@ -45,6 +45,7 @@ dependencies:
   shared_preferences: ^2.2.3
   rename: ^3.0.2
   rename_app: ^1.6.1
+  bottom_bar: ^2.0.3
 
 dev_dependencies:
   flutter_test:
