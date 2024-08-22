@@ -16,9 +16,7 @@ class SongOptionController {
 
   bool get mounted => context.mounted;
 
-  void initialize() {
-    
-  }
+  void initialize() {}
 
   void displayOptionsBottomSheet(){
     if(mounted){

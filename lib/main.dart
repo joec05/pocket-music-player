@@ -9,9 +9,12 @@ import 'package:pocket_music_player/models/theme/theme_model.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:pocket_music_player/controllers/shared_preferences/shared_preferences_controller.dart';
 import 'package:pocket_music_player/controllers/permission/permission_controller.dart';
+import 'package:media_store_plus/media_store_plus.dart';
+
 final controller = FetchSongsController();
 final talker = Talker();
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+final mediaStorePlugin = MediaStore();
 
 Future<void> main() async{
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +26,8 @@ Future<void> main() async{
   themeModel.mode.value = await sharedPreferencesController.getThemeModeData();
   await initializeAudioService();
   await initializeDefaultStartingDisplayImage();
+  await MediaStore.ensureInitialized();
+  MediaStore.appFolder = "Pocket Music Player";
   await controller.fetchLocalSongs(LoadType.initial).then((_) {
     runApp(
       const MyApp()
@@ -68,6 +73,13 @@ class MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
       )
     );
     verifyUserPermission();
+    appStateRepo.audioHandler!.audioStateController.playerState.listen((playerState) {
+      if(playerState == AudioPlayerState.playing) {
+        appStateRepo.soundwaveAnimationController?.repeat();
+      } else {
+        appStateRepo.soundwaveAnimationController?.stop();
+      }
+    });
   }
 
   void verifyUserPermission() async {

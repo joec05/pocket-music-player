@@ -9,22 +9,35 @@ class SongFileController {
     try{
       File selectedFile = File(audioData.audioUrl);
       if(selectedFile.existsSync()){
-        final _ = await selectedFile.delete();
-        final AudioCompleteDataClass newAudioData = appStateRepo.allAudiosList[audioData.audioUrl]!.notifier.value.copy();
-        newAudioData.deleted = true;
-        appStateRepo.allAudiosList[audioData.audioUrl]!.notifier.value = newAudioData;
-        DeleteAudioDataStreamClass().emitData(
-          DeleteAudioDataStreamControllerClass(appStateRepo.allAudiosList[audioData.audioUrl]!.notifier.value)
+        final Uri? uri = await mediaStorePlugin.getUriFromFilePath(path: selectedFile.path);
+        final bool deleted = await mediaStorePlugin.deleteFileUsingUri(
+          uriString: uri.toString(),
         );
-        if(appStateRepo.audioHandler!.audioStateController.currentAudioUrl.value == audioData.audioUrl){
-          appStateRepo.audioHandler!.stop();
-        }
-        if(context.mounted) {
-          handler.displaySnackbar(
-            context, 
-            SnackbarType.successful, 
-            tSuccess.deleteSong
+        if(deleted) { 
+          final AudioCompleteDataClass newAudioData = appStateRepo.allAudiosList[audioData.audioUrl]!.notifier.value.copy();
+          newAudioData.deleted = true;
+          appStateRepo.allAudiosList[audioData.audioUrl]!.notifier.value = newAudioData;
+          DeleteAudioDataStreamClass().emitData(
+            DeleteAudioDataStreamControllerClass(appStateRepo.allAudiosList[audioData.audioUrl]!.notifier.value)
           );
+          if(appStateRepo.audioHandler!.audioStateController.currentAudioUrl.value == audioData.audioUrl){
+            appStateRepo.audioHandler!.stop();
+          }
+          if(context.mounted) {
+            handler.displaySnackbar(
+              context, 
+              SnackbarType.successful, 
+              tSuccess.deleteSong
+            );
+          }
+        } else {
+          if(context.mounted) {
+            handler.displaySnackbar(
+              context,
+              SnackbarType.error, 
+              tErr.unknown
+            );
+          }
         }
       } else {
         if(context.mounted) {

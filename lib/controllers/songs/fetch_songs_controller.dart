@@ -1,3 +1,5 @@
+// ignore_for_file: empty_catches
+
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:pocket_music_player/controllers/permission/permission_controller.dart';
@@ -32,7 +34,6 @@ class FetchSongsController {
       final Map<String, AudioListenCountModel> localListenCountData = await isarController.fetchAllCounts();
       Map<String, AudioListenCountModel> getListenCountData = {};
       List<String> songUrlsList = [];
-      
       for(int i = 0; i < songsList.length; i++){
         String path = songsList[i].path;
         if(await File(path).exists()){
@@ -52,9 +53,7 @@ class FetchSongsController {
                 getListenCountData[path] = AudioListenCountModel(path, 0);
               }
             }
-          } catch(e) {
-            talker.debug("${path.split('/').last} $e");
-          }
+          } catch(e) {}
         }
       }
       appStateRepo.allAudiosList.value = filesCompleteDataList;

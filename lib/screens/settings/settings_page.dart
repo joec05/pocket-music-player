@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pocket_music_player/models/theme/theme_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -11,7 +12,12 @@ class SettingsPage extends StatefulWidget {
   State<SettingsPage> createState() => SettingsPageState();
 }
 
-class SettingsPageState extends State<SettingsPage>{
+class SettingsPageState extends State<SettingsPage> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   Widget settingWidget(Widget leading, String title, Function() onTap, {subtitle}) {
     return ListTile(
@@ -30,11 +36,17 @@ class SettingsPageState extends State<SettingsPage>{
       ),
       body: ListView(
         children: [
-          settingWidget(
-            Image.asset('assets/images/music-icon.png', width: 30, height: 30),
-            'Version',
-            () {},
-            subtitle: '1.0.0',
+          FutureBuilder(
+            future: PackageInfo.fromPlatform(), 
+            builder: (_, snapshot) {
+              final PackageInfo? packageInfo = snapshot.data;
+              return settingWidget(
+                Image.asset('assets/images/app-icon.png', width: 30, height: 30),
+                'Version',
+                () {},
+                subtitle: packageInfo == null ? '1.0.0.0' : '${packageInfo.version}.${packageInfo.buildNumber}'
+              );
+            }
           ),
           ValueListenableBuilder(
             valueListenable: themeModel.mode,

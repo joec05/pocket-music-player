@@ -3,7 +3,6 @@ import 'package:audiotags/audiotags.dart';
 import 'package:audiotags/audiotags.dart' as audiotags;
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:pocket_music_player/controllers/permission/permission_controller.dart';
 import 'package:pocket_music_player/global_files.dart';
 import 'dart:io';
 import 'package:audio_metadata_reader/audio_metadata_reader.dart';
@@ -63,53 +62,67 @@ class MetadataController {
     String? imageUrl
   ) async{
     try {
-      final bool isGranted = await permission.requestStorage();
-      if(isGranted) {
-        await AudioTags.write(audioCompleteData.audioUrl, Tag(
-          title: title.isEmpty ? null : title,
-          trackArtist: artist.isEmpty ? null : artist,
-          album: album.isEmpty ? null : album,
-          ///albumArtist: albumArtistName.isEmpty ? null : albumArtistName
-          pictures: [
-            if(imageUrl != null)
-            audiotags.Picture(
-              bytes: File(imageUrl).readAsBytesSync(),
-              mimeType: MimeType.png,
-              pictureType: audiotags.PictureType.coverFront
-            )
-          ]
-        )).then((_) async {
-          Uint8List? imageData = imageUrl != null  ? File(imageUrl).readAsBytesSync() : null;
-          AudioCompleteDataClass newData = audioCompleteData.copy();
-          newData.audioMetadataInfo = AudioMetadataInfoClass(
-            newData.audioMetadataInfo.fileName, 
-            title.isEmpty ? null : title,
-            artist.isEmpty ? null : artist, 
-            album.isEmpty ? null : album, 
-            ///albumArtistName.isEmpty ? null : albumArtistName, 
-            imageData
-          );
-          appStateRepo.allAudiosList[audioCompleteData.audioUrl]!.notifier.value = newData.copy();
-          EditAudioMetadataStreamClass().emitData(
-            EditAudioMetadataStreamControllerClass(
-              appStateRepo.allAudiosList[audioCompleteData.audioUrl]!.notifier.value, audioCompleteData
-            )
-          );
+      final String tempPath = await copyTemporaryAudioPath(audioCompleteData.audioUrl);
+      await AudioTags.write(tempPath, Tag(
+        title: title.isEmpty ? null : title,
+        trackArtist: artist.isEmpty ? null : artist,
+        album: album.isEmpty ? null : album,
+        ///albumArtist: albumArtistName.isEmpty ? null : albumArtistName
+        pictures: [
+          if(imageUrl != null)
+          audiotags.Picture(
+            bytes: File(imageUrl).readAsBytesSync(),
+            mimeType: MimeType.png,
+            pictureType: audiotags.PictureType.coverFront,
+          )
+        ]
+      )).then((_) async {        
+        final uri = await mediaStorePlugin.getUriFromFilePath(path: audioCompleteData.audioUrl);
+        final bool edited = await mediaStorePlugin.editFile(uriString: uri.toString(), tempFilePath: tempPath);
+        
+        if(!edited) {
           if(context.mounted) {
             handler.displaySnackbar(
               context, 
-              SnackbarType.successful, 
-              tSuccess.modifyTags
+              SnackbarType.warning, 
+              tWarning.metadataPermission
             );
           }
-        });
-      }
+          return;
+        }
+
+        Uint8List? imageData = imageUrl != null ? File(imageUrl).readAsBytesSync() : null;
+        AudioCompleteDataClass newData = audioCompleteData.copy();
+        newData.audioMetadataInfo = AudioMetadataInfoClass(
+          newData.audioMetadataInfo.fileName, 
+          title.isEmpty ? null : title,
+          artist.isEmpty ? null : artist, 
+          album.isEmpty ? null : album, 
+          ///albumArtistName.isEmpty ? null : albumArtistName, 
+          imageData
+        );
+        appStateRepo.allAudiosList[audioCompleteData.audioUrl]!.notifier.value = newData.copy();
+        EditAudioMetadataStreamClass().emitData(
+          EditAudioMetadataStreamControllerClass(
+            appStateRepo.allAudiosList[audioCompleteData.audioUrl]!.notifier.value, audioCompleteData
+          )
+        );
+        if(context.mounted) {
+          handler.displaySnackbar(
+            context, 
+            SnackbarType.successful, 
+            tSuccess.modifyTags
+          );
+        }
+        appStateRepo.audioHandler?.clearTempDir();
+      });
     } catch(e) {
       if(context.mounted) {
         handler.displaySnackbar(
           context, 
           SnackbarType.error, 
-          tErr.unknown
+          //tErr.unknown
+          e.toString()
         );
       }
     }

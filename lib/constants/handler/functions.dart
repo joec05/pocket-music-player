@@ -14,7 +14,8 @@ Widget snackbarContentTemplate(IconData? iconData, String text) => Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(text, textAlign: TextAlign.left, style: const TextStyle(
-            fontWeight: FontWeight.bold
+            fontWeight: FontWeight.bold,
+            color: Colors.black
           ))
         ],
       ),

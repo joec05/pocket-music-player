@@ -32,15 +32,6 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
       widget.playlistSongsData
     );
     controller.initialize();
-    appStateRepo.audioHandler?.audioPlayer.playingStream.listen((event) {
-      if(appStateRepo.audioHandler?.audioStateController.currentAudioUrl.value == audioCompleteData.audioUrl) {
-        if(!event) {
-          appStateRepo.soundwaveAnimationController?.stop();
-        } else {
-          appStateRepo.soundwaveAnimationController?.repeat();
-        }
-      }
-    });
   }
 
   void playAudio() async {
@@ -50,7 +41,7 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
     appStateRepo.audioHandler!.updateListDirectory(
       directorySongsList, directorySongsListShuffled
     );
-    appStateRepo.audioHandler!.setCurrentSong(audioCompleteData);
+    appStateRepo.audioHandler!.setCurrentSong(audioCompleteData.audioUrl);
     appStateRepo.audioHandler!.play();
   }
   

@@ -14,6 +14,7 @@ class MainPageController {
   RxList<Widget> widgetOptions = RxList<Widget>([]);
   RxString searchedText = ''.obs;
   TextEditingController searchController = TextEditingController();
+  final searchFocusNode = FocusNode();
 
   MainPageController();
 
@@ -26,6 +27,13 @@ class MainPageController {
     ]);
     searchController.addListener(() {
       searchedText.value = searchController.text;
+    });
+    isSearching.listen((val) {
+      if(val) {
+        searchFocusNode.requestFocus();
+      } else {
+        searchFocusNode.unfocus();
+      }
     });
   }
 
@@ -46,7 +54,7 @@ class MainPageController {
 
   PreferredSizeWidget setAppBar(index){
     String text = 'Pocket Music Player';
-
+    
     return AppBar(
       flexibleSpace: Container(
         decoration: defaultAppBarDecoration
@@ -69,6 +77,7 @@ class MainPageController {
               ),
               TextField(
                 controller: searchController,
+                focusNode: searchFocusNode,
                 decoration: InputDecoration(
                   counterText: "",
                   contentPadding: EdgeInsets.symmetric(horizontal: getScreenWidth() * 0.025),

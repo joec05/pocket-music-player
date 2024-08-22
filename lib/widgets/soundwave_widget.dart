@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:pocket_music_player/global_files.dart';
 
@@ -12,9 +13,10 @@ class SoundwaveWidget extends StatefulWidget {
 class _SoundwaveWidgetState extends State<SoundwaveWidget> with TickerProviderStateMixin {
   final AnimationController controller = appStateRepo.soundwaveAnimationController!;
   final int count = 3;
-  final double minHeight = 7.5;
-  final double maxHeight = 25;
+  final double minHeight = getScreenWidth() * 0.05;
+  final double maxHeight = getScreenWidth() * 0.1;
   final int durationInMilliseconds = 500;
+  List<MaterialAccentColor> waveColors = List.generate(3, (i) => Colors.accents[Random().nextInt(Colors.accents.length)]);
 
   @override
   void initState() {
@@ -37,11 +39,12 @@ class _SoundwaveWidgetState extends State<SoundwaveWidget> with TickerProviderSt
                   milliseconds: durationInMilliseconds ~/ count),
               margin: i == (count - 1)
                   ? EdgeInsets.zero
-                  : const EdgeInsets.only(right: 5),
+                  : EdgeInsets.only(right: getScreenWidth() * 0.01),
               height: i == current ? maxHeight : minHeight,
-              width: 5,
+              width: getScreenWidth() * 0.018,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(9999),
+                borderRadius: BorderRadius.circular(50),
+                color: waveColors[i]
               ),
             ),
           ),

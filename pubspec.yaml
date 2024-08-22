@@ -1,7 +1,7 @@
 name: pocket_music_player
 description: A new Flutter project.
 
-version: 1.0.0+0
+version: 1.0.0+3
 
 environment:
   sdk: '>=3.1.5 <4.0.0'
@@ -21,7 +21,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   path_provider: ^2.1.3
-  permission_handler: ^11.3.1
+  permission_handler: ^10.2.0
   font_awesome_flutter: ^10.7.0
   uuid: ^4.4.0
   audio_service: ^0.18.13
@@ -46,6 +46,8 @@ dependencies:
   rename: ^3.0.2
   rename_app: ^1.6.1
   bottom_bar: ^2.0.3
+  media_store_plus: ^0.1.2
+  package_info_plus: ^8.0.2
 
 dev_dependencies:
   flutter_test:
