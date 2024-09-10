@@ -113,14 +113,10 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
       final audioCompleteData = appStateRepo.allAudiosList[audioUrl]!.notifier.value;
 
       if(File(audioCompleteData.audioUrl).existsSync()) {
-        final isPaused = audioStateController.playerState.value == AudioPlayerState.paused;
-        if(isPaused) {
+        if(audioStateController.playerState.value == AudioPlayerState.paused) {
           play();
         }
         final _ = await setNewAudioSession(audioCompleteData.audioUrl);
-        if(isPaused) {
-          pause();
-        } 
       }  
     } on PlayerException catch (e) {
       rootScaffoldMessengerKey.currentState?.showSnackBar(
@@ -203,11 +199,12 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
         }
       }
 
-      queue.add(queueList);
-      
-      addAudioListenCount(audioCompleteData);
-      audioStateController.updateAudioUrl(audioCompleteData.audioUrl);
-      clearTempDir();
+      Future.delayed(const Duration(milliseconds: 300), () {
+        queue.add(queueList);
+        addAudioListenCount(audioCompleteData);
+        audioStateController.updateAudioUrl(audioCompleteData.audioUrl);
+        clearTempDir();
+      });
     }
   }
 
