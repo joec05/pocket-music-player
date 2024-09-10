@@ -113,8 +113,14 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
       final audioCompleteData = appStateRepo.allAudiosList[audioUrl]!.notifier.value;
 
       if(File(audioCompleteData.audioUrl).existsSync()) {
-        await setNewAudioSession(audioCompleteData.audioUrl);
-        audioStateController.updatePlayerState(AudioPlayerState.playing);  
+        final isPaused = audioStateController.playerState.value == AudioPlayerState.paused;
+        if(isPaused) {
+          play();
+        }
+        final _ = await setNewAudioSession(audioCompleteData.audioUrl);
+        if(isPaused) {
+          pause();
+        } 
       }  
     } on PlayerException catch (e) {
       rootScaffoldMessengerKey.currentState?.showSnackBar(
@@ -152,25 +158,8 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
     if(index == -1) {
       return;
     }
-
+    
     if(File(audioCompleteData.audioUrl).existsSync()) {
-      AudioMetadataInfoClass metadata = audioCompleteData.audioMetadataInfo;
-      currentSong.add(audioCompleteData);
-      final Duration? duration = await audioPlayer.setAudioSource(
-        ProgressiveAudioSource(Uri.parse(audioCompleteData.audioUrl)),
-      );
-      final String artUri = await writeTemporaryAudioBytes(audioCompleteData.audioMetadataInfo.albumArt == null ? appStateRepo.audioImageData! : audioCompleteData.audioMetadataInfo.albumArt!);
-      mediaItem.add(
-        MediaItem(
-          id: audioCompleteData.audioUrl,
-          album: metadata.albumName,
-          artist: metadata.artistName,
-          title: metadata.title ?? metadata.fileName,
-          artUri: Uri.file(artUri),
-          duration: duration,
-        )
-      );
-
       List<MediaItem> queueList = [];
       final nextIndex = (index + 1) % audioUrls.length;
       final previousIndex = index == 0 ? audioUrls.length - 1 : index - 1;
@@ -187,6 +176,21 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler {
             )
           );
         } else if (i == index){
+          AudioMetadataInfoClass metadata = audioCompleteData.audioMetadataInfo;
+          currentSong.add(audioCompleteData);
+          final String artUri = await writeTemporaryAudioBytes(audioCompleteData.audioMetadataInfo.albumArt == null ? appStateRepo.audioImageData! : audioCompleteData.audioMetadataInfo.albumArt!);
+          mediaItem.add(
+            MediaItem(
+              id: audioCompleteData.audioUrl,
+              album: metadata.albumName,
+              artist: metadata.artistName,
+              title: metadata.title ?? metadata.fileName,
+              artUri: Uri.file(artUri),
+              duration: await audioPlayer.setAudioSource(
+                ProgressiveAudioSource(Uri.parse(audioCompleteData.audioUrl)),
+              ),
+            )
+          );
           queueList.add(mediaItem.value!);
         } else {
           final audioData = appStateRepo.allAudiosList[audioUrls[i]]!.notifier.value;

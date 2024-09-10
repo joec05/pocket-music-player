@@ -1,4 +1,4 @@
-// ignore_for_file: empty_catches
+// ignore_for_file: empty_catches, non_constant_identifier_names
 
 import 'dart:io';
 import 'package:get/get.dart';
@@ -34,9 +34,9 @@ class FetchSongsController {
       final Map<String, AudioListenCountModel> localListenCountData = await isarController.fetchAllCounts();
       Map<String, AudioListenCountModel> getListenCountData = {};
       List<String> songUrlsList = [];
-      for(int i = 0; i < songsList.length; i++){
+      for(int i = 0; i < songsList.length; i++) {
         String path = songsList[i].path;
-        if(await File(path).exists()){
+        if(File(path).existsSync()){
           try {
             var metadata = await metadataController.fetchAudioMetadata(path);
             if(metadata != null){
@@ -58,8 +58,8 @@ class FetchSongsController {
       }
       appStateRepo.allAudiosList.value = filesCompleteDataList;
       appStateRepo.audioListenCount = getListenCountData;
-      appStateRepo.setFavouritesList(await isarController.fetchFavourites());
-      appStateRepo.setPlaylistList('', await isarController.fetchPlaylists());
+      final _ = appStateRepo.setFavouritesList(await isarController.fetchFavourites());
+      final __ = appStateRepo.setPlaylistList('', await isarController.fetchPlaylists());
 
       mainPageController.setLoadingState(true, loadType);
       
