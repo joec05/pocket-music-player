@@ -66,15 +66,16 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 flutter_launcher_icons:
-  image_path: "assets/images/music-icon.png"
+  image_path: "assets/images/icon.jpeg"
   android: true
+  ios: true
 
 flutter_native_splash:
-  image: assets/images/music-icon.png
+  image: assets/images/splash-icon.png
   color: "ffffff"
   android: true
   android_12:
-    image: assets/images/music-icon.png
+    image: assets/images/splash-icon.png
   ios: true
 
 index_generator:
