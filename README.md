@@ -1,4 +1,4 @@
-# Music Player App
+# Pocket Music Player
 
 A simple music player app made with Flutter.
 
@@ -22,19 +22,11 @@ A simple music player app made with Flutter.
 
 * Display most played music
 
-## Download app
+## Preview
 
-[![Download Music Player App](https://stc.utdstc.com/img/mediakit/download-gio-big.png)](https://music-player-app.en.uptodown.com/android "Download Music Player App")
-
-## Music player app in display  
-
-![Music player app](https://github.com/joec05/files/blob/main/music_player_app/demo_2.png?raw=true "Music player app demo image 2")
-
-![Music player app](https://github.com/joec05/files/blob/main/music_player_app/demo_1.png?raw=true "Music player app demo image 1")
+![Preview](https://github.com/joec05/files/blob/main/Screenshot%202024-09-13%20at%2000.04.42.png?raw=true "Pocket Music Player preview")
 
 ## Future plans
-
-* Enable search feature for music, artists, albums, and playlists
 
 * Enable music backup to and from Google Drive
 
