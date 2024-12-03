@@ -1,7 +1,7 @@
 name: pocket_music_player
 description: A new Flutter project.
 
-version: 1.0.1+4
+version: 1.0.3+6
 
 environment:
   sdk: '>=3.1.5 <4.0.0'
@@ -66,16 +66,16 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 flutter_launcher_icons:
-  image_path: "assets/images/icon.jpeg"
+  image_path: "assets/images/icon.png"
   android: true
   ios: true
 
 flutter_native_splash:
-  image: assets/images/splash-icon.png
+  image: assets/images/icon.png
   color: "ffffff"
   android: true
   android_12:
-    image: assets/images/splash-icon.png
+    image: assets/images/icon.png
   ios: true
 
 index_generator:
