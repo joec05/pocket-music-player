@@ -1,7 +1,7 @@
 name: pocket_music_player
 description: A new Flutter project.
 
-version: 1.0.3+6
+version: 1.0.4+7
 
 environment:
   sdk: '>=3.1.5 <4.0.0'
@@ -50,6 +50,7 @@ dependencies:
   package_info_plus: ^8.0.2
   flutter_email_sender: ^6.0.3
   device_preview: ^1.2.0
+  change_app_package_name: ^1.4.0
 
 dev_dependencies:
   flutter_test:

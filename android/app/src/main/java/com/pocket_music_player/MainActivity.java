@@ -1,4 +1,4 @@
-package com.joec05.pocket_music_player;
+package com.pocket_music_player;
 
 import io.flutter.embedding.android.FlutterActivity;
 

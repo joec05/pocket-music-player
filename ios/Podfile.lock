@@ -1,0 +1,125 @@
+PODS:
+  - audio_service (0.0.1):
+    - Flutter
+  - audio_session (0.0.1):
+    - Flutter
+  - audiotags (1.4.0):
+    - Flutter
+  - device_info_plus (0.0.1):
+    - Flutter
+  - Flutter (1.0.0)
+  - flutter_email_sender (0.0.1):
+    - Flutter
+  - flutter_native_splash (0.0.1):
+    - Flutter
+  - FMDB (2.7.12):
+    - FMDB/standard (= 2.7.12)
+  - FMDB/Core (2.7.12)
+  - FMDB/standard (2.7.12):
+    - FMDB/Core
+  - image_picker_ios (0.0.1):
+    - Flutter
+  - isar_flutter_libs (1.0.0):
+    - Flutter
+  - just_audio (0.0.1):
+    - Flutter
+  - package_info_plus (0.4.5):
+    - Flutter
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - permission_handler_apple (9.1.1):
+    - Flutter
+  - share_plus (0.0.1):
+    - Flutter
+  - shared_preferences_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - sqflite (0.0.3):
+    - Flutter
+    - FMDB (>= 2.7.5)
+  - url_launcher_ios (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - audio_service (from `.symlinks/plugins/audio_service/ios`)
+  - audio_session (from `.symlinks/plugins/audio_session/ios`)
+  - audiotags (from `.symlinks/plugins/audiotags/ios`)
+  - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
+  - Flutter (from `Flutter`)
+  - flutter_email_sender (from `.symlinks/plugins/flutter_email_sender/ios`)
+  - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
+  - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
+  - isar_flutter_libs (from `.symlinks/plugins/isar_flutter_libs/ios`)
+  - just_audio (from `.symlinks/plugins/just_audio/ios`)
+  - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
+  - share_plus (from `.symlinks/plugins/share_plus/ios`)
+  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
+  - sqflite (from `.symlinks/plugins/sqflite/ios`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+
+SPEC REPOS:
+  trunk:
+    - FMDB
+
+EXTERNAL SOURCES:
+  audio_service:
+    :path: ".symlinks/plugins/audio_service/ios"
+  audio_session:
+    :path: ".symlinks/plugins/audio_session/ios"
+  audiotags:
+    :path: ".symlinks/plugins/audiotags/ios"
+  device_info_plus:
+    :path: ".symlinks/plugins/device_info_plus/ios"
+  Flutter:
+    :path: Flutter
+  flutter_email_sender:
+    :path: ".symlinks/plugins/flutter_email_sender/ios"
+  flutter_native_splash:
+    :path: ".symlinks/plugins/flutter_native_splash/ios"
+  image_picker_ios:
+    :path: ".symlinks/plugins/image_picker_ios/ios"
+  isar_flutter_libs:
+    :path: ".symlinks/plugins/isar_flutter_libs/ios"
+  just_audio:
+    :path: ".symlinks/plugins/just_audio/ios"
+  package_info_plus:
+    :path: ".symlinks/plugins/package_info_plus/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
+  share_plus:
+    :path: ".symlinks/plugins/share_plus/ios"
+  shared_preferences_foundation:
+    :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
+  sqflite:
+    :path: ".symlinks/plugins/sqflite/ios"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
+
+SPEC CHECKSUMS:
+  audio_service: f509d65da41b9521a61f1c404dd58651f265a567
+  audio_session: 088d2483ebd1dc43f51d253d4a1c517d9a2e7207
+  audiotags: 38778e7f2ab2585b7e36cbb778d65e7cd7c3b828
+  device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  flutter_email_sender: 10a22605f92809a11ef52b2f412db806c6082d40
+  flutter_native_splash: edf599c81f74d093a4daf8e17bd7a018854bc778
+  FMDB: 728731dd336af3936ce00f91d9d8495f5718a0e6
+  image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
+  isar_flutter_libs: b69f437aeab9c521821c3f376198c4371fa21073
+  just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
+  package_info_plus: 58f0028419748fad15bf008b270aaa8e54380b1c
+  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
+  permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
+  share_plus: 8875f4f2500512ea181eef553c3e27dba5135aad
+  shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
+  sqflite: 31f7eba61e3074736dff8807a9b41581e4f7f15a
+  url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
+
+PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
+
+COCOAPODS: 1.15.2

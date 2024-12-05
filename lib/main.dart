@@ -46,7 +46,7 @@ Future<void> initializeAudioService() async{
     MyAudioHandler audioHandler = await AudioService.init(
       builder: () => MyAudioHandler(),
       config: const AudioServiceConfig(
-        androidNotificationChannelId: 'com.joec05.pocket_music_player',
+        androidNotificationChannelId: 'com.pocket_music_player',
         androidNotificationChannelName: 'Music playback',
       ),
     );
@@ -94,7 +94,6 @@ class MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
     }
   }
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
