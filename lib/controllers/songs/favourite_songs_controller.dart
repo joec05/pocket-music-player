@@ -5,7 +5,7 @@ import 'package:pocket_music_player/global_files.dart';
 
 class FavouriteSongsController {
   final BuildContext context;
-  List<FavouriteSongModel> favouriteSongsData = List<FavouriteSongModel>.from(appStateRepo.favouritesList).obs;
+  List<FavouriteSongModel> favouriteSongsData = List<FavouriteSongModel>.from(appStateRepo.favoritesList).obs;
   late StreamSubscription updateFavouriteStreamClassSubscription;
 
   FavouriteSongsController(
@@ -16,7 +16,7 @@ class FavouriteSongsController {
 
   void initializeController(){
     updateFavouriteStreamClassSubscription = UpdateFavouriteStreamClass().updateFavouriteStream.listen((UpdateFavouriteStreamControllerClass data) {
-      favouriteSongsData.assignAll(data.favouritesList);
+      favouriteSongsData.assignAll(data.favoritesList);
     });
   }
 

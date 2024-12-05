@@ -91,12 +91,13 @@ class _PlaylistEditorWidgetState extends State<_PlaylistEditorWidgetStateful> {
                     TextField(
                       decoration: generateFormTextFieldDecoration(context, 'playlist name', FontAwesomeIcons.list),
                       controller: controller.playlistNameController,
+                      style: const TextStyle(fontSize: 13.5),
                       maxLength: defaultTextFieldLimit,
                     ),
                     SizedBox(height: defaultTextFieldVerticalMargin),
                     CustomButton(
                       width: double.infinity,
-                      height: getScreenHeight() * 0.065,
+                      height: getScreenHeight() * 0.07,
                       color: verifyPlaylistName && !isLoading ? Colors.orange.withOpacity(0.75) : Colors.grey.withOpacity(0.5),
                       onTapped: verifyPlaylistName && !isLoading ? () => controller.modifyPlaylist() : (){},
                       text: 'Update playlist data',

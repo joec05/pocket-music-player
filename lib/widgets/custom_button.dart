@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pocket_music_player/global_files.dart';
 
-Color defaultCustomButtonColor = const Color.fromARGB(255, 129, 123, 123);
+Color defaultCustomButtonColor = Colors.blueGrey.withOpacity(0.6);
 
 class CustomButton extends StatefulWidget {
   final double width;
@@ -47,7 +47,7 @@ class CustomButtonState extends State<CustomButton> {
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            splashFactory: InkRipple.splashFactory,
+            splashFactory: InkSparkle.splashFactory,
             onTap: (){
               Future.delayed(
                 const Duration(milliseconds: 150), 
@@ -82,8 +82,8 @@ class CustomButtonState extends State<CustomButton> {
                     Text(
                       widget.text, 
                       style: const TextStyle(
-                        fontWeight: FontWeight.bold, 
-                        fontSize: 16.5
+                        fontWeight: FontWeight.w500, 
+                        fontSize: 15
                       )
                     ),
                   ],

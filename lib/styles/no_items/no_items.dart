@@ -6,7 +6,7 @@ Widget noItemsWidget(IconData icon, String item) {
     mainAxisAlignment: MainAxisAlignment.center,
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [
-      Icon(icon, size: 25),
+      Icon(icon, size: 20),
       SizedBox(
         height: getScreenHeight() * 0.015,
       ),

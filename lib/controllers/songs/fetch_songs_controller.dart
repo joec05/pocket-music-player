@@ -58,7 +58,7 @@ class FetchSongsController {
       }
       appStateRepo.allAudiosList.value = filesCompleteDataList;
       appStateRepo.audioListenCount = getListenCountData;
-      final _ = appStateRepo.setFavouritesList(await isarController.fetchFavourites());
+      final _ = appStateRepo.setFavoritesList(await isarController.fetchFavorites());
       final __ = appStateRepo.setPlaylistList('', await isarController.fetchPlaylists());
 
       mainPageController.setLoadingState(true, loadType);

@@ -61,9 +61,9 @@ class SongOptionController {
                   CustomButton(
                     onTapped: () {
                       Navigator.of(bottomSheetContext).pop();
-                      toggleFavourites();
+                      toggleFavorites();
                     },
-                    text: appStateRepo.favouritesList.map((e) => e.songPath).contains(audioCompleteData.audioUrl) ? 'Remove from favourites' : 'Add to favourites',
+                    text: appStateRepo.favoritesList.map((e) => e.songPath).contains(audioCompleteData.audioUrl) ? 'Remove from favorites' : 'Add to favorites',
                     width: double.infinity,
                     height: getScreenHeight() * 0.08,
                     color: Colors.transparent,
@@ -140,7 +140,7 @@ class SongOptionController {
                   },
                   text: 'Create new playlist',
                   width: double.infinity,
-                  height: getScreenHeight() * 0.08,
+                  height: getScreenHeight() * 0.07,
                   color: Colors.transparent,
                   setBorderRadius: false,
                   prefix: null,
@@ -158,7 +158,7 @@ class SongOptionController {
                   },
                   text: 'Select existing playlist',
                   width: double.infinity,
-                  height: getScreenHeight() * 0.08,
+                  height: getScreenHeight() * 0.07,
                   color: Colors.transparent,
                   setBorderRadius: false,
                   prefix: null,
@@ -246,18 +246,16 @@ class SongOptionController {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox(
-                      height: getScreenHeight() * 0.08,
-                      child: TextField(
-                        maxLength: defaultTextFieldLimit,
-                        controller: inputController,
-                        decoration: generatePlaylistNameTextFieldDecoration(context, 'playlist name', FontAwesomeIcons.list),
-                        onChanged: (text){
-                          setState((){
-                            verifyInput = text.isNotEmpty;
-                          });
-                        },
-                      ),
+                    TextField(
+                      maxLength: defaultTextFieldLimit,
+                      style: const TextStyle(fontSize: 13.5),
+                      controller: inputController,
+                      decoration: generatePlaylistNameTextFieldDecoration(context, 'playlist name', FontAwesomeIcons.list),
+                      onChanged: (text){
+                        setState((){
+                          verifyInput = text.isNotEmpty;
+                        });
+                      },
                     ),
                     CustomButton(
                       width: double.infinity, height: getScreenHeight() * 0.065, 
@@ -421,30 +419,30 @@ class SongOptionController {
     }
   }
 
-  void toggleFavourites() {
-    List<FavouriteSongModel> favouritesList = appStateRepo.favouritesList;
+  void toggleFavorites() {
+    List<FavouriteSongModel> favoritesList = appStateRepo.favoritesList;
     runDelay((){
       if(mounted){
-        int index = favouritesList.indexWhere((e) => e.songPath == audioCompleteData.audioUrl);
+        int index = favoritesList.indexWhere((e) => e.songPath == audioCompleteData.audioUrl);
         if(index > -1) {
-          isarController.deleteFavourite(favouritesList[index]);
-          favouritesList.removeAt(index);
+          isarController.deleteFavourite(favoritesList[index]);
+          favoritesList.removeAt(index);
           handler.displaySnackbar(
             context, 
             SnackbarType.successful, 
-            tSuccess.removeSongFromFavourites
+            tSuccess.removeSongFromFavorites
           );
         }else{
           FavouriteSongModel songModel = FavouriteSongModel(audioCompleteData.audioUrl);
-          favouritesList.insert(0, songModel);
+          favoritesList.insert(0, songModel);
           isarController.putFavourite(songModel);
           handler.displaySnackbar(
             context, 
             SnackbarType.successful, 
-            tSuccess.addSongToFavourites
+            tSuccess.addSongToFavorites
           );
         }
-        appStateRepo.setFavouritesList(favouritesList);
+        appStateRepo.setFavoritesList(favoritesList);
       }
     }, navigationDelayDuration);
   }

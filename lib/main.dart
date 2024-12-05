@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -10,6 +11,7 @@ import 'package:talker_flutter/talker_flutter.dart';
 import 'package:pocket_music_player/controllers/shared_preferences/shared_preferences_controller.dart';
 import 'package:pocket_music_player/controllers/permission/permission_controller.dart';
 import 'package:media_store_plus/media_store_plus.dart';
+import 'package:device_preview/device_preview.dart';
 
 final controller = FetchSongsController();
 final talker = Talker();
@@ -30,7 +32,10 @@ Future<void> main() async{
   MediaStore.appFolder = "Pocket Music Player";
   await controller.fetchLocalSongs(LoadType.initial).then((_) {
     runApp(
-      const MyApp()
+      DevicePreview(
+        enabled: !kReleaseMode,
+        builder: (context) => const MyApp()
+      )
     );
     FlutterNativeSplash.remove();
   });
@@ -95,6 +100,10 @@ class MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
     return ValueListenableBuilder(
       valueListenable: themeModel.mode,
       builder: (context, mode, child) => GetMaterialApp(
+        useInheritedMediaQuery: true,
+        locale: DevicePreview.locale(context),
+        builder: DevicePreview.appBuilder,
+
         scaffoldMessengerKey: rootScaffoldMessengerKey,
         initialRoute: '/',
         onGenerateRoute: (settings) {

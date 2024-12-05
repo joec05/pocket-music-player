@@ -31,7 +31,7 @@ class _CustomArtistDisplayWidgetState extends State<CustomArtistDisplayWidget>{
         color: Colors.transparent,
         child: InkWell(
           onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => (DisplayArtistSongsWidget(artistSongsData: artistSongsData)))),
-          splashFactory: InkRipple.splashFactory,
+          splashFactory: InkSparkle.splashFactory,
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding / 2, vertical: defaultVerticalPadding / 2),
             child: Column(
@@ -52,14 +52,23 @@ class _CustomArtistDisplayWidgetState extends State<CustomArtistDisplayWidget>{
                                     Flexible(
                                       child: Row(
                                         children: [
-                                          Text(artistSongsData.artistName ?? 'Unknown', style: const TextStyle(fontSize: 17), maxLines: 1, overflow: TextOverflow.ellipsis)
+                                          Text(
+                                            artistSongsData.artistName ?? 'Unknown', 
+                                            style: const TextStyle(fontSize: 16), 
+                                            maxLines: 1, 
+                                            overflow: TextOverflow.ellipsis
+                                          )
                                         ]
                                       )
                                     ),
                                   ],
                                 ),
                                 SizedBox(height: getScreenHeight() * 0.005),
-                                Text(artistSongsData.songsList.length == 1 ? '1 song' : '${artistSongsData.songsList.length} songs', style: const TextStyle(fontSize: 14),)
+                                Text(
+                                  artistSongsData.songsList.length == 1 ? '1 song' : 
+                                  '${artistSongsData.songsList.length} songs', 
+                                  style: const TextStyle(fontSize: 13)
+                                )
                               ]
                             ),
                           ),

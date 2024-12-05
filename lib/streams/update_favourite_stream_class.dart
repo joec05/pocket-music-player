@@ -2,9 +2,9 @@ import 'dart:async';
 import 'package:pocket_music_player/global_files.dart';
 
 class UpdateFavouriteStreamControllerClass{
-  final List<FavouriteSongModel> favouritesList;
+  final List<FavouriteSongModel> favoritesList;
 
-  UpdateFavouriteStreamControllerClass(this.favouritesList);
+  UpdateFavouriteStreamControllerClass(this.favoritesList);
 }
 
 class UpdateFavouriteStreamClass {

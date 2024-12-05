@@ -153,7 +153,7 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
                                           Flexible(
                                             child: Text(
                                               audioCompleteDataValue.audioMetadataInfo.title ?? audioCompleteDataValue.audioMetadataInfo.fileName, 
-                                              style: const TextStyle(fontSize: 17), 
+                                              style: const TextStyle(fontSize: 16), 
                                               maxLines: 1, 
                                               overflow: TextOverflow.ellipsis
                                             )
@@ -161,7 +161,7 @@ class _CustomCurrentlyPlayingBottomWidgetState extends State<CustomCurrentlyPlay
                                         ],
                                       ),
                                       SizedBox(height: getScreenHeight() * 0.005),
-                                      Text(audioCompleteDataValue.audioMetadataInfo.artistName ?? 'Unknown', style: const TextStyle(fontSize: 14),),
+                                      Text(audioCompleteDataValue.audioMetadataInfo.artistName ?? 'Unknown', style: const TextStyle(fontSize: 13)),
                                     ]
                                   ),
                                 ),

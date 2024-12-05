@@ -90,31 +90,35 @@ class _TagEditorWidgetState extends State<_TagEditorWidgetStateful> {
                     decoration: generateFormTextFieldDecoration(context, 'title', FontAwesomeIcons.music),
                     controller: controller.titleController,
                     maxLength: defaultTextFieldLimit,
+                    style: const TextStyle(fontSize: 13.5),
                   ),
                   SizedBox(height: defaultTextFieldVerticalMargin),
                   TextField(
                     decoration: generateFormTextFieldDecoration(context, 'artist', FontAwesomeIcons.user),
                     controller: controller.artistController,
                     maxLength: defaultTextFieldLimit,
+                    style: const TextStyle(fontSize: 13.5),
                   ),
                   SizedBox(height: defaultTextFieldVerticalMargin),
                   TextField(
                     controller: controller.albumController,
                     decoration: generateFormTextFieldDecoration(context, 'album name', FontAwesomeIcons.recordVinyl),
                     maxLength: defaultTextFieldLimit,
+                    style: const TextStyle(fontSize: 13.5),
                   ),
                   SizedBox(height: defaultTextFieldVerticalMargin),
                   ///TextField(
                   ///  controller: controller.albumArtistController,
                   ///  decoration: generateFormTextFieldDecoration('album artist name', FontAwesomeIcons.user),
                   ///  maxLength: defaultTextFieldLimit,
+                  ///  style: const TextStyle(fontSize: 13.5),
                   ///),
                   ///SizedBox(height: defaultTextFieldVerticalMargin),
                   Obx(() {
                     bool isModifyingTags = controller.isModifyingTags.value;
                     return CustomButton(
                       width: double.infinity,
-                      height: getScreenHeight() * 0.065,
+                      height: getScreenHeight() * 0.07,
                       color: !isModifyingTags ? Colors.orange.withOpacity(0.75) : Colors.grey.withOpacity(0.5),
                       onTapped: !isModifyingTags ? () => controller.modifyTags() : (){},
                       text: 'Update metadata',

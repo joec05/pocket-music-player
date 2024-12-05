@@ -63,7 +63,7 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
             onTap: (){
               runDelay(() => playAudio(), playingDelayDuration);
             },
-            splashFactory: InkRipple.splashFactory,
+            splashFactory: InkSparkle.splashFactory,
             child: Container(
               key: globalKey,
               padding: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding / 2, vertical: defaultVerticalPadding / 2),
@@ -113,13 +113,16 @@ class _CustomAudioPlayerWidgetState extends State<CustomAudioPlayerWidget> with 
                                     child: Text(
                                       audioCompleteData.audioMetadataInfo.title ?? audioCompleteData.audioMetadataInfo.fileName,
                                       style: const TextStyle(
-                                        fontSize: 17), maxLines: 1, overflow: TextOverflow.ellipsis
-                                      )
-                                    ),
+                                        fontSize: 16
+                                      ), 
+                                      maxLines: 1, 
+                                      overflow: TextOverflow.ellipsis
+                                    )
+                                  ),
                                 ],
                               ),
                               SizedBox(height: getScreenHeight() * 0.005),
-                              Text(audioCompleteData.audioMetadataInfo.artistName ?? 'Unknown', style: const TextStyle(fontSize: 14),),
+                              Text(audioCompleteData.audioMetadataInfo.artistName ?? 'Unknown', style: const TextStyle(fontSize: 13)),
                             ]
                           ),
                         ),

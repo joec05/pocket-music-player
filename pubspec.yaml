@@ -48,6 +48,8 @@ dependencies:
   bottom_bar: ^2.0.3
   media_store_plus: ^0.1.2
   package_info_plus: ^8.0.2
+  flutter_email_sender: ^6.0.3
+  device_preview: ^1.2.0
 
 dev_dependencies:
   flutter_test:

@@ -48,7 +48,7 @@ class AllMusicPageWidgetState extends State<AllMusicPageWidgetStateful> with Aut
             Column(
               children: [
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding /2 , vertical: defaultVerticalPadding / 2),
+                  margin: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding / 2 , vertical: defaultVerticalPadding / 2),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -78,8 +78,8 @@ class AllMusicPageWidgetState extends State<AllMusicPageWidgetStateful> with Aut
                             width: (getScreenWidth() - defaultHorizontalPadding) / 2 - defaultHorizontalPadding / 2, 
                             height: getScreenHeight() * 0.075, 
                             color: defaultCustomButtonColor, 
-                            text: 'Favourites', 
-                            onTapped: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DisplayFavouritesClassWidget())), 
+                            text: 'Favorites', 
+                            onTapped: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DisplayFavoritesClassWidget())), 
                             setBorderRadius: true,
                             prefix: null,
                             loading: false

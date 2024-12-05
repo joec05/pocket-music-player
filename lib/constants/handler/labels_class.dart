@@ -8,6 +8,8 @@ class ErrorLabels {
   final cancelled = "Process has been cancelled";
 
   final dirNotFound = "Cannot find directory";
+
+  final fileNotFound = "File not found";
   
 }
 
@@ -26,9 +28,9 @@ class SuccessLabels {
 
   final removeSongFromPlaylist = "Successfully removed your song from your playlist";
 
-  final addSongToFavourites = "Successfully added your song to favourites";
+  final addSongToFavorites = "Successfully added your song to favorites";
 
-  final removeSongFromFavourites = "Successfully removed your song from favourites";
+  final removeSongFromFavorites = "Successfully removed your song from favorites";
   
   final deleteSong = "Successfully deleted your song";
 }

@@ -3,23 +3,23 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:pocket_music_player/global_files.dart';
 
-class DisplayFavouritesClassWidget extends StatelessWidget {
-  const DisplayFavouritesClassWidget({super.key});
+class DisplayFavoritesClassWidget extends StatelessWidget {
+  const DisplayFavoritesClassWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const _DisplayFavouritesClassWidgetStateful();
+    return const _DisplayFavoritesClassWidgetStateful();
   }
 }
 
-class _DisplayFavouritesClassWidgetStateful extends StatefulWidget {
-  const _DisplayFavouritesClassWidgetStateful();
+class _DisplayFavoritesClassWidgetStateful extends StatefulWidget {
+  const _DisplayFavoritesClassWidgetStateful();
 
   @override
-  State<_DisplayFavouritesClassWidgetStateful> createState() => _DisplayFavouritesClassWidgetState();
+  State<_DisplayFavoritesClassWidgetStateful> createState() => _DisplayFavoritesClassWidgetState();
 }
 
-class _DisplayFavouritesClassWidgetState extends State<_DisplayFavouritesClassWidgetStateful> {
+class _DisplayFavoritesClassWidgetState extends State<_DisplayFavoritesClassWidgetStateful> {
   late FavouriteSongsController controller;
 
   @override
@@ -44,7 +44,7 @@ class _DisplayFavouritesClassWidgetState extends State<_DisplayFavouritesClassWi
         flexibleSpace: Container(
           decoration: defaultAppBarDecoration
         ),
-        title: const Text('Favourites'), titleSpacing: defaultAppBarTitleSpacingWithBackBtn,
+        title: const Text('Favorites'), titleSpacing: defaultAppBarTitleSpacingWithBackBtn,
       ),
       body: Center(
         child: Obx(() {

@@ -75,28 +75,39 @@ class MainPageController {
                   child: Icon(Icons.arrow_back, size: 25),
                 )
               ),
-              TextField(
-                controller: searchController,
-                focusNode: searchFocusNode,
-                decoration: InputDecoration(
-                  counterText: "",
-                  contentPadding: EdgeInsets.symmetric(horizontal: getScreenWidth() * 0.025),
-                  fillColor: Colors.transparent,
-                  filled: true,
-                  hintText: 'Search anything',
-                  constraints: BoxConstraints(
-                    maxWidth: getScreenWidth() * 0.75,
-                    maxHeight: getScreenHeight() * 0.07,
+              Flexible(
+                child: SizedBox(
+                  width: double.infinity,
+                  child: TextField(
+                    controller: searchController,
+                    focusNode: searchFocusNode,
+                    style: const TextStyle(fontSize: 13.5),
+                    decoration: InputDecoration(
+                      floatingLabelStyle: const TextStyle(fontSize: 13.5),
+                      hintStyle: const TextStyle(fontSize: 13.5),
+                      counterText: "",
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: getScreenWidth() * 0.035,
+                        vertical: 10
+                      ),
+                      fillColor: Colors.transparent,
+                      filled: true,
+                      hintText: 'Search anything',
+                      constraints: BoxConstraints(
+                        maxWidth: getScreenWidth() * 0.75,
+                        maxHeight: getScreenHeight() * 0.07,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 2, color: Colors.transparent),
+                        borderRadius: BorderRadius.circular(12.5),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 2, color: Colors.transparent),
+                        borderRadius: BorderRadius.circular(12.5),
+                      ),
+                    )
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(width: 2, color: Colors.transparent),
-                    borderRadius: BorderRadius.circular(12.5),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(width: 2, color: Colors.transparent),
-                    borderRadius: BorderRadius.circular(12.5),
-                  ),
-                )
+                ),
               )
             ],
           );

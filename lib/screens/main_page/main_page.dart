@@ -41,7 +41,7 @@ class __MainPageWidgetStatefulState extends State<_MainPageWidgetStateful>{
       bool isSearching = mainPageController.isSearching.value;
       return PopScope(
         canPop: !isSearching,
-        onPopInvoked: (bool pop) {
+        onPopInvokedWithResult: (bool pop, _) {
           if(isSearching) {
             mainPageController.isSearching.value = false;
             mainPageController.searchController.text = '';
@@ -67,27 +67,28 @@ class __MainPageWidgetStatefulState extends State<_MainPageWidgetStateful>{
                   child: SizedBox(
                     child: BottomBar(
                       backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+                      textStyle: const TextStyle(fontSize: 13.5),
                       key: UniqueKey(),
                       items: [
                         BottomBarItem(
-                          icon: const Icon(FontAwesomeIcons.music, size: 25),
+                          icon: const Icon(FontAwesomeIcons.music, size: 20),
                           title: const Text('All Music'),
-                          activeColor: Colors.teal.withOpacity(0.7)
+                          activeColor: Colors.blueGrey.withOpacity(0.85)
                         ),
                         BottomBarItem(
-                          icon: const Icon(FontAwesomeIcons.user, size: 25),
+                          icon: const Icon(FontAwesomeIcons.user, size: 20),
                           title: const Text('Artists'),
-                          activeColor: Colors.teal.withOpacity(0.7)
+                          activeColor: Colors.blueGrey.withOpacity(0.85)
                         ),
                         BottomBarItem(
-                          icon: const Icon(FontAwesomeIcons.recordVinyl, size: 25),
+                          icon: const Icon(FontAwesomeIcons.recordVinyl, size: 20),
                           title: const Text('Albums'),
-                          activeColor: Colors.teal.withOpacity(0.7)
+                          activeColor: Colors.blueGrey.withOpacity(0.85)
                         ),
                         BottomBarItem(
-                          icon: const Icon(FontAwesomeIcons.list, size: 25),
+                          icon: const Icon(FontAwesomeIcons.list, size: 20),
                           title: const Text('Playlists'),
-                          activeColor: Colors.teal.withOpacity(0.7)
+                          activeColor: Colors.blueGrey.withOpacity(0.85)
                         ),
                       ],
                       selectedIndex: selectedIndexValue,

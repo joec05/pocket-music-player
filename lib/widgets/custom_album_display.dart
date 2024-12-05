@@ -31,7 +31,7 @@ class _CustomAlbumDisplayWidgetState extends State<CustomAlbumDisplayWidget>{
         color: Colors.transparent,
         child: InkWell(
           onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => DisplayAlbumSongsWidget(albumSongsData: albumSongsData))),
-          splashFactory: InkRipple.splashFactory,
+          splashFactory: InkSparkle.splashFactory,
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding / 2, vertical: defaultVerticalPadding / 2),
             child: Row(
@@ -64,13 +64,20 @@ class _CustomAlbumDisplayWidgetState extends State<CustomAlbumDisplayWidget>{
                           children: [
                             Row(
                               children: [
-                                Flexible(child: Text(albumSongsData.albumName ?? 'Unknown', style: const TextStyle(fontSize: 17), maxLines: 1, overflow: TextOverflow.ellipsis)),
+                                Flexible(
+                                  child: Text(
+                                    albumSongsData.albumName ?? 'Unknown', 
+                                    style: const TextStyle(fontSize: 16),
+                                    maxLines: 1, 
+                                    overflow: TextOverflow.ellipsis
+                                  )
+                                ),
                               ],
                             ),
                             SizedBox(height: getScreenHeight() * 0.005),
-                            Text(albumSongsData.artistName ?? 'Unknown', style: const TextStyle(fontSize: 14),),
+                            Text(albumSongsData.artistName ?? 'Unknown', style: const TextStyle(fontSize: 13)),
                             SizedBox(height: getScreenHeight() * 0.005),
-                            Text(albumSongsData.songsList.length == 1 ? '1 song' : '${albumSongsData.songsList.length} songs', style: const TextStyle(fontSize: 14),)
+                            Text(albumSongsData.songsList.length == 1 ? '1 song' : '${albumSongsData.songsList.length} songs', style: const TextStyle(fontSize: 13),)
                           ]
                         ),
                       ),

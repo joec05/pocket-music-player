@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:audiotags/audiotags.dart';
 import 'package:audiotags/audiotags.dart' as audiotags;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:pocket_music_player/global_files.dart';
@@ -76,8 +77,31 @@ class MetadataController {
             pictureType: audiotags.PictureType.coverFront,
           )
         ]
-      )).then((_) async {        
+      )).then((_) async {
+        if(!File(audioCompleteData.audioUrl).existsSync()) {
+          if(context.mounted) {
+            handler.displaySnackbar(
+              context, 
+              SnackbarType.error, 
+              tErr.fileNotFound
+            );
+          }
+          return;
+        }
+
         final uri = await mediaStorePlugin.getUriFromFilePath(path: audioCompleteData.audioUrl);
+
+        if(uri == null) {
+          if(context.mounted) {
+            handler.displaySnackbar(
+              context, 
+              SnackbarType.error, 
+              tErr.unknown
+            );
+          }
+          return;
+        }
+
         final bool edited = await mediaStorePlugin.editFile(uriString: uri.toString(), tempFilePath: tempPath);
         
         if(!edited) {
@@ -121,7 +145,6 @@ class MetadataController {
         handler.displaySnackbar(
           context, 
           SnackbarType.error, 
-          //tErr.unknown
           e.toString()
         );
       }

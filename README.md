@@ -14,7 +14,7 @@ A simple music player app made with Flutter.
 
 * Edit music metadata
 
-* Add music to favourites
+* Add music to favorites
 
 * Create, edit and delete playlists
 
@@ -30,4 +30,4 @@ A simple music player app made with Flutter.
 
 * Enable music backup to and from Google Drive
 
-* Enable users to select more than one music to add to favourites, add to playlists, or to delete
+* Enable users to select more than one music to add to favorites, add to playlists, or to delete

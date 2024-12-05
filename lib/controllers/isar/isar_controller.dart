@@ -39,7 +39,7 @@ class IsarController {
     isar?.writeTxn(() => isar!.favouriteSongModels.delete(songData.id));
   }
 
-  Future<List<FavouriteSongModel>> fetchFavourites() async {
+  Future<List<FavouriteSongModel>> fetchFavorites() async {
     List<FavouriteSongModel> songsModel = [];
     await isar!.txn(() async => songsModel = await isar!.favouriteSongModels.where().findAll());
     return songsModel;

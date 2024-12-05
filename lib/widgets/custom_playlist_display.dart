@@ -123,7 +123,7 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
         color: Colors.transparent,
         child: InkWell(
           onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => DisplayPlaylistSongsWidget(playlistSongsData: playlistSongsData))),
-          splashFactory: InkRipple.splashFactory,
+          splashFactory: InkSparkle.splashFactory,
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding / 2, vertical: defaultVerticalPadding / 2),
             child: Row(
@@ -156,11 +156,18 @@ class _CustomPlaylistDisplayWidgetState extends State<CustomPlaylistDisplayWidge
                           children: [
                             Row(
                               children: [
-                                Flexible(child: Text(playlistSongsData.playlistName, style: const TextStyle(fontSize: 17), maxLines: 1, overflow: TextOverflow.ellipsis)),
+                                Flexible(
+                                  child: Text(
+                                    playlistSongsData.playlistName, 
+                                    style: const TextStyle(fontSize: 16), 
+                                    maxLines: 1, 
+                                    overflow: TextOverflow.ellipsis
+                                  )
+                                ),
                               ],
                             ),
                             SizedBox(height: getScreenHeight() * 0.005),
-                            Text(filteredPlaylists.length == 1 ? '1 song' : '${filteredPlaylists.length} songs', style: const TextStyle(fontSize: 14),)
+                            Text(filteredPlaylists.length == 1 ? '1 song' : '${filteredPlaylists.length} songs', style: const TextStyle(fontSize: 13),)
                           ]
                         ),
                       ),
